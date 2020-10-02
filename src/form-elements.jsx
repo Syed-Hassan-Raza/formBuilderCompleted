@@ -11,7 +11,8 @@ import StarRating from "./star-rating";
 import HeaderBar from "./header-bar";
 import { DndProvider } from 'react-dnd'
 import  HTML5Backend  from 'react-dnd-html5-backend'
-import  { Dustbin } from "./FieldsGroupBox";
+import   Dustbin from "./FieldsGroupBox";
+import { DragDropContext } from 'react-dnd';
 
 
 const FormElements = {};
@@ -114,14 +115,12 @@ class FieldsGroup extends React.Component {
     if (this.props.data.pageBreakBefore) {
       baseClasses += " alwaysbreak";
     }
-
+    
     return (
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         {this.props.data.Label}
-        <DndProvider backend={HTML5Backend}>
-          <Dustbin title="Test Title" props={this.props}></Dustbin>
-        </DndProvider>   
+        <Dustbin {...this.props}></Dustbin> 
       </div>
     );
   }

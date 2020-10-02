@@ -99,7 +99,7 @@ export default function (ComposedComponent) {
         connectDropTarget,
       } = this.props;
       const opacity = isDragging ? 0 : 1;
-
+      
       return connectDragSource(
         connectDropTarget(<div><ComposedComponent {...this.props} style={{ ...style, opacity }}></ComposedComponent></div>),
       );

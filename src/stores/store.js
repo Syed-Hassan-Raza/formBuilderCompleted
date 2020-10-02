@@ -34,6 +34,23 @@ const store = new Store({
       this.setData(context, data, true);
     },
 
+    createChild(context, element) {
+      const { data } = context.state;
+
+      data.forEach((item) => {
+        if (item.id == element.parentId) {
+          if (!item.childs){
+            item.childs = [];
+          }
+
+          if (!item.childs.some(i => i.id == element.item.id)){
+            item.childs = item.childs.concat([element.item]);
+          }
+        }
+      });
+      this.setData(context, data, true);
+    },
+
     delete(context, element) {
       const { data } = context.state;
       data.splice(data.indexOf(element), 1);
@@ -45,7 +62,6 @@ const store = new Store({
     },
 
     save(data) {
-      console.log(data);
       document.execCommand(data);
       if (_onPost) {
         _onPost({ task_data: data });
