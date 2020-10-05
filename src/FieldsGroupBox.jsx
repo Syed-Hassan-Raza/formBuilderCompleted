@@ -82,7 +82,8 @@ class Dustbin extends React.Component {
     }
     //this.onDrop = this.onDrop.bind(this);
     store.subscribe(state => { 
-      let c = state.data.find(i => i.id == this.props.id);
+      //let c = state.data.find(i => i.id == this.props.id);
+      let c = this.findData(state.data, this.props.id);
       if (c && c.childs) {
         this.setState({components: c.childs });
       }
@@ -93,6 +94,15 @@ class Dustbin extends React.Component {
       
       
     });
+  }
+
+  findData(data, id) {
+    for (let item of data) {
+      if (item.id == id)
+        return item;
+      
+      this.findData(data, id);
+    }
   }
 
   componentDidUpdate(prevProps) {
