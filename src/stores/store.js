@@ -1,5 +1,5 @@
-import Store from 'beedle';
-import { get, post } from './requests';
+import Store from "beedle";
+import { get, post } from "./requests";
 
 let _saveUrl;
 let _onPost;
@@ -8,18 +8,19 @@ let _onLoad;
 const store = new Store({
   actions: {
     setData(context, data, saveData) {
-      context.commit('setData', data);
+      context.commit("setData", data);
       if (saveData) this.save(data);
+      console.log(data);
     },
 
     load(context, { loadUrl, saveUrl, data }) {
       _saveUrl = saveUrl;
       if (_onLoad) {
-        _onLoad().then(x => this.setData(context, x));
+        _onLoad().then((x) => this.setData(context, x));
       } else if (loadUrl) {
-        get(loadUrl).then(x => {
+        get(loadUrl).then((x) => {
           if (data && data.length > 0 && x.length === 0) {
-            data.forEach(y => x.push(y));
+            data.forEach((y) => x.push(y));
           }
           this.setData(context, x);
         });
@@ -31,12 +32,25 @@ const store = new Store({
     create(context, element) {
       const { data } = context.state;
       data.push(element);
-      this.setData(context, data, true);
+      this.setData(context, data, false);
+      this.saveTemplateOptions(context, element);
+    },
+
+    saveTemplateOptions(context, newData) {
+      debugger
+      const { data } = context.state;
+      if (!data.TemplateOptions) {
+        data.TemplateOptions = [];
+      }
+      if (newData.options) {
+        data.TemplateOptions[newData.TypeDetail] = newData.options;
+        this.setData(context, data, false);
+      }
     },
 
     createChild(context, element) {
       const { data } = context.state;
-
+      debugger
       // data.forEach((item) => {
       //   if (item.id == element.parentId) {
       //     if (!item.FieldsGroup){
@@ -50,16 +64,17 @@ const store = new Store({
       // });
       this.addItem(data, element);
       this.setData(context, data, true);
+      this.saveTemplateOptions(context, element.item);
       console.log(data);
     },
 
     addItem(data, element) {
       data.forEach((item, index, object) => {
         if (item.id === element.parentId) {
-          if (!item.FieldsGroup)
-            item.FieldsGroup = [];
+          if (!item.FieldsGroup) {item.FieldsGroup= [];item.Fields= [];}
 
-            item.FieldsGroup.push(element.item);
+          item.FieldsGroup.push(element.item);
+          //item.FieldsGroup.Fields.push(element.item);
           return;
         }
 
@@ -125,13 +140,12 @@ const store = new Store({
               delete root.FieldsGroup[k];
             }
           } else if (root[k].FieldsGroup) {
-            return this.findObjectById(root[k].FieldsGroup, newData,'fetch');
+            return this.findObjectById(root[k].FieldsGroup, newData, "fetch");
           }
         }
         //return root;
       }
     },
-
   },
 
   mutations: {
