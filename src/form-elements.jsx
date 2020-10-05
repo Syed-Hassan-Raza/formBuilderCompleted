@@ -106,7 +106,20 @@ class Header extends React.Component {
 }
 
 class FieldsGroup extends React.Component {
+   Tree(items) {
+    // our base case, if we have no items, render nothing.
+    if (!items || !items.length) {
+      return null
+    }
   
+    return items.map(item => (
+      <Dustbin key={item.name} {...this.props}>
+        <div>{item.name}</div>
+        {/* And here's the recursion! */}
+        <Tree items={item.child} />
+      </Dustbin>
+    ))
+  }
   render() {
     // const headerClasses = `dynamic-input ${this.props.data.element}-input`;
     let classNames = "form-control";
@@ -119,8 +132,9 @@ class FieldsGroup extends React.Component {
     return (
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
-        {/* {this.props.data.Label} */}
-        <Dustbin {...this.props}></Dustbin> 
+        {/* {this.props.data.Label} */
+        }
+        { <Dustbin {...this.props}/>}
       </div>
     );
   }

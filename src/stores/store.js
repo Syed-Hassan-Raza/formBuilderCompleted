@@ -39,31 +39,32 @@ const store = new Store({
 
       // data.forEach((item) => {
       //   if (item.id == element.parentId) {
-      //     if (!item.childs){
-      //       item.childs = [];
+      //     if (!item.FieldsGroup){
+      //       item.FieldsGroup = [];
       //     }
 
-      //     if (!item.childs.some(i => i.id == element.item.id)){
-      //       item.childs = item.childs.concat([element.item]);
+      //     if (!item.FieldsGroup.some(i => i.id == element.item.id)){
+      //       item.FieldsGroup = item.FieldsGroup.concat([element.item]);
       //     }
       //   }
       // });
       this.addItem(data, element);
       this.setData(context, data, true);
+      console.log(data);
     },
 
     addItem(data, element) {
       data.forEach((item, index, object) => {
         if (item.id === element.parentId) {
-          if (!item.childs)
-            item.childs = [];
+          if (!item.FieldsGroup)
+            item.FieldsGroup = [];
 
-            item.childs.push(element.item);
+            item.FieldsGroup.push(element.item);
           return;
         }
 
-        if (item.childs) {
-          this.addItem(item.childs, element);
+        if (item.FieldsGroup) {
+          this.addItem(item.FieldsGroup, element);
         }
       });
     },
@@ -82,8 +83,8 @@ const store = new Store({
           return;
         }
 
-        if (item.childs) {
-          this.removeItem(item.childs, element);
+        if (item.FieldsGroup) {
+          this.removeItem(item.FieldsGroup, element);
         }
       });
     },
@@ -100,6 +101,37 @@ const store = new Store({
         post(_saveUrl, { task_data: data });
       }
     },
+    svaveChanges(context, newData) {
+      const { data } = context.state;
+
+      const r = this.findObjectById(data, newData, "fetch");
+      // r.FieldsGroup.push(newData);
+      this.setData(context, r, false);
+      console.log(data);
+    },
+
+    findObjectById(root, newData, action) {
+      debugger;
+      if (root) {
+        for (var k in root) {
+          if (root[k].id == newData.parentId) {
+            if (action == "fetch") {
+              if (root[k].FieldsGroup == null) {
+                root[k].FieldsGroup = [];
+              }
+              root[k].FieldsGroup.push(newData.item);
+              return root;
+            } else {
+              delete root.FieldsGroup[k];
+            }
+          } else if (root[k].FieldsGroup) {
+            return this.findObjectById(root[k].FieldsGroup, newData,'fetch');
+          }
+        }
+        //return root;
+      }
+    },
+
   },
 
   mutations: {

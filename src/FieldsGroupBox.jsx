@@ -43,6 +43,7 @@ const fieldsGroupTarget = {
     
     let item = monitor.getItem();
     store.dispatch('createChild', { parentId: component.state.id, item: item.onCreate(item.data) });
+   //store.dispatch('svaveChanges', { parentId: component.state.id, item:item.onCreate(item.data)  });
     // Obtain the dragged item
     //const item = monitor.getItem()
     //props.onDrop(item)
@@ -84,13 +85,13 @@ class Dustbin extends React.Component {
     store.subscribe(state => { 
       //let c = state.data.find(i => i.id == this.props.id);
       let c = this.findData(state.data, this.props.id);
-      if (c && c.childs) {
-        this.setState({components: c.childs });
+      if (c && c.FieldsGroup) {
+        this.setState({components: c.FieldsGroup });
       }
       //console.log(c)
       //console.log(this.props.id)
-      //let cc = this.state.components.concat(c.childs);
-      //this.setState({components: this.state.components.concat(c.childs) });
+      //let cc = this.state.components.concat(c.FieldsGroup);
+      //this.setState({components: this.state.components.concat(c.FieldsGroup) });
       
       
     });
@@ -101,7 +102,7 @@ class Dustbin extends React.Component {
       if (item.id == id)
         return item;
       
-      this.findData(data, id);
+     else if(item.FieldsGroup){return this.findData(item.FieldsGroup, id);} 
     }
   }
 
@@ -122,7 +123,7 @@ class Dustbin extends React.Component {
 
   // const [hasDropped, setHasDropped] = useState(false);
   // const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
-  // const [childs, setChilds] = useState([]);
+  // const [FieldsGroup, setChilds] = useState([]);
 
   // const [{ isOver, isOverCurrent }, drop] = useDrop({
     

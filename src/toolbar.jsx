@@ -76,24 +76,7 @@ export default class Toolbar extends React.Component {
         label: 'Placeholder Label',
         static: true,
         Type:null,
-        FieldsGroup:[
-          {
-            key: 'TextInput',
-            name: 'Text Box',
-            label: 'Placeholder Label',
-            icon: 'fas fa-font',
-            field_name: 'text_input_',
-            Type: 1,   
-          },
-          {
-            key: 'TextInput',
-            name: 'Text Box',
-            label: 'Placeholder Label',
-            icon: 'fas fa-font',
-            field_name: 'text_input_',
-            Type: 1,   
-          },
-        ],
+        FieldsGroup:null,
       },
 
       {
