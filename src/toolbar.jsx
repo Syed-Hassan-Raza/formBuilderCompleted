@@ -360,19 +360,6 @@ export default class Toolbar extends React.Component {
     return (
       <div className="react-form-builder-toolbar float-right">
         <h4>Toolbox</h4>
-        <button onClick={this._onClick.bind(this,  {
-        key: 'DatePicker',
-        canDefaultToday: true,
-        dateFormat: 'MM/dd/yyyy',
-        timeFormat: 'hh:mm aa',
-        showTimeSelect: false,
-        showTimeSelectOnly: false,
-        name: 'Date',
-        icon: 'far fa-calendar-alt',
-        label: 'Placeholder Label',
-        field_name: 'date_picker_',
-        Type: 4,
-      })}>add</button>
         <ul>
           {
             this.state.items.map((item) => (<ToolbarItem data={item} key={item.key} onClick={this._onClick.bind(this, item)} onCreate={this.create} />))

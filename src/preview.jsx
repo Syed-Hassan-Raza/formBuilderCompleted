@@ -71,7 +71,12 @@ export default class Preview extends React.Component {
     let found = false;
 
     for (let i = 0, len = data.length; i < len; i++) {
-      if (element.id === data[i].id) {
+      if (element.id !== data[i].id && data[i].childs) {
+        this.updateChild(data, element.id, element)
+        found = true;
+        break;
+      }
+      else if (element.id === data[i].id) {
         data[i] = element;
         found = true;
         break;
@@ -81,6 +86,17 @@ export default class Preview extends React.Component {
     if (found) {
       this.seq = this.seq > 100000 ? 0 : this.seq + 1;
       store.dispatch('updateOrder', data);
+    }
+  }
+
+  updateChild(data, id, element) {
+    for(let i = 0; i < data.length; i++) {
+        if (data[i].id === id) {
+            data[i] = element;
+            return true;
+        } else if (data[i].children && data[i].children.length && typeof data[i].children === "object") {
+          updateChild(data[i].children, id, element);
+        }
     }
   }
 
@@ -140,6 +156,7 @@ export default class Preview extends React.Component {
     if (this.props.editMode) { classes += ' is-editing'; }
     const data = this.state.data.filter(x => !!x);
     const items = data.map((item, index) => this.getElement(item, index));
+
     return ( 
       <div className={classes}>
         

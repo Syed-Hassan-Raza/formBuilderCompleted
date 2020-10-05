@@ -25,7 +25,7 @@ class ReactFormBuilder extends React.Component {
 
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (this.state.editMode) {
       this.setState({ editMode: !this.state.editMode, editElement: null });
     } else {

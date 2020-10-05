@@ -41,7 +41,8 @@ const fieldsGroupTarget = {
       return
     }
     
-    store.dispatch('createChild', { parentId: component.state.id, item: monitor.getItem() });
+    let item = monitor.getItem();
+    store.dispatch('createChild', { parentId: component.state.id, item: item.onCreate(item.data) });
     // Obtain the dragged item
     //const item = monitor.getItem()
     //props.onDrop(item)
@@ -135,11 +136,9 @@ class Dustbin extends React.Component {
   // });
 
    getElement(item, index) {
-     debugger;
-    //alert(item.key)
-    const FormElement = FormElements[item.data.key];
+    const FormElement = FormElements[item.element];
     //return <FormElement id={item.id} seq={Math.random()} index={index} moveCard={moveCard} insertCard={insertCard} mutable={false} parent={this.props.parent} editModeOn={() => {}} isDraggable={true} key={item.id} sortData={item.id} data={item} _onDestroy={_onDestroy} />;
-    return <FormElement id={item.id} seq={Math.random()} index={index} moveCard={this.moveCard} insertCard={this.insertCard} mutable={false} parent={this} editModeOn={(e, data) => {props.editModeOn(e, data)}} isDraggable={true} key={item.id} sortData={item.id} data={item} _onDestroy={this._onDestroy} />;
+    return <FormElement id={item.id} seq={Math.random()} index={index} moveCard={this.moveCard} insertCard={this.insertCard} mutable={false} parent={this.props.parent} editModeOn={this.props.editModeOn} isDraggable={true} key={item.id} sortData={item.id} data={item} _onDestroy={this.props._onDestroy} />;
   }
 
    moveCard(dragIndex, hoverIndex) {
@@ -168,7 +167,7 @@ class Dustbin extends React.Component {
     return connectDropTarget(
       <div>
         <div className="card">
-          <div className="card-header">Fields Group</div>
+          <div className="card-header">{this.props.data.Label}</div>
           <div className="card-body">
             {/* {isOver ? <h6>Drop Here</h6> : null} */}
             {this.state.components.map((item, index) => this.getElement(item, index))}

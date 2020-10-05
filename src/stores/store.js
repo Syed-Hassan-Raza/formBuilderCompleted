@@ -37,24 +37,55 @@ const store = new Store({
     createChild(context, element) {
       const { data } = context.state;
 
-      data.forEach((item) => {
-        if (item.id == element.parentId) {
-          if (!item.childs){
-            item.childs = [];
-          }
+      // data.forEach((item) => {
+      //   if (item.id == element.parentId) {
+      //     if (!item.childs){
+      //       item.childs = [];
+      //     }
 
-          if (!item.childs.some(i => i.id == element.item.id)){
-            item.childs = item.childs.concat([element.item]);
-          }
+      //     if (!item.childs.some(i => i.id == element.item.id)){
+      //       item.childs = item.childs.concat([element.item]);
+      //     }
+      //   }
+      // });
+      this.addItem(data, element);
+      this.setData(context, data, true);
+    },
+
+    addItem(data, element) {
+      data.forEach((item, index, object) => {
+        if (item.id === element.parentId) {
+          if (!item.childs)
+            item.childs = [];
+
+            item.childs.push(element.item);
+          return;
+        }
+
+        if (item.childs) {
+          this.addItem(item.childs, element);
         }
       });
-      this.setData(context, data, true);
     },
 
     delete(context, element) {
       const { data } = context.state;
-      data.splice(data.indexOf(element), 1);
+      //data.splice(data.indexOf(element), 1);
+      this.removeItem(data, element);
       this.setData(context, data, true);
+    },
+
+    removeItem(data, element) {
+      data.forEach((item, index, object) => {
+        if (item.id === element.id) {
+          object.splice(index, 1);
+          return;
+        }
+
+        if (item.childs) {
+          this.removeItem(item.childs, element);
+        }
+      });
     },
 
     updateOrder(context, elements) {

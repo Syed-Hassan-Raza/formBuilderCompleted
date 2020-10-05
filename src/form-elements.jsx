@@ -119,7 +119,7 @@ class FieldsGroup extends React.Component {
     return (
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
-        {this.props.data.Label}
+        {/* {this.props.data.Label} */}
         <Dustbin {...this.props}></Dustbin> 
       </div>
     );
