@@ -42,6 +42,7 @@ const fieldsGroupTarget = {
     }
     
     let item = monitor.getItem();
+    console.log(item)
     store.dispatch('createChild', { parentId: component.state.id, item: item.onCreate(item.data) });
    //store.dispatch('svaveChanges', { parentId: component.state.id, item:item.onCreate(item.data)  });
     // Obtain the dragged item
