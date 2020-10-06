@@ -37,7 +37,7 @@ const store = new Store({
     },
 
     saveTemplateOptions(context, newData) {
-      debugger
+     
       const { data } = context.state;
       if (!data.TemplateOptions) {
         data.TemplateOptions = [];
@@ -50,7 +50,7 @@ const store = new Store({
 
     createChild(context, element) {
       const { data } = context.state;
-      debugger
+     
       // data.forEach((item) => {
       //   if (item.id == element.parentId) {
       //     if (!item.FieldsGroup){
