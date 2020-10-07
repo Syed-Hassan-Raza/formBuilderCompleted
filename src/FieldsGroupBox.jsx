@@ -7,7 +7,10 @@ import { SelectionState } from "draft-js";
 import { DropTarget } from 'react-dnd'
 import { findDOMNode } from 'react-dom'
 import store from './stores/store';
+const style = {
 
+  boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
+};
 const fieldsGroupTarget = {
   canDrop(props, monitor) {
     // You can disallow drop based on props or item
@@ -30,7 +33,7 @@ const fieldsGroupTarget = {
     const isOnlyThisOne = monitor.isOver({ shallow: true })
 
     // You will receive hover() even for items for which canDrop() is false
-    const canDrop = monitor.canDrop()
+    const canDrop = monitor.canDrop();
   },
 
   drop(props, monitor, component) {
@@ -104,6 +107,7 @@ class Dustbin extends React.Component {
         return item;
       
      else if(item.FieldsGroup){return this.findData(item.FieldsGroup, id);} 
+     
     }
   }
 
@@ -180,8 +184,8 @@ class Dustbin extends React.Component {
       <div>
         <div className="card">
           <div className="card-header">{this.props.data.Label}</div>
-          <div className="card-body">
-            {/* {isOver ? <h6>Drop Here</h6> : null} */}
+          <div className="card-body" style={isOver ? style : null}>
+             {isOver ? <h6>Drop Here</h6> : null}
             {this.state.components.map((item, index) => this.getElement(item, index))}
           </div>
         </div>

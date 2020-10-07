@@ -70,10 +70,16 @@ const store = new Store({
 
     addItem(data, element) {
       data.forEach((item, index, object) => {
-        if (item.id === element.parentId) {
-          if (!item.FieldsGroup) {item.FieldsGroup= [];item.Fields= [];}
+        debugger
 
-          item.FieldsGroup.push(element.item);
+        if (item.id === element.parentId) {
+          if (!item.FieldsGroup) {item.FieldsGroup= [];item.FieldsGroup.Fields= [];}
+           if(element.item.element==='FieldsGroup'){
+            item.FieldsGroup.push(element.item);
+           }
+           else{
+            item.FieldsGroup.Fields.push(element.item);
+           }
           //item.FieldsGroup.Fields.push(element.item);
           return;
         }
@@ -83,7 +89,27 @@ const store = new Store({
         }
       });
     },
-
+    mapData(context){
+  
+      const { data } = context.state;
+      this.doMap(data);
+    },
+    doMap(data){
+      data.forEach((item, index, object) => {
+        if (item.FieldsGroup) {
+          debugger
+         let i=item.FieldsGroup.filter(v=>v.element==='TextInput');
+         item.Fields=i;
+         delete item.FieldsGroup['TextInput'];
+    
+         return this.doMap(item.FieldsGroup);
+        }
+        else{
+          return
+        }
+      });
+      console.log(data)
+    },
     delete(context, element) {
       const { data } = context.state;
       //data.splice(data.indexOf(element), 1);

@@ -150,7 +150,9 @@ export default class Preview extends React.Component {
     const SortableFormElement = SortableFormElements[item.element];
     return <SortableFormElement id={item.id} seq={this.seq} index={index} moveCard={this.moveCard} insertCard={this.insertCard} mutable={false} parent={this.props.parent} editModeOn={this.props.editModeOn} isDraggable={true} key={item.id} sortData={item.id} data={item} _onDestroy={this._onDestroy} />;
   }
-
+  format(){
+    store.dispatch('mapData');
+  }
   render() {
     let classes = this.props.className;
     if (this.props.editMode) { classes += ' is-editing'; }
@@ -168,7 +170,7 @@ export default class Preview extends React.Component {
         <div className="Sortable">{items}
         </div>
          <PlaceHolder id="form-place-holder" show={items.length === 0} index={items.length} moveCard={this.cardPlaceHolder} insertCard={this.insertCard}/>
-        
+        <button onClick={this.format}>Format data</button>
       </div>
     );
   }

@@ -1,5 +1,4 @@
-export default { CARD: 'card' };
-export const ItemTypes = {
-    BOX: 'box',
+export default { CARD: 'card',BOX: 'box' };
+export const ItemTypes = { BOX: 'box',
   }
   
