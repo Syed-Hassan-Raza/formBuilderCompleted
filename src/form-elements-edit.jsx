@@ -32,6 +32,7 @@ export default class FormElementsEdit extends React.Component {
       data: this.props.data,
       dirty: false,
     };
+    console.log(props)
   }
 
   toggleRequired() {
@@ -488,51 +489,10 @@ export default class FormElementsEdit extends React.Component {
             />
           </div>
         )}
-        {this.props.showCorrectColumn &&
-          this.props.element.canHaveAnswer &&
-          !this.props.element.hasOwnProperty("options") && (
-            <div className="form-group">
-              <label className="control-label" htmlFor="correctAnswer">
-                Correct Answer
-              </label>
-              <input
-                id="correctAnswer"
-                type="text"
-                className="form-control"
-                defaultValue={this.props.element.correct}
-                onBlur={this.updateElement.bind(this)}
-                onChange={this.editElementProp.bind(this, "correct", "value")}
-              />
-            </div>
-          )}
-        {this.props.element.canPopulateFromApi &&
-          this.props.element.hasOwnProperty("options") && (
-            <div className="form-group">
-              <label className="control-label" htmlFor="optionsApiUrl">
-                Populate Options from API
-              </label>
-              <div className="row">
-                <div className="col-sm-6">
-                  <input
-                    className="form-control"
-                    style={{ width: "100%" }}
-                    type="text"
-                    id="optionsApiUrl"
-                    placeholder="http://localhost:8080/api/optionsdata"
-                  />
-                </div>
-                <div className="col-sm-6">
-                  <button
-                    onClick={this.addOptions.bind(this)}
-                    className="btn btn-success"
-                  >
-                    Populate
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        {this.props.element.hasOwnProperty("options") && (
+       
+        { 
+        this.props.element.TypeDetail  && (
+          
           <DynamicOptionList
             showCorrectColumn={this.props.showCorrectColumn}
             canHaveOptionCorrect={canHaveOptionCorrect}
@@ -541,9 +501,9 @@ export default class FormElementsEdit extends React.Component {
             updateElement={this.props.updateElement}
             preview={this.props.preview}
             element={this.props.element}
-            key={this.props.element.options.length}
+            key={this.props.element.TypeDetail.length}
           />
-        )}
+  )}
       </div>
     );
   }

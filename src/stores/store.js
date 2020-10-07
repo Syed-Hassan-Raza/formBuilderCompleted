@@ -34,6 +34,7 @@ const store = new Store({
       data.push(element);
       this.setData(context, data, false);
       this.saveTemplateOptions(context, element);
+      console.log(data)
     },
 
     saveTemplateOptions(context, newData) {
@@ -65,7 +66,7 @@ const store = new Store({
       this.addItem(data, element);
       this.setData(context, data, true);
       this.saveTemplateOptions(context, element.item);
-      //console.log(data);
+      console.log(data);
     },
 
     addItem(data, element) {
@@ -90,17 +91,18 @@ const store = new Store({
       });
     },
     mapData(context){
-  
       const { data } = context.state;
       this.doMap(data);
     },
+    
     doMap(data){
+      let r=[];
       data.forEach((item, index, object) => {
-        if (item.FieldsGroup) {
+        if (item.TypeDetail) {        
           debugger
-         let i=item.FieldsGroup.filter(v=>v.element==='TextInput');
-         item.Fields=i;
-         delete item.FieldsGroup['TextInput'];
+          item.TypeDetail.forEach((i, index, object) => {
+            r[i.text]=i.text
+          });
     
          return this.doMap(item.FieldsGroup);
         }
