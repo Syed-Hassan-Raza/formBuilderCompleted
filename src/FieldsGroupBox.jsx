@@ -12,6 +12,9 @@ const fieldsGroupTarget = {
   canDrop(props, monitor) {
     // You can disallow drop based on props or item
     const item = monitor.getItem()
+    if (!item.onCreate)
+      return false;
+
     return true;
     //return canMakeChessMove(item.fromPosition, props.position)
   },
@@ -42,7 +45,6 @@ const fieldsGroupTarget = {
     }
     
     let item = monitor.getItem();
-    console.log(item)
     store.dispatch('createChild', { parentId: component.state.id, item: item.onCreate(item.data) });
    //store.dispatch('svaveChanges', { parentId: component.state.id, item:item.onCreate(item.data)  });
     // Obtain the dragged item

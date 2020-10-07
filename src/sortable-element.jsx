@@ -76,7 +76,6 @@ const cardTarget = {
     const item = monitor.getItem();
     const dragIndex = item.index;
     const hoverIndex = props.index;
-    console.log(item)
     // Don't replace items with themselves
     if (dragIndex === hoverIndex) {
       return;
@@ -118,7 +117,7 @@ const cardTarget = {
     // Generally it's better to avoid mutations,
     // but it's good here for the sake of performance
     // to avoid expensive index searches.
-    item.index = hoverIndex;
+    //item.index = hoverIndex;
   }
 }
 

@@ -10,7 +10,7 @@ const store = new Store({
     setData(context, data, saveData) {
       context.commit("setData", data);
       if (saveData) this.save(data);
-      console.log(data);
+      //console.log(data);
     },
 
     load(context, { loadUrl, saveUrl, data }) {
@@ -65,7 +65,7 @@ const store = new Store({
       this.addItem(data, element);
       this.setData(context, data, true);
       this.saveTemplateOptions(context, element.item);
-      console.log(data);
+      //console.log(data);
     },
 
     addItem(data, element) {
@@ -122,7 +122,7 @@ const store = new Store({
       const r = this.findObjectById(data, newData, "fetch");
       // r.FieldsGroup.push(newData);
       this.setData(context, r, false);
-      console.log(data);
+      //console.log(data);
     },
 
     findObjectById(root, newData, action) {
