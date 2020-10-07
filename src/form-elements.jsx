@@ -105,7 +105,7 @@ class Header extends React.Component {
   }
 }
 
-class FieldsGroup extends React.Component {
+class FieldGroups extends React.Component {
    Tree(items) {
     // our base case, if we have no items, render nothing.
     if (!items || !items.length) {
@@ -1389,6 +1389,6 @@ FormElements.StaticText = StaticText;
 FormElements.Calculated = Calculated;
 FormElements.Counter = Counter;
 FormElements.Autocomplete = Autocomplete;
-FormElements.FieldsGroup = FieldsGroup;
+FormElements.FieldGroups = FieldGroups;
 
 export default FormElements;

@@ -8,9 +8,9 @@ let _onLoad;
 const store = new Store({
   actions: {
     setData(context, data, saveData) {
+      debugger
       context.commit("setData", data);
       if (saveData) this.save(data);
-      //console.log(data);
     },
 
     load(context, { loadUrl, saveUrl, data }) {
@@ -30,8 +30,21 @@ const store = new Store({
     },
 
     create(context, element) {
+      debugger
       const { data } = context.state;
-      data.push(element);
+
+      if (element.parentId) {
+        this.addChild(data.FieldGroups, element);
+      }
+      else {
+        if (element.element == 'FieldGroups') {
+          data.FieldGroups.push(element);
+        }
+        else {
+          data.Fields.push(element);
+        }
+      }
+
       this.setData(context, data, false);
       this.saveTemplateOptions(context, element);
     },
@@ -53,39 +66,41 @@ const store = new Store({
      
       // data.forEach((item) => {
       //   if (item.id == element.parentId) {
-      //     if (!item.FieldsGroup){
-      //       item.FieldsGroup = [];
+      //     if (!item.FieldGroups){
+      //       item.FieldGroups = [];
       //     }
 
-      //     if (!item.FieldsGroup.some(i => i.id == element.item.id)){
-      //       item.FieldsGroup = item.FieldsGroup.concat([element.item]);
+      //     if (!item.FieldGroups.some(i => i.id == element.item.id)){
+      //       item.FieldGroups = item.FieldGroups.concat([element.item]);
       //     }
       //   }
       // });
       this.addItem(data, element);
       this.setData(context, data, true);
       this.saveTemplateOptions(context, element.item);
-      //console.log(data);
     },
 
-    addItem(data, element) {
+    addChild(data, element) {
       data.forEach((item, index, object) => {
-        debugger
 
         if (item.id === element.parentId) {
-          if (!item.FieldsGroup) {item.FieldsGroup= [];item.FieldsGroup.Fields= [];}
-           if(element.item.element==='FieldsGroup'){
-            item.FieldsGroup.push(element.item);
-           }
-           else{
-            item.FieldsGroup.Fields.push(element.item);
-           }
-          //item.FieldsGroup.Fields.push(element.item);
+
+          if (!item.Fields)
+           item.Fields= [];
+          
+          if (!item.FieldGroups)
+           item.FieldGroups= [];
+          
+          if (element.item.element == 'FieldGroups')
+            item.FieldGroups.push(element.item);
+          else
+            item.Fields.push(element.item);
+
           return;
         }
 
-        if (item.FieldsGroup) {
-          this.addItem(item.FieldsGroup, element);
+        if (item.FieldGroups) {
+          this.addChild(item.FieldGroups, element);
         }
       });
     },
@@ -96,36 +111,36 @@ const store = new Store({
     },
     doMap(data){
       data.forEach((item, index, object) => {
-        if (item.FieldsGroup) {
-          debugger
-         let i=item.FieldsGroup.filter(v=>v.element==='TextInput');
+        if (item.FieldGroups) {
+         let i=item.FieldGroups.filter(v=>v.element==='TextInput');
          item.Fields=i;
-         delete item.FieldsGroup['TextInput'];
+         delete item.FieldGroups['TextInput'];
     
-         return this.doMap(item.FieldsGroup);
+         return this.doMap(item.FieldGroups);
         }
         else{
           return
         }
       });
-      console.log(data)
     },
     delete(context, element) {
+      debugger
       const { data } = context.state;
-      //data.splice(data.indexOf(element), 1);
-      this.removeItem(data, element);
+      //data.Fields.splice(data.Fields.indexOf(element), 1);
+      //data.FieldGroups.splice(data.FieldGroups.indexOf(element), 1);
+      this.removeItem(data.FieldGroups, element);
       this.setData(context, data, true);
     },
 
     removeItem(data, element) {
-      data.forEach((item, index, object) => {
+      data.Fields.forEach((item, index, object) => {
         if (item.id === element.id) {
           object.splice(index, 1);
           return;
         }
 
-        if (item.FieldsGroup) {
-          this.removeItem(item.FieldsGroup, element);
+        if (item.FieldGroups) {
+          this.removeItem(item.FieldGroups, element);
         }
       });
     },
@@ -146,27 +161,25 @@ const store = new Store({
       const { data } = context.state;
 
       const r = this.findObjectById(data, newData, "fetch");
-      // r.FieldsGroup.push(newData);
+      // r.FieldGroups.push(newData);
       this.setData(context, r, false);
-      //console.log(data);
     },
 
     findObjectById(root, newData, action) {
-      debugger;
       if (root) {
         for (var k in root) {
           if (root[k].id == newData.parentId) {
             if (action == "fetch") {
-              if (root[k].FieldsGroup == null) {
-                root[k].FieldsGroup = [];
+              if (root[k].FieldGroups == null) {
+                root[k].FieldGroups = [];
               }
-              root[k].FieldsGroup.push(newData.item);
+              root[k].FieldGroups.push(newData.item);
               return root;
             } else {
-              delete root.FieldsGroup[k];
+              delete root.FieldGroups[k];
             }
-          } else if (root[k].FieldsGroup) {
-            return this.findObjectById(root[k].FieldsGroup, newData, "fetch");
+          } else if (root[k].FieldGroups) {
+            return this.findObjectById(root[k].FieldGroups, newData, "fetch");
           }
         }
         //return root;
@@ -183,7 +196,18 @@ const store = new Store({
   },
 
   initialState: {
-    data: [],
+    data: {
+      id: 5015,
+      NameField: "Label",
+      GlobalActions: [],
+      AfterEachSaveActions: [],
+      AfterFirstSaveActions: [],
+      Name: "Fillable Fields with Assignee Items",
+      Label: "",
+      Type: null,
+      Fields: [],
+      FieldGroups: []
+    }
   },
 });
 

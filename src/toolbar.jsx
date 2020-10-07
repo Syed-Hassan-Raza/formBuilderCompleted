@@ -70,13 +70,14 @@ export default class Toolbar extends React.Component {
       },
 
       {
-        key: 'FieldsGroup',
-        name: 'Feilds Group',
+        key: 'FieldGroups',
+        name: 'Field Groups',
         icon: 'fas fa-tree',
         label: 'Placeholder Label',
         static: true,
-        Type:null,
-        FieldsGroup:null,
+        Type: null,
+        Fields: [],
+        FieldGroups: [],
       },
 
       {
@@ -245,13 +246,14 @@ export default class Toolbar extends React.Component {
      id: ID.uuid(),
      element: item.element || item.key,
 
-      Name:item.name + ID.uuid(),
-      Label:item.label,
-      Type:item.Type,
-      FieldsGroup:item.FieldsGroup
+      Name: item.name + ID.uuid(),
+      Label: item.label,
+      Type: item.Type,
+      //Fields: item.Fields,
+      //FieldGroups: item.FieldGroups
     };
 
-    if(item.key!=='FieldsGroup'){
+    if(item.key!=='FieldGroups'){
      elementOptions.TypeDetail=null,
      elementOptions.DefaultValue=null,
      elementOptions.MaxWidth=null,

@@ -457,7 +457,7 @@ export default class FormElementsEdit extends React.Component {
           </div>
         )}
 
-        {this.props.element.element === "FieldsGroup" && (
+        {this.props.element.element === "FieldGroups" && (
           <div className="form-group">
             <div className="row">
               <div className="col-md-12">
