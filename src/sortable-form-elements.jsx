@@ -6,7 +6,11 @@ const {
   Header, Paragraph, Label, LineBreak, TextInput, NumberInput, TextArea, Dropdown, Checkboxes,
   DatePicker, RadioButtons, Image, Rating, Tags, Signature, HyperLink, Download, Camera, Range,Barcode,
   DecimalInput,StaticText,
+<<<<<<< HEAD
   Calculated,Counter,Assignee,Autocomplete,FieldsGroup,TimePicker
+=======
+  Calculated,Counter,Assignee,Autocomplete,FieldGroups
+>>>>>>> fc4900ca02b0e2eb23688501f0adf0fac5f6e2b1
 } = BaseFormElements;
 
 const FormElements = {};
@@ -38,7 +42,11 @@ FormElements.Calculated = SortableElement(Calculated);
 FormElements.Counter = SortableElement(Counter);
 FormElements.Assignee = SortableElement(Assignee);
 FormElements.Autocomplete = SortableElement(Autocomplete);
+<<<<<<< HEAD
 FormElements.FieldsGroup = SortableElement(FieldsGroup);
 FormElements.TimePicker = SortableElement(TimePicker);
+=======
+FormElements.FieldGroups = SortableElement(FieldGroups);
+>>>>>>> fc4900ca02b0e2eb23688501f0adf0fac5f6e2b1
 
 export default FormElements;

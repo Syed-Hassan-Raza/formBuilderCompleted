@@ -105,7 +105,7 @@ class Header extends React.Component {
   }
 }
 
-class FieldsGroup extends React.Component {
+class FieldGroups extends React.Component {
    Tree(items) {
     // our base case, if we have no items, render nothing.
     if (!items || !items.length) {
@@ -1403,7 +1403,11 @@ FormElements.StaticText = StaticText;
 FormElements.Calculated = Calculated;
 FormElements.Counter = Counter;
 FormElements.Autocomplete = Autocomplete;
+<<<<<<< HEAD
 FormElements.FieldsGroup = FieldsGroup;
 FormElements.TimePicker =TimePicker
+=======
+FormElements.FieldGroups = FieldGroups;
+>>>>>>> fc4900ca02b0e2eb23688501f0adf0fac5f6e2b1
 
 export default FormElements;

@@ -76,6 +76,7 @@ const cardTarget = {
     const item = monitor.getItem();
     const dragIndex = item.index;
     const hoverIndex = props.index;
+    debugger
     // Don't replace items with themselves
     if (dragIndex === hoverIndex) {
       return;

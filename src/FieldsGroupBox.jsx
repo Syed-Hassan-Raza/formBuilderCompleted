@@ -48,7 +48,7 @@ const fieldsGroupTarget = {
     }
     
     let item = monitor.getItem();
-    store.dispatch('createChild', { parentId: component.state.id, item: item.onCreate(item.data) });
+    store.dispatch('create', { parentId: component.state.id, item: item.onCreate(item.data) });
    //store.dispatch('svaveChanges', { parentId: component.state.id, item:item.onCreate(item.data)  });
     // Obtain the dragged item
     //const item = monitor.getItem()
@@ -87,8 +87,10 @@ class Dustbin extends React.Component {
       id: this.props.id,
       components: []
     }
+
     //this.onDrop = this.onDrop.bind(this);
     store.subscribe(state => { 
+<<<<<<< HEAD
       debugger
       //let c = state.data.find(i => i.id == this.props.id);
       let c = this.findData(state.data, this.props.id);
@@ -97,25 +99,52 @@ class Dustbin extends React.Component {
       }
       else  if (c && c.FieldsGroup[0].element==='FieldsGroup') {
         this.setState({components: c.FieldsGroup });
+=======
+
+      let data = this.findData(state.data.FieldGroups, this.props.id);
+      if (data.Fields || data.FieldGroups) {
+        this.setState({components: [].concat(data.Fields, data.FieldGroups) });
+>>>>>>> fc4900ca02b0e2eb23688501f0adf0fac5f6e2b1
       }
-      //console.log(c)
-      //console.log(this.props.id)
-      //let cc = this.state.components.concat(c.FieldsGroup);
-      //this.setState({components: this.state.components.concat(c.FieldsGroup) });
-      
-      
     });
   }
 
   findData(data, id) {
+    debugger
     for (let item of data) {
       if (item.id == id)
         return item;
+<<<<<<< HEAD
       
      else if(item.FieldsGroup){return this.findData(item.FieldsGroup, id);} 
      
      
+=======
+
+      if(item.FieldGroups) {
+        if (item.FieldGroups.length <= 0)
+          continue;
+        
+        let result = this.findData(item.FieldGroups, id);
+        if (result)
+          return result;
+      }
+>>>>>>> fc4900ca02b0e2eb23688501f0adf0fac5f6e2b1
     }
+  }
+
+  findFields(data, id) {
+    for (let item of data) {
+      if (item.id == id)
+        return item.Fields;
+
+      if(item.FieldGroups)
+        return this.findData(item.FieldGroups, id);
+    }
+  }
+
+  findFieldGroups(data, id) {
+
   }
 
   componentDidUpdate(prevProps) {
@@ -135,7 +164,7 @@ class Dustbin extends React.Component {
 
   // const [hasDropped, setHasDropped] = useState(false);
   // const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
-  // const [FieldsGroup, setChilds] = useState([]);
+  // const [FieldGroups, setChilds] = useState([]);
 
   // const [{ isOver, isOverCurrent }, drop] = useDrop({
     

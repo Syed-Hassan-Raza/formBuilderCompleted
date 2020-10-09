@@ -67,6 +67,7 @@ export default class Preview extends React.Component {
   }
 
   updateElement(element) {
+    debugger
     const { data } = this.state;
     let found = false;
 
@@ -103,7 +104,7 @@ export default class Preview extends React.Component {
   _onChange(data) {
     const answer_data = {};
 
-    data.forEach((item) => {
+    data.Fields.forEach((item) => {
       if (item && item.readOnly && this.props.variables[item.variableKey]) {
         answer_data[item.field_name] = this.props.variables[item.variableKey];
       }
@@ -120,12 +121,16 @@ export default class Preview extends React.Component {
   }
 
   insertCard(item, hoverIndex) {
-    const { data } = this.state;
-    data.splice(hoverIndex, 0, item);
-    this.saveData(item, hoverIndex, hoverIndex);
+    debugger
+    //const { data } = this.state;
+    //const { data } = store.state;
+    //data.splice(hoverIndex, 0, item);
+    //this.saveData(item, hoverIndex, hoverIndex);
+    store.dispatch('create', item);
   }
 
   moveCard(dragIndex, hoverIndex) {
+    debugger
     const { data } = this.state;
     const dragCard = data[dragIndex];
     this.saveData(dragCard, dragIndex, hoverIndex);
@@ -156,7 +161,10 @@ export default class Preview extends React.Component {
   render() {
     let classes = this.props.className;
     if (this.props.editMode) { classes += ' is-editing'; }
-    const data = this.state.data.filter(x => !!x);
+    console.log(this.state.data)
+    const fields = this.state.data.Fields ? this.state.data.Fields.filter(x => !!x) : [];
+    const fieldGroups = this.state.data.FieldGroups ? this.state.data.FieldGroups.filter(x => !!x) : [];
+    const data = [].concat(fields, fieldGroups)
     const items = data.map((item, index) => this.getElement(item, index));
 
     return ( 
