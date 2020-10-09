@@ -11,7 +11,7 @@ import StarRating from "./star-rating";
 import HeaderBar from "./header-bar";
 import { DndProvider } from 'react-dnd'
 import  HTML5Backend  from 'react-dnd-html5-backend'
-import   Dustbin from "./FieldsGroupBox";
+import   FieldsGroup from "./FieldsGroupBox";
 import { DragDropContext } from 'react-dnd';
 
 
@@ -113,11 +113,11 @@ class FieldGroups extends React.Component {
     }
   
     return items.map(item => (
-      <Dustbin key={item.name} {...this.props}>
+      <FieldsGroup key={item.name} {...this.props}>
         <div>{item.name}</div>
         {/* And here's the recursion! */}
         <Tree items={item.child} />
-      </Dustbin>
+      </FieldsGroup>
     ))
   }
   render() {
@@ -134,7 +134,7 @@ class FieldGroups extends React.Component {
         <ComponentHeader {...this.props} />
         {/* {this.props.data.Label} */
         }
-        { <Dustbin {...this.props}/>}
+        { <FieldsGroup {...this.props}/>}
       </div>
     );
   }

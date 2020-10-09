@@ -446,31 +446,6 @@ export default class FormElementsEdit extends React.Component {
                 Read Only
               </label>
             </div>
-
-            {/*  this.props.element.hasOwnProperty('readOnly') &&
-               <div className="custom-control custom-checkbox">
-                <input id="is-read-only" className="custom-control-input" type="checkbox" checked={this_read_only} value={true} onChange={this.editElementProp.bind(this, 'readOnly', 'checked')} />
-                <label className="custom-control-label" htmlFor="is-read-only">
-                  Read only
-                </label>
-              </div>
-             */}
-          </div>
-        )}
-
-        {this.props.element.element === "FieldGroups" && (
-          <div className="form-group">
-            <div className="row">
-              <div className="col-md-12">
-                <div className="card">
-                  <div className="card-header">Fields Group 
-                  <button type="button" className="btn btn-primary">
-                  Add
-                </button></div>
-                  <div className="card-body"></div>
-                </div>
-              </div>
-            </div>
           </div>
         )}
 
