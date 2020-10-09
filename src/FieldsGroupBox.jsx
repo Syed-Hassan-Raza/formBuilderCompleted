@@ -61,7 +61,7 @@ class FieldsGroup extends React.Component {
 
       let data = this.findData(state.data.FieldGroups, this.props.id);
       if (data && (data.Fields || data.FieldGroups)) {
-        this.setState({components: [].concat(data.FieldGroups, data.Fields) });
+        this.setState({components: [].concat(data.Fields, data.FieldGroups) });
       }
     });
   }
