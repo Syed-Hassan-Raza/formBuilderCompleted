@@ -17,7 +17,7 @@ export default class DynamicOptionList extends React.Component {
   }
 
   editOption(option_index, e) {
-   
+   debugger
     const this_element = this.state.element;
    // const val = (this_element.TypeDetail[option_index] !== this._setValue(this_element.TypeDetail[option_index].text)) ? this_element.TypeDetail[option_index] : this._setValue(e.target.value);
 
@@ -59,6 +59,7 @@ export default class DynamicOptionList extends React.Component {
       this.props.updateElement.call(this.props.preview, this_element);
       this.setState({ dirty: false });
     }
+    this.props.updateElement.call(this.props.preview, this_element);
   }
 
   addOption(index) {

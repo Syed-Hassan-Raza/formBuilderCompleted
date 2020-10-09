@@ -1403,11 +1403,6 @@ FormElements.StaticText = StaticText;
 FormElements.Calculated = Calculated;
 FormElements.Counter = Counter;
 FormElements.Autocomplete = Autocomplete;
-<<<<<<< HEAD
-FormElements.FieldsGroup = FieldsGroup;
-FormElements.TimePicker =TimePicker
-=======
 FormElements.FieldGroups = FieldGroups;
->>>>>>> fc4900ca02b0e2eb23688501f0adf0fac5f6e2b1
 
 export default FormElements;

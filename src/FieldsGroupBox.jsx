@@ -90,21 +90,10 @@ class Dustbin extends React.Component {
 
     //this.onDrop = this.onDrop.bind(this);
     store.subscribe(state => { 
-<<<<<<< HEAD
-      debugger
-      //let c = state.data.find(i => i.id == this.props.id);
-      let c = this.findData(state.data, this.props.id);
-      if (c && c.FieldsGroup.Fields.length>0) {
-        this.setState({components: c.FieldsGroup.Fields });
-      }
-      else  if (c && c.FieldsGroup[0].element==='FieldsGroup') {
-        this.setState({components: c.FieldsGroup });
-=======
 
       let data = this.findData(state.data.FieldGroups, this.props.id);
       if (data.Fields || data.FieldGroups) {
         this.setState({components: [].concat(data.Fields, data.FieldGroups) });
->>>>>>> fc4900ca02b0e2eb23688501f0adf0fac5f6e2b1
       }
     });
   }
@@ -114,12 +103,6 @@ class Dustbin extends React.Component {
     for (let item of data) {
       if (item.id == id)
         return item;
-<<<<<<< HEAD
-      
-     else if(item.FieldsGroup){return this.findData(item.FieldsGroup, id);} 
-     
-     
-=======
 
       if(item.FieldGroups) {
         if (item.FieldGroups.length <= 0)
@@ -129,7 +112,6 @@ class Dustbin extends React.Component {
         if (result)
           return result;
       }
->>>>>>> fc4900ca02b0e2eb23688501f0adf0fac5f6e2b1
     }
   }
 
