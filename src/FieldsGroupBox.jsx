@@ -131,7 +131,6 @@ class FieldsGroup extends React.Component {
             {this.state.components.map((item, index) => this.getElement(item, index))}
           </div>
         </div>
-        <br />
       </div>
     );
   }
