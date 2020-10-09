@@ -67,38 +67,46 @@ export default class Preview extends React.Component {
   }
 
   updateElement(element) {
-    debugger
     const { data } = this.state;
-    let found = false;
-
-    for (let i = 0, len = data.length; i < len; i++) {
-      if (element.id !== data[i].id && data[i].childs) {
-        this.updateChild(data, element.id, element)
-        found = true;
-        break;
+    let updated = false;
+    data.Fields.forEach((item, index, object) => {
+      if (item.id == element.id) {
+        data.Fields[index] = element;
+        updated = true;
+        return;
       }
-      else if (element.id === data[i].id) {
-        data[i] = element;
-        found = true;
-        break;
-      }
-    }
+    });
 
-    if (found) {
-      this.seq = this.seq > 100000 ? 0 : this.seq + 1;
-      store.dispatch('updateOrder', data);
-    }
+    if (!updated)
+      this.updateChild(data.FieldGroups, element);
+      
+    this.seq = this.seq > 100000 ? 0 : this.seq + 1;
+    store.dispatch('updateOrder', data);
   }
 
-  updateChild(data, id, element) {
-    for(let i = 0; i < data.length; i++) {
-        if (data[i].id === id) {
-            data[i] = element;
-            return true;
-        } else if (data[i].children && data[i].children.length && typeof data[i].children === "object") {
-          updateChild(data[i].children, id, element);
+  updateChild(data, element) {
+    let updated = false;
+    data.forEach((pItem, pIndex, pObject) => {
+      if (element.element == 'FieldGroups') {
+        if (pItem.id == element.id) {
+          data[pIndex] = element;
+          return;
         }
-    }
+      }
+      else {
+        pItem.Fields.forEach((cItem, cIndex, cObject) => {
+          if (cItem.id === element.id) {
+            pItem.Fields[cIndex] = element;
+            updated = true;
+            return;
+          }
+        });
+      }
+
+      if (!updated && pItem.FieldGroups && pItem.FieldGroups.length >= 0)
+        this.updateChild(pItem.FieldGroups, element);
+
+    });
   }
 
   _onChange(data) {
@@ -161,10 +169,9 @@ export default class Preview extends React.Component {
   render() {
     let classes = this.props.className;
     if (this.props.editMode) { classes += ' is-editing'; }
-    console.log(this.state.data)
     const fields = this.state.data.Fields ? this.state.data.Fields.filter(x => !!x) : [];
     const fieldGroups = this.state.data.FieldGroups ? this.state.data.FieldGroups.filter(x => !!x) : [];
-    const data = [].concat(fields, fieldGroups)
+    const data = [].concat(fieldGroups, fields)
     const items = data.map((item, index) => this.getElement(item, index));
 
     return ( 
@@ -178,7 +185,6 @@ export default class Preview extends React.Component {
         <div className="Sortable">{items}
         </div>
          <PlaceHolder id="form-place-holder" show={items.length === 0} index={items.length} moveCard={this.cardPlaceHolder} insertCard={this.insertCard}/>
-        <button onClick={this.format}>Format data</button>
       </div>
     );
   }

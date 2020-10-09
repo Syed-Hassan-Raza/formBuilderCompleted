@@ -124,24 +124,47 @@ const store = new Store({
       });
     },
     delete(context, element) {
-      debugger
       const { data } = context.state;
-      //data.Fields.splice(data.Fields.indexOf(element), 1);
-      //data.FieldGroups.splice(data.FieldGroups.indexOf(element), 1);
-      this.removeItem(data.FieldGroups, element);
-      this.setData(context, data, true);
-    },
-
-    removeItem(data, element) {
+      let removed = false;
       data.Fields.forEach((item, index, object) => {
-        if (item.id === element.id) {
-          object.splice(index, 1);
+        if (item.id == element.id) {
+          data.Fields.splice(index, 1);
+          removed = true;
           return;
         }
+      });
 
-        if (item.FieldGroups) {
-          this.removeItem(item.FieldGroups, element);
+      if (!removed)
+        this.removeItem(data.FieldGroups, element);
+        
+      this.setData(context, data, true);
+    },
+    removeItem(data, element) {
+
+      let removed = false;
+      data.forEach((pItem, pIndex, pObject) => {
+
+        if (element.element == 'FieldGroups') {
+          if (pItem.id == element.id) {
+            data.splice(pIndex, 1);
+            return;
+          }
         }
+        else {
+          if (pItem.Fields) {
+            pItem.Fields.forEach((cItem, cIndex, cObject) => {
+              if (cItem.id === element.id) {
+                pItem.Fields.splice(cIndex, 1);
+                removed = true;
+                return;
+              }
+            });
+          }
+        }
+
+        if (!removed && pItem.FieldGroups && pItem.FieldGroups.length >= 0)
+          this.removeItem(pItem.FieldGroups, element);
+
       });
     },
 

@@ -13,66 +13,35 @@ const style = {
 };
 const fieldsGroupTarget = {
   canDrop(props, monitor) {
-    // You can disallow drop based on props or item
     const item = monitor.getItem()
     if (!item.onCreate)
       return false;
 
     return true;
-    //return canMakeChessMove(item.fromPosition, props.position)
   },
 
   hover(props, monitor, component) {
-    // This is fired very often and lets you perform side effects
-    // in response to the hover. You can't handle enter and leave
-    // here—if you need them, put monitor.isOver() into collect() so you
-    // can use componentDidUpdate() to handle enter/leave.
-
-    // You can access the coordinates if you need them
     const clientOffset = monitor.getClientOffset()
     const componentRect = findDOMNode(component).getBoundingClientRect()
-
-    // You can check whether we're over a nested drop target
     const isOnlyThisOne = monitor.isOver({ shallow: true })
-
-    // You will receive hover() even for items for which canDrop() is false
     const canDrop = monitor.canDrop();
   },
 
   drop(props, monitor, component) {
 
     if (monitor.didDrop()) {
-      // If you want, you can check whether some nested
-      // target already handled drop
       return
     }
-    
+
     let item = monitor.getItem();
     store.dispatch('create', { parentId: component.state.id, item: item.onCreate(item.data) });
-   //store.dispatch('svaveChanges', { parentId: component.state.id, item:item.onCreate(item.data)  });
-    // Obtain the dragged item
-    //const item = monitor.getItem()
-    //props.onDrop(item)
-    //store.dispatch('create', this.create(item));
-    // You can do something with it
-    //ChessActions.movePiece(item.fromPosition, props.position)
-
-    // You can also do nothing and return a drop result,
-    // which will be available as monitor.getDropResult()
-    // in the drag source's endDrag() method
     return { moved: true }
   }
 }
 
-/**
- * Specifies which props to inject into your component.
- */
 function collect(connect, monitor) {
   return {
-    // Call this function inside render()
-    // to let React DnD handle the drag events:
     connectDropTarget: connect.dropTarget(),
-    // You can ask the monitor about the current drag state:
     isOver: monitor.isOver(),
     isOverCurrent: monitor.isOver({ shallow: true }),
     canDrop: monitor.canDrop(),
@@ -80,7 +49,7 @@ function collect(connect, monitor) {
   }
 }
 
-class Dustbin extends React.Component {
+class FieldsGroup extends React.Component {
   constructor(props){
     super(props);
     this.state = {
@@ -88,23 +57,21 @@ class Dustbin extends React.Component {
       components: []
     }
 
-    //this.onDrop = this.onDrop.bind(this);
     store.subscribe(state => { 
 
       let data = this.findData(state.data.FieldGroups, this.props.id);
-      if (data.Fields || data.FieldGroups) {
-        this.setState({components: [].concat(data.Fields, data.FieldGroups) });
+      if (data && (data.Fields || data.FieldGroups)) {
+        this.setState({components: [].concat(data.FieldGroups, data.Fields) });
       }
     });
   }
 
   findData(data, id) {
-    debugger
     for (let item of data) {
       if (item.id == id)
         return item;
 
-      if(item.FieldGroups) {
+      if (item.FieldGroups) {
         if (item.FieldGroups.length <= 0)
           continue;
         
@@ -113,20 +80,6 @@ class Dustbin extends React.Component {
           return result;
       }
     }
-  }
-
-  findFields(data, id) {
-    for (let item of data) {
-      if (item.id == id)
-        return item.Fields;
-
-      if(item.FieldGroups)
-        return this.findData(item.FieldGroups, id);
-    }
-  }
-
-  findFieldGroups(data, id) {
-
   }
 
   componentDidUpdate(prevProps) {
@@ -143,31 +96,6 @@ class Dustbin extends React.Component {
       // shallowly, not including nested targets
     }
   }
-
-  // const [hasDropped, setHasDropped] = useState(false);
-  // const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
-  // const [FieldGroups, setChilds] = useState([]);
-
-  // const [{ isOver, isOverCurrent }, drop] = useDrop({
-    
-  //   accept: ItemTypes.CARD,
-  //   drop(item, monitor) {
-  //     const didDrop = monitor.didDrop();
-  //     if (didDrop) {
-  //       return;
-  //     }
-  //     setHasDropped(true);
-  //     setHasDroppedOnChild(didDrop);
-  //     //del(item);
-  //     let components = components.concat([item.data]);
-  //     setChilds(components);
-  //     //store.dispatch('create', this.create(item));
-  //   },
-  //   collect: (monitor) => ({
-  //     isOver: monitor.isOver(),
-  //     isOverCurrent: monitor.isOver({ shallow: true }),
-  //   }),
-  // });
 
    getElement(item, index) {
     const FormElement = FormElements[item.element];
@@ -192,18 +120,14 @@ class Dustbin extends React.Component {
   }
 
   render() {
-    //Your component receives its own props as usual
     const { position } = this.props
-    // These props are injected by React DnD,
-    // as defined by your `collect` function above:
     const { isOver, canDrop, connectDropTarget, components } = this.props;
-
     return connectDropTarget(
       <div>
         <div className="card">
           <div className="card-header">{this.props.data.Label}</div>
           <div className="card-body" style={isOver ? style : null}>
-             {isOver ? <h6>Drop Here</h6> : null}
+             {/* {isOver ? <h6>Drop Here</h6> : null} */}
             {this.state.components.map((item, index) => this.getElement(item, index))}
           </div>
         </div>
@@ -213,5 +137,4 @@ class Dustbin extends React.Component {
   }
 };
 
-
-export default DropTarget(ItemTypes.CARD, fieldsGroupTarget, collect)(Dustbin)
+export default DropTarget(ItemTypes.CARD, fieldsGroupTarget, collect)(FieldsGroup)
