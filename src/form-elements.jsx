@@ -919,8 +919,8 @@ class Checkboxes extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel className="form-label" {...this.props} />
-          { Object.keys(obj).map((option) => {
-            const this_key = `preview_${obj[option]}`;
+          { Object.keys(obj).map((option,i) => {
+            const this_key = `preview_${i}`;
             const props = {};
             props.name = `option_${obj[option]}`;
 
@@ -985,8 +985,8 @@ class RadioButtons extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel className="form-label" {...this.props} />
-          {Object.keys(obj).map((option) => {
-            const this_key = `preview_${obj[option]}`;
+          {Object.keys(obj).map((option,i) => {
+            const this_key = `preview_${i}`;
             const props = {};
             props.name = self.props.data.field_name;
 

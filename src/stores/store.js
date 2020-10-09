@@ -8,9 +8,9 @@ let _onLoad;
 const store = new Store({
   actions: {
     setData(context, data, saveData) {
-      debugger
       context.commit("setData", data);
       if (saveData) this.save(data);
+      console.log(data)
     },
 
     load(context, { loadUrl, saveUrl, data }) {
@@ -30,7 +30,6 @@ const store = new Store({
     },
 
     create(context, element) {
-      debugger
       const { data } = context.state;
 
       if (element.parentId) {
@@ -46,7 +45,7 @@ const store = new Store({
       }
 
       this.setData(context, data, false);
-      this.saveTemplateOptions(context, element);
+      //this.saveTemplateOptions(context, element);
       console.log(data)
     },
 

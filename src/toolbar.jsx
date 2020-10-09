@@ -49,26 +49,25 @@ export default class Toolbar extends React.Component {
         return  Checkboxes = { prop_place_holder_option_1: 'place_holder_option_1',prop_place_holder_option_2: 'place_holder_option_2'}
       case 'RadioButtons':
         return RadioButtons = { prop_place_holder_option_1: 'place_holder_option_1',prop_place_holder_option_2: 'place_holder_option_2'}
-
-      default:
+       default:
         return [];
     }
   }
 
   _defaultItems() {
     return [
-      {
-        key: 'Header',
-        name: 'Section Header',
-        icon: 'fas fa-heading',
-        static: true,
-        label: 'Placeholder Text...',
-      },
+      // {
+      //   key: 'Header',
+      //   name: 'Section Header',
+      //   icon: 'fas fa-heading',
+      //   static: true,
+      //   label: 'Placeholder Text...',
+      // },
 
       {
         key: 'FieldGroups',
         name: 'Field Groups',
-        icon: 'fas fa-tree',
+        icon: 'fa fa-object-group',
         label: 'Placeholder Label',
         static: true,
         Type: null,
