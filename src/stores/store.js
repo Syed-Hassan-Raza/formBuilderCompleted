@@ -221,6 +221,7 @@ const store = new Store({
 
   initialState: {
     data: {
+      CompanyForm: [],
       id: 5015,
       NameField: "Label",
       GlobalActions: [],
@@ -230,7 +231,8 @@ const store = new Store({
       Label: "",
       Type: null,
       Fields: [],
-      FieldGroups: []
+      FieldGroups: [],
+      TemplateOptions: []
     }
   },
 });
