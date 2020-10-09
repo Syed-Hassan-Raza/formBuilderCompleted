@@ -47,6 +47,7 @@ const store = new Store({
 
       this.setData(context, data, false);
       this.saveTemplateOptions(context, element);
+      console.log(data)
     },
 
     saveTemplateOptions(context, newData) {
@@ -78,6 +79,10 @@ const store = new Store({
       this.addItem(data, element);
       this.setData(context, data, true);
       this.saveTemplateOptions(context, element.item);
+<<<<<<< HEAD
+      console.log(data);
+=======
+>>>>>>> fc4900ca02b0e2eb23688501f0adf0fac5f6e2b1
     },
 
     addChild(data, element) {
@@ -105,16 +110,25 @@ const store = new Store({
       });
     },
     mapData(context){
-  
       const { data } = context.state;
       this.doMap(data);
     },
+    
     doMap(data){
+      let r=[];
       data.forEach((item, index, object) => {
+<<<<<<< HEAD
+        if (item.TypeDetail) {        
+          debugger
+          item.TypeDetail.forEach((i, index, object) => {
+            r[i.text]=i.text
+          });
+=======
         if (item.FieldGroups) {
          let i=item.FieldGroups.filter(v=>v.element==='TextInput');
          item.Fields=i;
          delete item.FieldGroups['TextInput'];
+>>>>>>> fc4900ca02b0e2eb23688501f0adf0fac5f6e2b1
     
          return this.doMap(item.FieldGroups);
         }

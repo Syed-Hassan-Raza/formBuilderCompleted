@@ -457,7 +457,42 @@ class TextArea extends React.Component {
     );
   }
 }
+class TimePicker extends React.Component {
+  constructor(props) {
+    super(props);
+    this.inputField = React.createRef();
+  }
 
+  render() {
+    const props = {};
+    props.type = "text";
+    props.className = "form-control";
+    props.name = this.props.data.field_name;
+    if (this.props.mutable) {
+      props.defaultValue = this.props.defaultValue;
+      props.ref = this.inputField;
+    }
+
+    let baseClasses = "SortableItem rfb-item";
+    if (this.props.data.pageBreakBefore) {
+      baseClasses += " alwaysbreak";
+    }
+
+    if (this.props.ReadOnly) {
+      props.disabled = "disabled";
+    }
+
+    return (
+      <div className={baseClasses}>
+        <ComponentHeader {...this.props} />
+        <div className="form-group">
+          <ComponentLabel {...this.props} />
+          <input {...props} value="hh:mm:ss" />
+        </div>
+      </div>
+    );
+  }
+}
 class DatePicker extends React.Component {
   constructor(props) {
     super(props);
@@ -566,30 +601,7 @@ class DatePicker extends React.Component {
         <div className="form-group">
           <ComponentLabel {...this.props} />
           <div>
-            {readOnly && (
-              <input
-                type="text"
-                name={props.name}
-                ref={props.ref}
-                readOnly={readOnly}
-                placeholder={this.state.placeholder}
-                value={this.state.value}
-                className="form-control"
-              />
-            )}
-            {iOS && !readOnly && (
-              <input
-                type="date"
-                name={props.name}
-                ref={props.ref}
-                onChange={this.handleChange}
-                dateFormat="MM/DD/YYYY"
-                placeholder={this.state.placeholder}
-                value={this.state.value}
-                className="form-control"
-              />
-            )}
-            {!iOS && !readOnly && (
+        
               <ReactDatePicker
                 name={props.name}
                 ref={props.ref}
@@ -604,7 +616,7 @@ class DatePicker extends React.Component {
                 portalId="root-portal"
                 placeholderText={placeholderText}
               />
-            )}
+        
           </div>
         </div>
       </div>
@@ -643,14 +655,14 @@ class Dropdown extends React.Component {
         <div className="form-group">
           <ComponentLabel {...this.props} />
           <select {...props}>
-            {this.props.data.options.map((option) => {
+            {/* {this.props.data.options.map((option) => {
               const this_key = `preview_${option.key}`;
               return (
                 <option value={option.value} key={this_key}>
                   {option.text}
                 </option>
               );
-            })}
+            })} */}
           </select>
         </div>
       </div>
@@ -689,14 +701,14 @@ class Assignee extends React.Component {
         <div className="form-group">
           <ComponentLabel {...this.props} />
           <select {...props}>
-            {this.props.data.options.map((option) => {
+            {/* {this.props.data.options.map((option) => {
               const this_key = `preview_${option.key}`;
               return (
                 <option value={option.value} key={this_key}>
                   {option.text}
                 </option>
               );
-            })}
+            })} */}
           </select>
         </div>
       </div>
@@ -735,14 +747,14 @@ class Autocomplete extends React.Component {
         <div className="form-group">
           <ComponentLabel {...this.props} />
           <select {...props}>
-            {this.props.data.options.map((option) => {
+            {/* {this.props.data.options.map((option) => {
               const this_key = `preview_${option.key}`;
               return (
                 <option value={option.value} key={this_key}>
                   {option.text}
                 </option>
               );
-            })}
+            })} */}
           </select>
         </div>
       </div>
@@ -887,10 +899,11 @@ class Checkboxes extends React.Component {
   constructor(props) {
     super(props);
     this.options = {};
+  
   }
-
   render() {
     const self = this;
+    let obj= this.props.data.TypeDetail;
     let classNames = "custom-control custom-checkbox";
     if (this.props.data.inline) {
       classNames += " option-inline";
@@ -906,17 +919,17 @@ class Checkboxes extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel className="form-label" {...this.props} />
-          {this.props.data.options.map((option) => {
-            const this_key = `preview_${option.key}`;
+          { Object.keys(obj).map((option) => {
+            const this_key = `preview_${obj[option]}`;
             const props = {};
-            props.name = `option_${option.key}`;
+            props.name = `option_${obj[option]}`;
 
             props.type = "checkbox";
-            props.value = option.value;
+            props.value = obj[option];
             if (self.props.mutable) {
               props.defaultChecked =
                 self.props.defaultValue !== undefined &&
-                self.props.defaultValue.indexOf(option.key) > -1;
+                self.props.defaultValue.indexOf(option) > -1;
             }
             if (this.props.ReadOnly) {
               props.disabled = "disabled";
@@ -928,7 +941,7 @@ class Checkboxes extends React.Component {
                   className="custom-control-input"
                   ref={(c) => {
                     if (c && self.props.mutable) {
-                      self.options[`child_ref_${option.key}`] = c;
+                      self.options[`child_ref_${obj[option]}`] = c;
                     }
                   }}
                   {...props}
@@ -937,7 +950,7 @@ class Checkboxes extends React.Component {
                   className="custom-control-label"
                   htmlFor={"fid_" + this_key}
                 >
-                  {option.text}
+                  {obj[option]}
                 </label>
               </div>
             );
@@ -956,6 +969,7 @@ class RadioButtons extends React.Component {
 
   render() {
     const self = this;
+    let obj= this.props.data.TypeDetail;
     let classNames = "custom-control custom-radio";
     if (this.props.data.inline) {
       classNames += " option-inline";
@@ -971,8 +985,8 @@ class RadioButtons extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel className="form-label" {...this.props} />
-          {this.props.data.options.map((option) => {
-            const this_key = `preview_${option.key}`;
+          {Object.keys(obj).map((option) => {
+            const this_key = `preview_${obj[option]}`;
             const props = {};
             props.name = self.props.data.field_name;
 
@@ -981,8 +995,8 @@ class RadioButtons extends React.Component {
             if (self.props.mutable) {
               props.defaultChecked =
                 self.props.defaultValue !== undefined &&
-                (self.props.defaultValue.indexOf(option.key) > -1 ||
-                  self.props.defaultValue.indexOf(option.value) > -1);
+                (self.props.defaultValue.indexOf(option) > -1 ||
+                  self.props.defaultValue.indexOf(option) > -1);
             }
             if (this.props.ReadOnly) {
               props.disabled = "disabled";
@@ -995,7 +1009,7 @@ class RadioButtons extends React.Component {
                   className="custom-control-input"
                   ref={(c) => {
                     if (c && self.props.mutable) {
-                      self.options[`child_ref_${option.key}`] = c;
+                      self.options[`child_ref_${obj[option]}`] = c;
                     }
                   }}
                   {...props}
@@ -1004,7 +1018,7 @@ class RadioButtons extends React.Component {
                   className="custom-control-label"
                   htmlFor={"fid_" + this_key}
                 >
-                  {option.text}
+                  {obj[option]}
                 </label>
               </div>
             );
@@ -1389,6 +1403,11 @@ FormElements.StaticText = StaticText;
 FormElements.Calculated = Calculated;
 FormElements.Counter = Counter;
 FormElements.Autocomplete = Autocomplete;
+<<<<<<< HEAD
+FormElements.FieldsGroup = FieldsGroup;
+FormElements.TimePicker =TimePicker
+=======
 FormElements.FieldGroups = FieldGroups;
+>>>>>>> fc4900ca02b0e2eb23688501f0adf0fac5f6e2b1
 
 export default FormElements;

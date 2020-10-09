@@ -7,6 +7,7 @@ import ToolbarItem from './toolbar-draggable-item';
 import ID from './UUID';
 import store from './stores/store';
 import { add } from 'date-fns';
+import { element } from 'prop-types';
 
 export default class Toolbar extends React.Component {
   constructor(props) {
@@ -21,6 +22,8 @@ export default class Toolbar extends React.Component {
   }
 
   static _defaultItemOptions(element) {
+    let Checkboxes;
+    let RadioButtons;
     switch (element) {
       
       case 'Dropdown':
@@ -43,17 +46,10 @@ export default class Toolbar extends React.Component {
           { value: 'place_holder_tag_3', text: 'Place holder tag 3', key: `tags_option_${ID.uuid()}` },
         ];
       case 'Checkboxes':
-        return [
-          { value: 'place_holder_option_1', text: 'Place holder option 1', key: `checkboxes_option_${ID.uuid()}` },
-          { value: 'place_holder_option_2', text: 'Place holder option 2', key: `checkboxes_option_${ID.uuid()}` },
-          { value: 'place_holder_option_3', text: 'Place holder option 3', key: `checkboxes_option_${ID.uuid()}` },
-        ];
+        return  Checkboxes = { prop_place_holder_option_1: 'place_holder_option_1',prop_place_holder_option_2: 'place_holder_option_2'}
       case 'RadioButtons':
-        return [
-          { value: 'place_holder_option_1', text: 'Place holder option 1', key: `radiobuttons_option_${ID.uuid()}` },
-          { value: 'place_holder_option_2', text: 'Place holder option 2', key: `radiobuttons_option_${ID.uuid()}` },
-          { value: 'place_holder_option_3', text: 'Place holder option 3', key: `radiobuttons_option_${ID.uuid()}` },
-        ];
+        return RadioButtons = { prop_place_holder_option_1: 'place_holder_option_1',prop_place_holder_option_2: 'place_holder_option_2'}
+
       default:
         return [];
     }
@@ -123,8 +119,7 @@ export default class Toolbar extends React.Component {
         icon: 'far fa-caret-square-down',
         label: 'Placeholder Label',
         field_name: 'dropdown_',
-        options: [],
-        canHaveTypeDetail:true,
+        TypeDetail:null,
         Type: 5,
       },
       {
@@ -134,7 +129,7 @@ export default class Toolbar extends React.Component {
         icon: 'far fa-check-square',
         label: 'Placeholder Label',
         field_name: 'checkboxes_',
-        options: [],
+        TypeDetail: [],
         canHaveTypeDetail:true,
         Type: 6,
       },
@@ -145,7 +140,7 @@ export default class Toolbar extends React.Component {
         icon: 'far fa-dot-circle',
         label: 'Placeholder Label',
         field_name: 'radiobuttons_',
-        options: [],
+        TypeDetail: [],
         canHaveTypeDetail:true,
         Type: 12,
       },
@@ -164,7 +159,7 @@ export default class Toolbar extends React.Component {
         Type: 4,
       },
       {
-        key: 'Time',
+        key: 'TimePicker',
         name: 'Time',
         label: 'Placeholder Label',
         icon: 'fas fa-clock',
@@ -198,9 +193,8 @@ export default class Toolbar extends React.Component {
         label: 'Placeholder Label',
         icon: 'fas fa-plus-square',
         field_name: 'assignee_',
-        options: [],
+        TypeDetail: [],
         Type: 13,
-        canHaveTypeDetail:true,
       },
 
       {
@@ -209,9 +203,8 @@ export default class Toolbar extends React.Component {
         label: 'Placeholder Label',
         icon: 'fas fa-list-alt',
         field_name: 'autocomplete_',
-        options: [],
+        TypeDetail: [],
         Type: 15,
-        canHaveTypeDetail:true,
       },
       {
         key: 'StaticText',
@@ -266,9 +259,9 @@ export default class Toolbar extends React.Component {
      elementOptions.ExternalAutoFill=[]
     }
 
-    if(item.canHaveTypeDetail){
-        elementOptions.TypeDetail=ID.uuid();
-  }
+   // if(item.canHaveTypeDetail){
+    //    elementOptions.TypeDetail=item.TypeDetail;
+  //}
     //if (this.props.showDescription === true && !item.static) {  elementOptions.showDescription = true; }
 
     //if (item.static) { elementOptions.bold = false; elementOptions.italic = false;}
@@ -325,11 +318,13 @@ export default class Toolbar extends React.Component {
       elementOptions.showTimeSelectOnly = item.showTimeSelectOnly;
     }
 
-    if (item.options) {
-      if (item.options.length > 0) {
-        elementOptions.options = item.options;
+    if (item.TypeDetail) {
+      if (item.TypeDetail.length > 0) {
+        elementOptions.TypeDetail = item.TypeDetail;
       } else {
-        elementOptions.options = Toolbar._defaultItemOptions(elementOptions.element);
+       let i=Toolbar._defaultItemOptions(elementOptions.element);
+      
+        elementOptions.TypeDetail = i;
       }
     }
 
