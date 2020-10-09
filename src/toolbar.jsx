@@ -46,9 +46,9 @@ export default class Toolbar extends React.Component {
           { value: 'place_holder_tag_3', text: 'Place holder tag 3', key: `tags_option_${ID.uuid()}` },
         ];
       case 'Checkboxes':
-        return  Checkboxes = { prop_place_holder_option_1: 'place_holder_option_1',prop_place_holder_option_2: 'place_holder_option_2'}
+        return  Checkboxes = { prop_place_holder_option_1: 'Place_holder_option_1',prop_place_holder_option_2: 'Place_holder_option_2'}
       case 'RadioButtons':
-        return RadioButtons = { prop_place_holder_option_1: 'place_holder_option_1',prop_place_holder_option_2: 'place_holder_option_2'}
+        return RadioButtons = { prop_place_holder_option_1: 'Place_holder_option_1',prop_place_holder_option_2: 'Place_holder_option_2'}
        default:
         return [];
     }
@@ -66,7 +66,7 @@ export default class Toolbar extends React.Component {
 
       {
         key: 'FieldGroups',
-        name: 'Field Groups',
+        name: 'Fields Group',
         icon: 'fa fa-object-group',
         label: 'Placeholder Label',
         static: true,
@@ -225,7 +225,7 @@ export default class Toolbar extends React.Component {
         key: 'Counter',
         name: 'Counter',
         label: 'Placeholder Label',
-        icon: 'fas fa-watch-calculator',
+        icon: 'fa fa-calculator',
         field_name: 'counter_',
         Type: 11,
       },

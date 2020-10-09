@@ -414,7 +414,6 @@ class StaticText extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
-          <input {...props} />
         </div>
       </div>
     );
@@ -1404,5 +1403,8 @@ FormElements.Calculated = Calculated;
 FormElements.Counter = Counter;
 FormElements.Autocomplete = Autocomplete;
 FormElements.FieldGroups = FieldGroups;
+FormElements.TimePicker = TimePicker;
+
+
 
 export default FormElements;
