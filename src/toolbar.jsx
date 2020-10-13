@@ -321,9 +321,9 @@ export default class Toolbar extends React.Component {
       if (item.TypeDetail.length > 0) {
         elementOptions.TypeDetail = item.TypeDetail;
       } else {
-       let i=Toolbar._defaultItemOptions(elementOptions.element);
+       let typeDetail=Toolbar._defaultItemOptions(elementOptions.element);
       
-        elementOptions.TypeDetail = i;
+        elementOptions.TypeDetail = typeDetail;
       }
     }
 

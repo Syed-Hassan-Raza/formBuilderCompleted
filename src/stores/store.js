@@ -1,4 +1,5 @@
 import Store from "beedle";
+import { json } from "express";
 import { get, post } from "./requests";
 
 let _saveUrl;
@@ -29,7 +30,9 @@ const store = new Store({
     },
 
     create(context, element) {
+      debugger
       const { data } = context.state;
+      element.TypeDetail=JSON.stringify(element.TypeDetail);
 
       if (element.parentId) {
         this.addChild(data.FieldGroups, element);
