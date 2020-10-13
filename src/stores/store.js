@@ -10,7 +10,6 @@ const store = new Store({
     setData(context, data, saveData) {
       context.commit("setData", data);
       if (saveData) this.save(data);
-      console.log(data)
     },
 
     load(context, { loadUrl, saveUrl, data }) {
@@ -44,7 +43,7 @@ const store = new Store({
         }
       }
 
-      this.setData(context, data, false);
+      this.setData(context, data, true);
       //this.saveTemplateOptions(context, element);
       console.log(data)
     },
@@ -221,18 +220,18 @@ const store = new Store({
 
   initialState: {
     data: {
-      CompanyForm: [],
-      id: 5015,
-      NameField: "Label",
+      id: null,
+      NameField: null,
       GlobalActions: [],
       AfterEachSaveActions: [],
       AfterFirstSaveActions: [],
-      Name: "Fillable Fields with Assignee Items",
-      Label: "",
+      Name: null,
+      Label: null,
       Type: null,
       Fields: [],
       FieldGroups: [],
-      TemplateOptions: []
+      TemplateOptions: [],
+      CompanyForm: []
     }
   },
 });
