@@ -118,7 +118,6 @@ export default class Toolbar extends React.Component {
         icon: 'far fa-caret-square-down',
         label: 'Placeholder Label',
         field_name: 'dropdown_',
-        TypeDetail:null,
         Type: 5,
       },
       {
@@ -217,7 +216,7 @@ export default class Toolbar extends React.Component {
         key: 'Calculated',
         name: 'Calculated',
         label: 'Placeholder Label',
-        icon: 'fas fa-square-root-alt',
+        icon: 'fas fa-equals',
         field_name: 'calculated_',
         Type: 10,
       },
@@ -254,7 +253,7 @@ export default class Toolbar extends React.Component {
      elementOptions.Mandatory=false,
      elementOptions.Visible=true,
      elementOptions.ControlWidthRatio=null,
-     elementOptions.States=[],
+     elementOptions.States={},
      elementOptions.ExternalAutoFill=[]
     }
 

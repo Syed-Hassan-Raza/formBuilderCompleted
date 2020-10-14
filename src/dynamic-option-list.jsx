@@ -16,12 +16,13 @@ export default class DynamicOptionList extends React.Component {
   }
 
   editOption(option_index, e) {
-    debugger;
     const this_element = this.state.element;
-     //const val = (this_element.TypeDetail[option_index] !== this._setValue(this_element.TypeDetail[option_index])) ? this_element.TypeDetail[option_index] : this._setValue(e.target.value);
+    let _typeDetail = JSON.parse(this.state.element.TypeDetail);
+    let val = e.target.value;
 
-    this_element.TypeDetail[option_index] = e.target.value;
-     //this_element.TypeDetail[option_index].value = val;
+    _typeDetail[option_index] = val;
+
+    this_element.TypeDetail = JSON.stringify(_typeDetail);
     this.setState({
       element: this_element,
       dirty: true,
@@ -53,29 +54,65 @@ export default class DynamicOptionList extends React.Component {
     this.props.updateElement.call(this.props.preview, this_element);
   }
 
-  updateOption() {
-    const this_element = this.state.element;
-    // to prevent ajax calls with no change
-    if (this.state.dirty) {
-      this.props.updateElement.call(this.props.preview, this_element);
-      this.setState({ dirty: false });
-    }
-  }
+  updateOption(e) {
+      const this_element = this.state.element;
+      const _typeDetail = [];
+      let obj = {};
+      Object.assign(_typeDetail, JSON.parse(this.state.element.TypeDetail));
+      this_element.TypeDetail = null;
 
-  addOption(index) {
-    debugger;
+      let found = this.found(_typeDetail, e.target.value);
+      if (found) {
+        alert("Values should be unique");
+      }
+
+      Object.keys(_typeDetail).map((option, index) => {
+        let val = _typeDetail[option];
+        if (val) {
+          obj[val] = val;
+        } else {
+          let rendomValue = Math.random().toString(36).substring(7);
+          obj[rendomValue] = "";
+        }
+      });
+
+      this_element.TypeDetail = JSON.stringify(obj);
+
+      if (this.state.dirty) {
+        this.props.updateElement.call(this.props.preview, this_element);
+        this.setState({ dirty: false });
+      }
+    
+  }
+  found(obj, val) {
+    let found = false;
+    const propertyNames = Object.keys(obj);
+
+    for (var i = 0; i < propertyNames.length; i++) {
+      if (propertyNames[i] === val) {
+        found = true;
+        break;
+      }
+    }
+    return found;
+  }
+  addOption() {
     const this_element = this.state.element;
-    let a = Math.random().toString(36).substring(7);
-    this_element.TypeDetail[a] = "";
+    const _typeDetail = JSON.parse(this.state.element.TypeDetail);
+
+    let rendomValue = Math.random().toString(36).substring(7);
+    _typeDetail[rendomValue] = "";
+    this_element.TypeDetail = JSON.stringify(_typeDetail);
     this.props.updateElement.call(this.props.preview, this_element);
     console.log(this_element);
   }
 
   removeOption(proprty) {
-    debugger;
     const this_element = this.state.element;
+    const _typeDetail = JSON.parse(this.state.element.TypeDetail);
     //this_element.TypeDetail.splice(index, 1);
-    delete this_element.TypeDetail[proprty];
+    delete _typeDetail[proprty];
+    this_element.TypeDetail = JSON.stringify(_typeDetail);
     this.props.updateElement.call(this.props.preview, this_element);
   }
 
@@ -83,7 +120,7 @@ export default class DynamicOptionList extends React.Component {
     if (this.state.dirty) {
       this.state.element.dirty = true;
     }
-    let obj = this.props.element.TypeDetail;
+    let obj = JSON.parse(this.props.element.TypeDetail);
     return (
       <div className="dynamic-option-list">
         <ul>
@@ -107,7 +144,7 @@ export default class DynamicOptionList extends React.Component {
           </li>
           {Object.keys(obj).map((option, index) => {
             const this_key = `edit_${index}`;
-              obj[option] !== this._setValue(obj[option]) ? obj[option] : "";
+            // obj[option] !== this._setValue(obj[option]) ? obj[option] : "";
             return (
               <li className="clearfix" key={index}>
                 <div className="row">
@@ -152,7 +189,7 @@ export default class DynamicOptionList extends React.Component {
                   <div className="col-sm-3">
                     <div className="dynamic-options-actions-buttons">
                       <button
-                        onClick={this.addOption.bind(this, option)}
+                        onClick={this.addOption.bind(this)}
                         className="btn btn-success"
                       >
                         <i className="fas fa-plus-circle"></i>

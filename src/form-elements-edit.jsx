@@ -33,20 +33,88 @@ export default class FormElementsEdit extends React.Component {
       dirty: false,
     };
   }
-
+   fieldsName = [
+    {name:null,typeDetail:null},
+    {name:"sm_asset_category",typeDetail:null},
+    {name:"sm_asset_child_site",typeDetail:null},
+    {name:"sm_asset_child_site",typeDetail:null},
+    {name:"sm_asset_location",typeDetail:null},
+    {name:"sm_asset_machinehours",typeDetail:null},
+    {name:"sm_asset_make",typeDetail:null},
+    {name:"sm_asset_model",typeDetail:null},
+    {name:"sm_asset_name",typeDetail:null},
+    {name:"sm_asset_odometer",typeDetail:null},
+    {name:"sm_asset_odometerunit",typeDetail:9},
+    {name:"sm_asset_operator",typeDetail:null},
+    {name:"sm_asset_operator_out",typeDetail:null},
+    {name:"sm_asset_serialnumber",typeDetail:null},
+    {name:"sm_asset_site_location",typeDetail:null},
+    {name:"sm_populate_best_cell_phone",typeDetail:null},
+    {name:"sm_populate_best_email",typeDetail:null},
+    {name:"sm_populate_client",typeDetail:6},
+    {name:"sm_populate_date",typeDetail:null},
+    {name:"sm_populate_datetime",typeDetail:null},
+    {name:"sm_populate_department",typeDetail:2},
+    {name:"sm_populate_division",typeDetail:3},
+    {name:"sm_populate_job_classification",typeDetail:1},
+    {name:"sm_populate_location",typeDetail:4},
+    {name:"sm_populate_name",typeDetail:null},
+    {name:"sm_populate_personal_cell_phone",typeDetail:null},
+    {name:"sm_populate_personal_email",typeDetail:null},
+    {name:"sm_populate_priority",typeDetail:null},
+    {name:"sm_populate_subcontractor",typeDetail:19},
+    {name:"sm_populate_time",typeDetail:null},
+    {name:"sm_populate_title",typeDetail:null},
+    {name:"sm_populate_update_date",typeDetail:null},
+    {name:"sm_populate_update_name",typeDetail:null},
+    {name:"sm_populate_work_cell_phone",typeDetail:null},
+    {name:"sm_populate_work_email",typeDetail:null},
+    {name:"sm_populate_latitude",typeDetail:null},
+    {name:"sm_populate_longitude",typeDetail:null},
+    {name:"sm_shapefile_hectare",typeDetail:null},
+    {name:"sm_shapefile_line",typeDetail:null},
+    {name:"sm_shapefile_name",typeDetail:null},
+    {name:"sm_shapefile_pline_id",typeDetail:null},
+    {name:"sm_shapefile_<name>",typeDetail:null},
+    {name:"sm_tag_identifier",typeDetail:2},
+    {name:"sm_usershape_segment_end_lat",typeDetail:null},
+    {name:"sm_usershape_segment_end_lng",typeDetail:null},
+    {name:"sm_usershape_segment_start_lat",typeDetail:null},
+    {name:"sm_usershape_segment_start_lng",typeDetail:null},
+    {name:"sm_usershape_segmentlength",typeDetail:null},
+    {name:"sm_usershape_shapearea",typeDetail:null},
+    {name:"sm_usershape_shapelength",typeDetail:null},
+    {name:"sm_auto_formid",typeDetail:null},
+    {name:"sm_populate_subject",typeDetail:null},
+    {name:"sm_populate_assignee",typeDetail:null},
+    {name:"sm_populate_attendee",typeDetail:null},
+  ];
   toggleRequired() {
     // const this_element = this.state.element;
   }
   editElementName(e) {
-    debugger
-    const this_element = this.state.element;
-    this_element.Name = e.target.value;
+    const this_element = this.state.element;    
+     this_element.Name =e.target.value;
+
+     let _typeDetail= this.getTypeDetails(e);
+     if(_typeDetail){
+      this_element.TypeDetail =_typeDetail;
+     }
+
     this.setState(
       {
         element: this_element,
         dirty: true,
       });
   }
+  getTypeDetails(e){
+    let obj=this.fieldsName;
+    for (var i = 0; i < obj.length; i++){
+      if (obj[i].name == e.target.value){    
+      return obj[i].typeDetail
+      }
+  }
+}
   editElementProp(elemProperty, targProperty, e) {
     // elemProperty could be content or label
     // targProperty could be value or checked
@@ -121,63 +189,8 @@ export default class FormElementsEdit extends React.Component {
   }
 
   render() {
-    const fieldsName = [
-      "sm_asset_category",
-      "sm_asset_child_site",
-      "sm_asset_child_site",
-      "sm_asset_location",
-      "sm_asset_machinehours",
-      "sm_asset_make",
-      "sm_asset_model",
-      "sm_asset_name",
-      "sm_asset_odometer",
-      "sm_asset_odometerunit",
-      "sm_asset_operator",
-      "sm_asset_operator_out",
-      "sm_asset_serialnumber",
-      "sm_asset_site_location",
-      "sm_populate_best_cell_phone",
-      "sm_populate_best_email",
-      "sm_populate_client",
-      "sm_populate_date",
-      "sm_populate_datetime",
-      "sm_populate_department",
-      "sm_populate_division",
-      "sm_populate_job_classification",
-      "sm_populate_location",
-      "sm_populate_name",
-      "sm_populate_personal_cell_phone",
-      "sm_populate_personal_email",
-      "sm_populate_priority",
-      "sm_populate_subcontractor",
-      "sm_populate_time",
-      "sm_populate_title",
-      "sm_populate_update_date",
-      "sm_populate_update_name",
-      "sm_populate_work_cell_phone",
-      "sm_populate_work_email",
-      "sm_populate_latitude",
-      "sm_populate_longitude",
-      "sm_shapefile_hectare",
-      "sm_shapefile_line",
-      "sm_shapefile_name",
-      "sm_shapefile_pline_id",
-      "sm_shapefile_<name>",
-      "sm_tag_identifier",
-      "sm_usershape_segment_end_lat",
-      "sm_usershape_segment_end_lng",
-      "sm_usershape_segment_start_lat",
-      "sm_usershape_segment_start_lng",
-      "sm_usershape_segmentlength",
-      "sm_usershape_shapearea",
-      "sm_usershape_shapelength",
-      "sm_auto_formid",
-      "sm_populate_subject",
-      "sm_populate_assignee",
-      "sm_populate_attendee",
-    ];
 
-    if (this.state.dirty) {
+    if(this.state.dirty) {
       this.props.element.dirty = true;
     }
 
@@ -267,20 +280,20 @@ export default class FormElementsEdit extends React.Component {
               <label className="control-label" htmlFor="elementWidth">
                 Chose Field Name:
               </label>
-              <select
+              <input list="fileSelect" id="fieldsName" className="form-control" onBlur={this.updateElement.bind(this)}
+                onChange={this.editElementName.bind(this)} />
+              <datalist  
                 id="fileSelect"
-                className="form-control"
-                onBlur={this.updateElement.bind(this)}
-                onChange={this.editElementName.bind(this)}
+               
               >
-                {fieldsName.map((name,i) => {
+                {Object.keys(this.fieldsName).map((k,i) => {
                   return (
-                    <option value={name} key={i}>
-                      {name}
+                    <option value={this.fieldsName[k].name} key={i}>
+                    
                     </option>
                   );
                 })}
-              </select>
+              </datalist >
             </div>
           </div>
         </div>
@@ -420,7 +433,7 @@ export default class FormElementsEdit extends React.Component {
           </div>
         )}
 
-        {this.props.element.hasOwnProperty("ReadOnly") && (
+        {this.props.element.element!=="Checkboxes" && this.props.element.element!=="RadioButtons" && (
           <div className="form-group">
             <br />
             <div className="row">
@@ -553,7 +566,7 @@ export default class FormElementsEdit extends React.Component {
           </div>
         )}
 
-        {this.props.element.TypeDetail && (
+        {(this.props.element.element==="Checkboxes" || this.props.element.element==="RadioButtons") &&  (
           <DynamicOptionList
             showCorrectColumn={this.props.showCorrectColumn}
             canHaveOptionCorrect={canHaveOptionCorrect}

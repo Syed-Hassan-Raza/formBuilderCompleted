@@ -1,5 +1,4 @@
 import Store from "beedle";
-import { json } from "express";
 import { get, post } from "./requests";
 
 let _saveUrl;
@@ -30,53 +29,32 @@ const store = new Store({
     },
 
     create(context, element) {
-      debugger
       const { data } = context.state;
-      element.TypeDetail=JSON.stringify(element.TypeDetail);
+      
 
       if (element.parentId) {
+        element.item.TypeDetail=JSON.stringify(element.item.TypeDetail);
         this.addChild(data.FieldGroups, element);
       }
       else {
         if (element.element == 'FieldGroups') {
+          element.TypeDetail=JSON.stringify(element.TypeDetail);
           data.FieldGroups.push(element);
         }
         else {
+          element.TypeDetail=JSON.stringify(element.TypeDetail);
           data.Fields.push(element);
         }
       }
 
       this.setData(context, data, true);
-      //this.saveTemplateOptions(context, element);
       console.log(data)
     },
 
-    saveTemplateOptions(context, newData) {
-     
-      const { data } = context.state;
-      if (!data.TemplateOptions) {
-        data.TemplateOptions = [];
-      }
-      if (newData.options) {
-        data.TemplateOptions[newData.TypeDetail] = newData.options;
-        this.setData(context, data, false);
-      }
-    },
 
     createChild(context, element) {
       const { data } = context.state;
      
-      // data.forEach((item) => {
-      //   if (item.id == element.parentId) {
-      //     if (!item.FieldGroups){
-      //       item.FieldGroups = [];
-      //     }
-
-      //     if (!item.FieldGroups.some(i => i.id == element.item.id)){
-      //       item.FieldGroups = item.FieldGroups.concat([element.item]);
-      //     }
-      //   }
-      // });
       this.addItem(data, element);
       this.setData(context, data, true);
       this.saveTemplateOptions(context, element.item);
@@ -106,26 +84,7 @@ const store = new Store({
         }
       });
     },
-    mapData(context){
-      const { data } = context.state;
-      this.doMap(data);
-    },
-    
-    doMap(data){
-      let r=[];
-      data.forEach((item, index, object) => {
-        if (item.FieldGroups) {
-         let i=item.FieldGroups.filter(v=>v.element==='TextInput');
-         item.Fields=i;
-         delete item.FieldGroups['TextInput'];
-    
-         return this.doMap(item.FieldGroups);
-        }
-        else{
-          return
-        }
-      });
-    },
+
     delete(context, element) {
       const { data } = context.state;
       let removed = false;
@@ -176,40 +135,21 @@ const store = new Store({
     },
 
     save(data) {
-      document.execCommand(data);
+    document.execCommand(data);
       if (_onPost) {
         _onPost({ task_data: data });
       } else if (_saveUrl) {
         post(_saveUrl, { task_data: data });
       }
+      
     },
+
     svaveChanges(context, newData) {
       const { data } = context.state;
 
       const r = this.findObjectById(data, newData, "fetch");
       // r.FieldGroups.push(newData);
       this.setData(context, r, false);
-    },
-
-    findObjectById(root, newData, action) {
-      if (root) {
-        for (var k in root) {
-          if (root[k].id == newData.parentId) {
-            if (action == "fetch") {
-              if (root[k].FieldGroups == null) {
-                root[k].FieldGroups = [];
-              }
-              root[k].FieldGroups.push(newData.item);
-              return root;
-            } else {
-              delete root.FieldGroups[k];
-            }
-          } else if (root[k].FieldGroups) {
-            return this.findObjectById(root[k].FieldGroups, newData, "fetch");
-          }
-        }
-        //return root;
-      }
     },
   },
 

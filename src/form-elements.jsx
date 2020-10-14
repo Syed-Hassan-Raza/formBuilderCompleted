@@ -902,7 +902,7 @@ class Checkboxes extends React.Component {
   }
   render() {
     const self = this;
-    let obj= this.props.data.TypeDetail;
+    let obj= JSON.parse(this.props.data.TypeDetail);
     let classNames = "custom-control custom-checkbox";
     if (this.props.data.inline) {
       classNames += " option-inline";
@@ -968,7 +968,7 @@ class RadioButtons extends React.Component {
 
   render() {
     const self = this;
-    let obj= this.props.data.TypeDetail;
+    let obj= JSON.parse(this.props.data.TypeDetail);
     let classNames = "custom-control custom-radio";
     if (this.props.data.inline) {
       classNames += " option-inline";
