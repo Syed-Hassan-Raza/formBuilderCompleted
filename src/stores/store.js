@@ -48,7 +48,7 @@ const store = new Store({
       }
 
       this.setData(context, data, true);
-      console.log(data)
+      //console.log(data)
     },
 
 

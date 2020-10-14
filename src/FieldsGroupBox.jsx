@@ -50,18 +50,17 @@ function collect(connect, monitor) {
 }
 
 class FieldsGroup extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       id: this.props.id,
       components: []
     }
 
-    store.subscribe(state => { 
-
+    store.subscribe(state => {
       let data = this.findData(state.data.FieldGroups, this.props.id);
       if (data && (data.Fields || data.FieldGroups)) {
-        this.setState({components: [].concat(data.Fields, data.FieldGroups) });
+        this.setState({ components: [].concat(data.Fields, data.FieldGroups) });
       }
     });
   }
@@ -74,11 +73,18 @@ class FieldsGroup extends React.Component {
       if (item.FieldGroups) {
         if (item.FieldGroups.length <= 0)
           continue;
-        
+
         let result = this.findData(item.FieldGroups, id);
         if (result)
           return result;
       }
+    }
+  }
+
+  componentDidMount() {
+    let data = this.findData(store.state.data.FieldGroups, this.props.id);
+    if (data && (data.Fields || data.FieldGroups)) {
+      this.setState({ components: [].concat(data.Fields, data.FieldGroups) });
     }
   }
 
@@ -97,25 +103,25 @@ class FieldsGroup extends React.Component {
     }
   }
 
-   getElement(item, index) {
+  getElement(item, index) {
     const FormElement = FormElements[item.element];
     //return <FormElement id={item.id} seq={Math.random()} index={index} moveCard={moveCard} insertCard={insertCard} mutable={false} parent={this.props.parent} editModeOn={() => {}} isDraggable={true} key={item.id} sortData={item.id} data={item} _onDestroy={_onDestroy} />;
     return <FormElement id={item.id} seq={Math.random()} index={index} moveCard={this.moveCard} insertCard={this.insertCard} mutable={false} parent={this.props.parent} editModeOn={this.props.editModeOn} isDraggable={true} key={item.id} sortData={item.id} data={item} _onDestroy={this.props._onDestroy} />;
   }
 
-   moveCard(dragIndex, hoverIndex) {
+  moveCard(dragIndex, hoverIndex) {
     const { data } = this.state;
     const dragCard = data[dragIndex];
     this.saveData(dragCard, dragIndex, hoverIndex);
   }
 
-   insertCard(item, hoverIndex) {
+  insertCard(item, hoverIndex) {
     const { data } = this.state;
     data.splice(hoverIndex, 0, item);
     this.saveData(item, hoverIndex, hoverIndex);
   }
 
-  _onDestroy (item) {
+  _onDestroy(item) {
     store.dispatch('delete', item);
   }
 
@@ -127,7 +133,7 @@ class FieldsGroup extends React.Component {
         <div className="card">
           <div className="card-header">{this.props.data.Label}</div>
           <div className="card-body" style={isOver ? style : null}>
-             {/* {isOver ? <h6>Drop Here</h6> : null} */}
+            {/* {isOver ? <h6>Drop Here</h6> : null} */}
             {this.state.components.map((item, index) => this.getElement(item, index))}
           </div>
         </div>

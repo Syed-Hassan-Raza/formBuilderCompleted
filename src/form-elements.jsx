@@ -1193,7 +1193,7 @@ class Camera extends React.Component {
         sourceDataURL = `data:image/png;base64,${this.props.defaultValue}`;
       }
     }
-    console.log("sourceDataURL", sourceDataURL);
+    //console.log("sourceDataURL", sourceDataURL);
     return (
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
