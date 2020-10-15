@@ -9,11 +9,10 @@ import ReactBootstrapSlider from "react-bootstrap-slider";
 import ReactDatePicker from "react-datepicker";
 import StarRating from "./star-rating";
 import HeaderBar from "./header-bar";
-import { DndProvider } from 'react-dnd'
-import  HTML5Backend  from 'react-dnd-html5-backend'
-import   FieldsGroup from "./FieldsGroupBox";
-import { DragDropContext } from 'react-dnd';
-
+import { DndProvider } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
+import FieldsGroup from "./FieldsGroupBox";
+import { DragDropContext } from "react-dnd";
 
 const FormElements = {};
 const myxss = new xss.FilterXSS({
@@ -106,19 +105,19 @@ class Header extends React.Component {
 }
 
 class FieldGroups extends React.Component {
-   Tree(items) {
+  Tree(items) {
     // our base case, if we have no items, render nothing.
     if (!items || !items.length) {
-      return null
+      return null;
     }
-  
-    return items.map(item => (
+
+    return items.map((item) => (
       <FieldsGroup key={item.name} {...this.props}>
         <div>{item.name}</div>
         {/* And here's the recursion! */}
         <Tree items={item.child} />
       </FieldsGroup>
-    ))
+    ));
   }
   render() {
     // const headerClasses = `dynamic-input ${this.props.data.element}-input`;
@@ -128,13 +127,12 @@ class FieldGroups extends React.Component {
     if (this.props.data.pageBreakBefore) {
       baseClasses += " alwaysbreak";
     }
-    
+
     return (
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
-        {/* {this.props.data.Label} */
-        }
-        { <FieldsGroup {...this.props}/>}
+        {/* {this.props.data.Label} */}
+        {<FieldsGroup {...this.props} />}
       </div>
     );
   }
@@ -600,22 +598,20 @@ class DatePicker extends React.Component {
         <div className="form-group">
           <ComponentLabel {...this.props} />
           <div>
-        
-              <ReactDatePicker
-                name={props.name}
-                ref={props.ref}
-                onChange={this.handleChange}
-                selected={this.state.internalValue}
-                todayButton={"Today"}
-                className="form-control"
-                isClearable={true}
-                showTimeSelect={showTimeSelect}
-                showTimeSelectOnly={showTimeSelectOnly}
-                dateFormat={this.formatMask}
-                portalId="root-portal"
-                placeholderText={placeholderText}
-              />
-        
+            <ReactDatePicker
+              name={props.name}
+              ref={props.ref}
+              onChange={this.handleChange}
+              selected={this.state.internalValue}
+              todayButton={"Today"}
+              className="form-control"
+              isClearable={true}
+              showTimeSelect={showTimeSelect}
+              showTimeSelectOnly={showTimeSelectOnly}
+              dateFormat={this.formatMask}
+              portalId="root-portal"
+              placeholderText={placeholderText}
+            />
           </div>
         </div>
       </div>
@@ -897,15 +893,20 @@ class Tags extends React.Component {
 class Checkboxes extends React.Component {
   constructor(props) {
     super(props);
-    this.options = {};
-  
+    this.inputField = React.createRef();
+    this.state = {value: ''};
+  }
+  handleValueChange(e) {
+    this.setState({value: e.target.value});
   }
   render() {
-    const self = this;
-    let obj= JSON.parse(this.props.data.TypeDetail);
-    let classNames = "custom-control custom-checkbox";
-    if (this.props.data.inline) {
-      classNames += " option-inline";
+    debugger
+    const props = {};
+    props.type = "checkbox";
+    props.className = "custom-control custom-checkbox";
+
+    if (this.props.mutable) {
+      props.ref = this.inputField;
     }
 
     let baseClasses = "SortableItem rfb-item";
@@ -913,50 +914,75 @@ class Checkboxes extends React.Component {
       baseClasses += " alwaysbreak";
     }
 
+    if (this.props.data.ReadOnly) {
+      props.disabled = "disabled";
+    }
+
     return (
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
-          <ComponentLabel className="form-label" {...this.props} />
-          { Object.keys(obj).map((option,i) => {
-            const this_key = `preview_${i}`;
-            const props = {};
-            props.name = `option_${obj[option]}`;
-
-            props.type = "checkbox";
-            props.value = obj[option];
-            if (self.props.mutable) {
-              props.defaultChecked =
-                self.props.defaultValue !== undefined &&
-                self.props.defaultValue.indexOf(option) > -1;
-            }
-            if (this.props.ReadOnly) {
-              props.disabled = "disabled";
-            }
-            return (
-              <div className={classNames} key={this_key}>
-                <input
-                  id={"fid_" + this_key}
-                  className="custom-control-input"
-                  ref={(c) => {
-                    if (c && self.props.mutable) {
-                      self.options[`child_ref_${obj[option]}`] = c;
-                    }
-                  }}
-                  {...props}
-                />
-                <label
-                  className="custom-control-label"
-                  htmlFor={"fid_" + this_key}
-                >
-                  {obj[option]}
-                </label>
-              </div>
-            );
-          })}
+          <label className="checkbox-inline">
+            <input type="checkbox" value="" checked={this.props.data.DefaultValue} onChange={this.handleValueChange} /> {this.props.data.Label}
+          </label>
         </div>
       </div>
     );
+
+    // let classNames = "custom-control custom-checkbox";
+    // if (this.props.data.inline) {
+    //   classNames += " option-inline";
+    // }
+
+    // let baseClasses = "SortableItem rfb-item";
+    // if (this.props.data.pageBreakBefore) {
+    //   baseClasses += " alwaysbreak";
+    // }
+
+    // return (
+    //   <div className={baseClasses}>
+    //     <ComponentHeader {...this.props} />
+    //     <div className="form-group">
+    //       <ComponentLabel className="form-label" {...this.props} />
+    //       { Object.keys(obj).map((option,i) => {
+    //         const this_key = `preview_${i}`;
+    //         const props = {};
+    //         props.name = `option_${obj[option]}`;
+
+    //         props.type = "checkbox";
+    //         props.value = obj[option];
+    //         if (self.props.mutable) {
+    //           props.defaultChecked =
+    //             self.props.defaultValue !== undefined &&
+    //             self.props.defaultValue.indexOf(option) > -1;
+    //         }
+    //         if (this.props.ReadOnly) {
+    //           props.disabled = "disabled";
+    //         }
+    //         return (
+    //           <div className={classNames} key={this_key}>
+    //             <input
+    //               id={"fid_" + this_key}
+    //               className="custom-control-input"
+    //               ref={(c) => {
+    //                 if (c && self.props.mutable) {
+    //                   self.options[`child_ref_${obj[option]}`] = c;
+    //                 }
+    //               }}
+    //               {...props}
+    //             />
+    //             <label
+    //               className="custom-control-label"
+    //               htmlFor={"fid_" + this_key}
+    //             >
+    //               {obj[option]}
+    //             </label>
+    //           </div>
+    //         );
+    //       })}
+    //    </div>
+    //  </div>
+    //  );
   }
 }
 
@@ -968,7 +994,7 @@ class RadioButtons extends React.Component {
 
   render() {
     const self = this;
-    let obj= JSON.parse(this.props.data.TypeDetail);
+    let obj = JSON.parse(this.props.data.TypeDetail);
     let classNames = "custom-control custom-radio";
     if (this.props.data.inline) {
       classNames += " option-inline";
@@ -984,7 +1010,7 @@ class RadioButtons extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel className="form-label" {...this.props} />
-          {Object.keys(obj).map((option,i) => {
+          {Object.keys(obj).map((option, i) => {
             const this_key = `preview_${i}`;
             const props = {};
             props.name = self.props.data.field_name;
@@ -1404,7 +1430,5 @@ FormElements.Counter = Counter;
 FormElements.Autocomplete = Autocomplete;
 FormElements.FieldGroups = FieldGroups;
 FormElements.TimePicker = TimePicker;
-
-
 
 export default FormElements;
