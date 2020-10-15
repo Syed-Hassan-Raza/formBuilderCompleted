@@ -11,6 +11,9 @@ import SortableFormElements from './sortable-form-elements';
 const { PlaceHolder } = SortableFormElements;
 
 export default class Preview extends React.Component {
+
+  isMounted = false;
+
   constructor(props) {
     super(props);
     const { onLoad, onPost } = props;
@@ -24,7 +27,10 @@ export default class Preview extends React.Component {
     this.seq = 0;
 
     const onUpdate = this._onChange.bind(this);
-    store.subscribe(state => onUpdate(state.data));
+    store.subscribe(state => {
+      if (this.isMounted)
+        onUpdate(state.data)
+    });
 
     this.moveCard = this.moveCard.bind(this);
     this.insertCard = this.insertCard.bind(this);
@@ -37,13 +43,14 @@ export default class Preview extends React.Component {
   }
 
   componentDidMount() {
-
+    this.isMounted = true;
     const { data, url, saveUrl } = this.props;
     store.dispatch('load', { loadUrl: url, saveUrl, data: data || [] });
     document.addEventListener('mousedown', this.editModeOff);
   }
 
   componentWillUnmount() {
+    this.isMounted = false;
     document.removeEventListener('mousedown', this.editModeOff);
   }
 
