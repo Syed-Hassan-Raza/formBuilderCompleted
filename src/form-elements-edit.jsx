@@ -107,7 +107,6 @@ export default class FormElementsEdit extends React.Component {
     });
   }
   editElementDefaultValue(e) {
-    debugger;
     const this_element = this.state.element;
     this_element.DefaultValue = e.target.checked;
     this.setState({
@@ -204,8 +203,10 @@ export default class FormElementsEdit extends React.Component {
     const this_Mandatory = this.props.element.hasOwnProperty("Mandatory")
       ? this.props.element.Mandatory
       : false;
-    const this_DefaultValue = this.props.element.hasOwnProperty("DefaultValue")===''
-    ?false: this.props.element.DefaultValue;
+    const this_DefaultValue =
+      this.props.element.hasOwnProperty("DefaultValue") === ""
+        ? false
+        : this.props.element.DefaultValue;
 
     const this_read_only = this.props.element.hasOwnProperty("ReadOnly")
       ? this.props.element.ReadOnly
@@ -457,9 +458,45 @@ export default class FormElementsEdit extends React.Component {
                   "checked"
                 )}
               />
-              <label className="custom-control-label"  htmlFor="is-defaultvalue">
+              <label className="custom-control-label" htmlFor="is-defaultvalue">
                 Default Value:
               </label>
+            </div>
+          </div>
+        )}
+        {this.props.element.element === "RadioButtons" && (
+          <div className="form-group">
+            <div className="row">
+              <div className="col-sm-6">
+                <label className="control-label" htmlFor="defaultValue">
+                  Default Value:
+                </label>
+                <select value= {this.props.element.DefaultValue}
+                  id="defaultValue"
+                  className="form-control"
+                  onBlur={this.updateElement.bind(this)}
+                  onChange={this.editElementProp.bind(
+                    this,
+                    "DefaultValue",
+                    "value"
+                  )}
+                >
+                  {Object.keys(JSON.parse(this.props.element.TypeDetail)).map(
+                    (k, i) => {
+                      return (
+                        <option
+                          value={k}
+                          key={i}
+                         
+                        >
+                          {" "}
+                          {k}
+                        </option>
+                      );
+                    }
+                  )}
+                </select>
+              </div>
             </div>
           </div>
         )}
