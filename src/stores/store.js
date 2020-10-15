@@ -33,28 +33,30 @@ const store = new Store({
       
 
       if (element.parentId) {
-        element.item.TypeDetail=JSON.stringify(element.item.TypeDetail);
+        this.createTypeDetails(element.item);
         this.addChild(data.FieldGroups, element);
-      }
-      else {
-        if (element.element == 'FieldGroups') {
-          element.TypeDetail=JSON.stringify(element.TypeDetail);
+      } else {
+        if (element.element == "FieldGroups") {
+          this.createTypeDetails(element);
           data.FieldGroups.push(element);
-        }
-        else {
-          element.TypeDetail=JSON.stringify(element.TypeDetail);
+        } else {
+          this.createTypeDetails(element);
           data.Fields.push(element);
         }
       }
 
       this.setData(context, data, true);
-      console.log(data)
+      console.log(data);
     },
 
+    createTypeDetails(element) {
+      if (element.element === "RadioButtons")
+       element.TypeDetail = JSON.stringify(element.TypeDetail);            
+    },
 
     createChild(context, element) {
       const { data } = context.state;
-     
+
       this.addItem(data, element);
       this.setData(context, data, true);
       this.saveTemplateOptions(context, element.item);
@@ -62,19 +64,14 @@ const store = new Store({
 
     addChild(data, element) {
       data.forEach((item, index, object) => {
-
         if (item.id === element.parentId) {
+          if (!item.Fields) item.Fields = [];
 
-          if (!item.Fields)
-           item.Fields= [];
-          
-          if (!item.FieldGroups)
-           item.FieldGroups= [];
-          
-          if (element.item.element == 'FieldGroups')
+          if (!item.FieldGroups) item.FieldGroups = [];
+
+          if (element.item.element == "FieldGroups")
             item.FieldGroups.push(element.item);
-          else
-            item.Fields.push(element.item);
+          else item.Fields.push(element.item);
 
           return;
         }
@@ -96,23 +93,19 @@ const store = new Store({
         }
       });
 
-      if (!removed)
-        this.removeItem(data.FieldGroups, element);
-        
+      if (!removed) this.removeItem(data.FieldGroups, element);
+
       this.setData(context, data, true);
     },
     removeItem(data, element) {
-
       let removed = false;
       data.forEach((pItem, pIndex, pObject) => {
-
-        if (element.element == 'FieldGroups') {
+        if (element.element == "FieldGroups") {
           if (pItem.id == element.id) {
             data.splice(pIndex, 1);
             return;
           }
-        }
-        else {
+        } else {
           if (pItem.Fields) {
             pItem.Fields.forEach((cItem, cIndex, cObject) => {
               if (cItem.id === element.id) {
@@ -126,7 +119,6 @@ const store = new Store({
 
         if (!removed && pItem.FieldGroups && pItem.FieldGroups.length >= 0)
           this.removeItem(pItem.FieldGroups, element);
-
       });
     },
 
@@ -135,13 +127,12 @@ const store = new Store({
     },
 
     save(data) {
-    document.execCommand(data);
+      document.execCommand(data);
       if (_onPost) {
         _onPost({ task_data: data });
       } else if (_saveUrl) {
         post(_saveUrl, { task_data: data });
       }
-      
     },
 
     svaveChanges(context, newData) {
@@ -174,8 +165,8 @@ const store = new Store({
       Fields: [],
       FieldGroups: [],
       TemplateOptions: [],
-      CompanyForm: []
-    }
+      CompanyForm: [],
+    },
   },
 });
 

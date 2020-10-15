@@ -26,27 +26,27 @@ export default class Toolbar extends React.Component {
     let RadioButtons;
     switch (element) {
       
-      case 'Dropdown':
-        return [
-          { value: 'place_holder_option_1', text: 'Place holder option 1', key: `dropdown_option_${ID.uuid()}` },
-          { value: 'place_holder_option_2', text: 'Place holder option 2', key: `dropdown_option_${ID.uuid()}` },
-          { value: 'place_holder_option_3', text: 'Place holder option 3', key: `dropdown_option_${ID.uuid()}` },
-        ];
+      // case 'Dropdown':
+      //   return [
+      //     { value: 'place_holder_option_1', text: 'Place holder option 1', key: `dropdown_option_${ID.uuid()}` },
+      //     { value: 'place_holder_option_2', text: 'Place holder option 2', key: `dropdown_option_${ID.uuid()}` },
+      //     { value: 'place_holder_option_3', text: 'Place holder option 3', key: `dropdown_option_${ID.uuid()}` },
+      //   ];
 
-          case 'Autocomplete':
-            return [
-              { value: 'place_holder_option_1', text: 'Place holder option 1', key: `dropdown_option_${ID.uuid()}` },
-              { value: 'place_holder_option_2', text: 'Place holder option 2', key: `dropdown_option_${ID.uuid()}` },
-              { value: 'place_holder_option_3', text: 'Place holder option 3', key: `dropdown_option_${ID.uuid()}` },
-            ];
-      case 'Tags':
-        return [
-          { value: 'place_holder_tag_1', text: 'Place holder tag 1', key: `tags_option_${ID.uuid()}` },
-          { value: 'place_holder_tag_2', text: 'Place holder tag 2', key: `tags_option_${ID.uuid()}` },
-          { value: 'place_holder_tag_3', text: 'Place holder tag 3', key: `tags_option_${ID.uuid()}` },
-        ];
-      case 'Checkboxes':
-        return  Checkboxes = { prop_place_holder_option_1: 'Place_holder_option_1',prop_place_holder_option_2: 'Place_holder_option_2'}
+      //     case 'Autocomplete':
+      //       return [
+      //         { value: 'place_holder_option_1', text: 'Place holder option 1', key: `dropdown_option_${ID.uuid()}` },
+      //         { value: 'place_holder_option_2', text: 'Place holder option 2', key: `dropdown_option_${ID.uuid()}` },
+      //         { value: 'place_holder_option_3', text: 'Place holder option 3', key: `dropdown_option_${ID.uuid()}` },
+      //       ];
+      // case 'Tags':
+      //   return [
+      //     { value: 'place_holder_tag_1', text: 'Place holder tag 1', key: `tags_option_${ID.uuid()}` },
+      //     { value: 'place_holder_tag_2', text: 'Place holder tag 2', key: `tags_option_${ID.uuid()}` },
+      //     { value: 'place_holder_tag_3', text: 'Place holder tag 3', key: `tags_option_${ID.uuid()}` },
+      //   ];
+      // case 'Checkboxes':
+      //   return  Checkboxes = { prop_place_holder_option_1: ''}
       case 'RadioButtons':
         return RadioButtons = { prop_place_holder_option_1: 'Place_holder_option_1',prop_place_holder_option_2: 'Place_holder_option_2'}
        default:
@@ -127,8 +127,6 @@ export default class Toolbar extends React.Component {
         icon: 'far fa-check-square',
         label: 'Placeholder Label',
         field_name: 'checkboxes_',
-        TypeDetail: [],
-        canHaveTypeDetail:true,
         Type: 6,
       },
       {
@@ -191,7 +189,6 @@ export default class Toolbar extends React.Component {
         label: 'Placeholder Label',
         icon: 'fas fa-plus-square',
         field_name: 'assignee_',
-        TypeDetail: [],
         Type: 13,
       },
 
@@ -201,7 +198,6 @@ export default class Toolbar extends React.Component {
         label: 'Placeholder Label',
         icon: 'fas fa-list-alt',
         field_name: 'autocomplete_',
-        TypeDetail: [],
         Type: 15,
       },
       {
@@ -216,7 +212,7 @@ export default class Toolbar extends React.Component {
         key: 'Calculated',
         name: 'Calculated',
         label: 'Placeholder Label',
-        icon: 'fas fa-equals',
+        icon: 'fas fa-plus',
         field_name: 'calculated_',
         Type: 10,
       },
@@ -237,7 +233,7 @@ export default class Toolbar extends React.Component {
      id: ID.uuid(),
      element: item.element || item.key,
 
-      Name: item.name + ID.uuid(),
+      Name: "",
       Label: item.label,
       Type: item.Type,
       //Fields: item.Fields,
@@ -246,7 +242,7 @@ export default class Toolbar extends React.Component {
 
     if(item.key!=='FieldGroups'){
      elementOptions.TypeDetail=null,
-     elementOptions.DefaultValue=null,
+     elementOptions.DefaultValue='',
      elementOptions.MaxWidth=null,
      elementOptions.MinWidth=null,
      elementOptions.ReadOnly= false,
@@ -315,7 +311,6 @@ export default class Toolbar extends React.Component {
       elementOptions.showTimeSelect = item.showTimeSelect;
       elementOptions.showTimeSelectOnly = item.showTimeSelectOnly;
     }
-
     if (item.TypeDetail) {
       if (item.TypeDetail.length > 0) {
         elementOptions.TypeDetail = item.TypeDetail;
