@@ -10,6 +10,9 @@ import { add } from 'date-fns';
 import { element } from 'prop-types';
 
 export default class Toolbar extends React.Component {
+
+  isMounted = false;
+
   constructor(props) {
     super(props);
 
@@ -17,8 +20,21 @@ export default class Toolbar extends React.Component {
     this.state = {
       items,
     };
-    store.subscribe(state => this.setState({ store: state }));
+
+    store.subscribe(state => {
+      if (this.isMounted)
+        this.setState({ store: state })
+    });
+    
     this.create = this.create.bind(this);
+  }
+
+  componentDidMount() {
+    this.isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this.isMounted = false;
   }
 
   static _defaultItemOptions(element) {
