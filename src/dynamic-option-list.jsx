@@ -104,7 +104,7 @@ export default class DynamicOptionList extends React.Component {
     _typeDetail[rendomValue] = "";
     this_element.TypeDetail = JSON.stringify(_typeDetail);
     this.props.updateElement.call(this.props.preview, this_element);
-    console.log(this_element);
+    //console.log(this_element);
   }
 
   removeOption(proprty) {

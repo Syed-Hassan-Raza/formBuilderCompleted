@@ -48,7 +48,7 @@ export default class Demobar extends React.Component {
   }
 
   _onSubmit(data) {
-    console.log('onSubmit', data);
+    //console.log('onSubmit', data);
     // Place code to post json data to server here
   }
 
