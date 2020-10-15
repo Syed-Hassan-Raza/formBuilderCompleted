@@ -300,7 +300,7 @@ class TextInput extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
-          <input {...props} />
+          <input {...props} value={this.props.data.DefaultValue}/>
         </div>
       </div>
     );
@@ -338,7 +338,7 @@ class NumberInput extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
-          <input {...props} />
+          <input {...props} value={this.props.data.DefaultValue}/>
         </div>
       </div>
     );
@@ -375,7 +375,7 @@ class DecimalInput extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
-          <input {...props} />
+          <input {...props} value={this.props.data.DefaultValue}/>
         </div>
       </div>
     );
@@ -448,7 +448,7 @@ class TextArea extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
-          <textarea {...props} />
+    <textarea {...props} value={this.props.data.DefaultValue} />
         </div>
       </div>
     );
@@ -494,93 +494,13 @@ class DatePicker extends React.Component {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
-
-    this.updateFormat(props);
-    this.state = this.updateDateTime(props, this.formatMask);
-  }
-
-  formatMask = "";
-
-  handleChange = (dt) => {
-    let placeholder;
-    if (dt && dt.target) {
-      placeholder =
-        dt && dt.target && dt.target.value === ""
-          ? this.formatMask.toLowerCase()
-          : "";
-      const formattedDate = dt.target.value
-        ? format(dt.target.value, this.formatMask)
-        : "";
-      this.setState({
-        value: formattedDate,
-        internalValue: formattedDate,
-        placeholder,
-      });
-    } else {
-      this.setState({
-        value: dt ? format(dt, this.formatMask) : "",
-        internalValue: dt,
-        placeholder,
-      });
-    }
-  };
-
-  updateFormat(props) {
-    const { showTimeSelect, showTimeSelectOnly } = props.data;
-    const dateFormat =
-      showTimeSelect && showTimeSelectOnly ? "" : props.data.dateFormat;
-    const timeFormat = showTimeSelect ? props.data.timeFormat : "";
-    const formatMask = `${dateFormat} ${timeFormat}`.trim();
-    const updated = formatMask !== this.formatMask;
-    this.formatMask = formatMask;
-    return updated;
-  }
-
-  updateDateTime(props, formatMask) {
-    let value;
-    let internalValue;
-    const { defaultToday } = props.data;
-    if (
-      defaultToday &&
-      (props.defaultValue === "" || props.defaultValue === undefined)
-    ) {
-      value = format(new Date(), formatMask);
-      internalValue = new Date();
-    } else {
-      value = props.defaultValue;
-
-      if (value === "" || value === undefined) {
-        internalValue = undefined;
-      } else {
-        internalValue = parse(value, this.formatMask, new Date());
-      }
-    }
-    return {
-      value,
-      internalValue,
-      placeholder: formatMask.toLowerCase(),
-      defaultToday,
-    };
-  }
-
-  componentWillReceiveProps(props) {
-    const formatUpdated = this.updateFormat(props);
-    if (props.data.defaultToday !== !this.state.defaultToday || formatUpdated) {
-      const state = this.updateDateTime(props, this.formatMask);
-      this.setState(state);
-    }
   }
 
   render() {
-    const { showTimeSelect, showTimeSelectOnly } = this.props.data;
     const props = {};
     props.type = "date";
     props.className = "form-control";
     props.name = this.props.data.field_name;
-    const readOnly = this.props.data.readOnly || this.props.ReadOnly;
-    const iOS =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    const placeholderText = this.formatMask.toLowerCase();
 
     if (this.props.mutable) {
       props.defaultValue = this.props.defaultValue;
@@ -598,20 +518,7 @@ class DatePicker extends React.Component {
         <div className="form-group">
           <ComponentLabel {...this.props} />
           <div>
-            <ReactDatePicker
-              name={props.name}
-              ref={props.ref}
-              onChange={this.handleChange}
-              selected={this.state.internalValue}
-              todayButton={"Today"}
-              className="form-control"
-              isClearable={true}
-              showTimeSelect={showTimeSelect}
-              showTimeSelectOnly={showTimeSelectOnly}
-              dateFormat={this.formatMask}
-              portalId="root-portal"
-              placeholderText={placeholderText}
-            />
+            <input className="form-control" {...this.props} type="text" value="mm/dd/yyyy"/>
           </div>
         </div>
       </div>
@@ -1010,6 +917,8 @@ class RadioButtons extends React.Component {
         <div className="form-group">
           <ComponentLabel className="form-label" {...this.props} />
           {Object.keys(obj).map((option, i) => {
+            const defaultValue=this.props.data.DefaultValue===option?true:false;
+            
             const this_key = `preview_${i}`;
             const props = {};
             props.name = self.props.data.field_name;
@@ -1028,7 +937,7 @@ class RadioButtons extends React.Component {
 
             return (
               <div className={classNames} key={this_key}>
-                <input
+                <input type="Radiobutton"
                   id={"fid_" + this_key}
                   className="custom-control-input"
                   ref={(c) => {
@@ -1037,6 +946,7 @@ class RadioButtons extends React.Component {
                     }
                   }}
                   {...props}
+                  checked={defaultValue}
                 />
                 <label
                   className="custom-control-label"
