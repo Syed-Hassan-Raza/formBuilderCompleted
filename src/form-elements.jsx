@@ -274,6 +274,10 @@ class TextInput extends React.Component {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
+    this.state = {value: ''};
+  }
+  handleValueChange(e) {
+    this.setState({value: e.target.value});
   }
 
   render() {
@@ -300,7 +304,7 @@ class TextInput extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
-          <input {...props} value={this.props.data.DefaultValue}/>
+          <input {...props} value={this.props.data.DefaultValue} onChange={this.handleValueChange}/>
         </div>
       </div>
     );
@@ -311,8 +315,11 @@ class NumberInput extends React.Component {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
+    this.state = {value: ''};
   }
-
+  handleValueChange(e) {
+    this.setState({value: e.target.value});
+  }
   render() {
     const props = {};
     props.type = "number";
@@ -338,7 +345,7 @@ class NumberInput extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
-          <input {...props} value={this.props.data.DefaultValue}/>
+          <input {...props} value={this.props.data.DefaultValue} onChange={this.handleValueChange}/>
         </div>
       </div>
     );
@@ -349,6 +356,10 @@ class DecimalInput extends React.Component {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
+    this.state = {value: ''};
+  }
+  handleValueChange(e) {
+    this.setState({value: e.target.value});
   }
 
   render() {
@@ -375,7 +386,7 @@ class DecimalInput extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
-          <input {...props} value={this.props.data.DefaultValue}/>
+          <input {...props} value={this.props.data.DefaultValue} onChange={this.handleValueChange}/>
         </div>
       </div>
     );
@@ -422,6 +433,10 @@ class TextArea extends React.Component {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
+    this.state = {value: ''};
+  }
+  handleValueChange(e) {
+    this.setState({value: e.target.value});
   }
 
   render() {
@@ -448,7 +463,7 @@ class TextArea extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
-    <textarea {...props} value={this.props.data.DefaultValue} />
+    <textarea {...props} value={this.props.data.DefaultValue} onChange={this.handleValueChange} />
         </div>
       </div>
     );
@@ -458,7 +473,12 @@ class TimePicker extends React.Component {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
+    this.state = {value: ''};
   }
+  handleValueChange(e) {
+    this.setState({value: e.target.value});
+  }
+
 
   render() {
     const props = {};
@@ -484,7 +504,7 @@ class TimePicker extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
-          <input {...props} value="hh:mm:ss" />
+          <input {...props} value="hh:mm:ss"onChange={this.handleValueChange} />
         </div>
       </div>
     );
@@ -494,7 +514,12 @@ class DatePicker extends React.Component {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
+    this.state = {value: ''};
   }
+  handleValueChange(e) {
+    this.setState({value: e.target.value});
+  }
+
 
   render() {
     const props = {};
@@ -518,7 +543,7 @@ class DatePicker extends React.Component {
         <div className="form-group">
           <ComponentLabel {...this.props} />
           <div>
-            <input className="form-control" {...this.props} type="text" value="mm/dd/yyyy"/>
+            <input {...props} value="mm/dd/yyyy" onChange={this.handleValueChange}/>
           </div>
         </div>
       </div>
@@ -896,6 +921,10 @@ class RadioButtons extends React.Component {
   constructor(props) {
     super(props);
     this.options = {};
+    this.state = {value: ''};
+  }
+  handleValueChange(e) {
+    this.setState({value: e.target.value});
   }
 
   render() {
@@ -947,6 +976,7 @@ class RadioButtons extends React.Component {
                   }}
                   {...props}
                   checked={defaultValue}
+                  onChange={this.handleValueChange}
                 />
                 <label
                   className="custom-control-label"

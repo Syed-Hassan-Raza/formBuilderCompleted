@@ -126,6 +126,7 @@ export default class FormElementsEdit extends React.Component {
   editElementProp(elemProperty, targProperty, e) {
     // elemProperty could be content or label
     // targProperty could be value or checked
+    debugger
     const this_element = this.state.element;
     this_element[elemProperty] = e.target[targProperty];
 
@@ -197,6 +198,7 @@ export default class FormElementsEdit extends React.Component {
   }
 
   render() {
+ 
     if (this.state.dirty) {
       this.props.element.dirty = true;
     }
@@ -480,7 +482,9 @@ export default class FormElementsEdit extends React.Component {
                     "DefaultValue",
                     "value"
                   )}
+                 
                 >
+                   <option></option>
                   {Object.keys(JSON.parse(this.props.element.TypeDetail)).map(
                     (k, i) => {
                       return (
@@ -489,7 +493,6 @@ export default class FormElementsEdit extends React.Component {
                           key={i}
                          
                         >
-                          {" "}
                           {k}
                         </option>
                       );
