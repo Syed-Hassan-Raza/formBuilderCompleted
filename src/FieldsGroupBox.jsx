@@ -50,6 +50,9 @@ function collect(connect, monitor) {
 }
 
 class FieldsGroup extends React.Component {
+
+  isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -60,7 +63,8 @@ class FieldsGroup extends React.Component {
     store.subscribe(state => {
       let data = this.findData(state.data.FieldGroups, this.props.id);
       if (data && (data.Fields || data.FieldGroups)) {
-        this.setState({ components: [].concat(data.Fields, data.FieldGroups) });
+        if (this.isMounted)
+          this.setState({ components: [].concat(data.Fields, data.FieldGroups) });
       }
     });
   }
@@ -82,6 +86,7 @@ class FieldsGroup extends React.Component {
   }
 
   componentDidMount() {
+    this.isMounted = true;
     let data = this.findData(store.state.data.FieldGroups, this.props.id);
     if (data && (data.Fields || data.FieldGroups)) {
       this.setState({ components: [].concat(data.Fields, data.FieldGroups) });
@@ -102,6 +107,11 @@ class FieldsGroup extends React.Component {
       // shallowly, not including nested targets
     }
   }
+
+  componentWillUnmount() {
+    this.isMounted = false;
+  }
+
 
   getElement(item, index) {
     const FormElement = FormElements[item.element];
