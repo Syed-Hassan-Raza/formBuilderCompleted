@@ -900,7 +900,6 @@ class Checkboxes extends React.Component {
     this.setState({value: e.target.value});
   }
   render() {
-    debugger
     const props = {};
     props.type = "checkbox";
     props.className = "custom-control custom-checkbox";
