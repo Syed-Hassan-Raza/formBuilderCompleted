@@ -126,7 +126,6 @@ export default class FormElementsEdit extends React.Component {
   editElementProp(elemProperty, targProperty, e) {
     // elemProperty could be content or label
     // targProperty could be value or checked
-    debugger
     const this_element = this.state.element;
     this_element[elemProperty] = e.target[targProperty];
 
