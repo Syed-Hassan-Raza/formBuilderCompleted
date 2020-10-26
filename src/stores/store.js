@@ -46,12 +46,17 @@ const store = new Store({
       }
 
       this.setData(context, data, true);
-     //console.log(data)
+     console.log(data)
     },
 
     createTypeDetails(element) {
-      if (element.element === "RadioButtons" || element.Type===15)
-       element.TypeDetail = JSON.stringify(element.TypeDetail);            
+      if (element.Type===15)
+      {
+      element.TypeDetail = JSON.stringify({data:element.TypeDetail});   
+      } 
+      else if(element.Type===12){
+      element.TypeDetail = JSON.stringify(element.TypeDetail); 
+      } 
     },
 
     createChild(context, element) {

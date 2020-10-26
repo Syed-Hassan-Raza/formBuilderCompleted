@@ -10,6 +10,7 @@ import draftToHtml from "draftjs-to-html";
 import { Editor } from "react-draft-wysiwyg";
 
 import DynamicOptionList from "./dynamic-option-list";
+import AutoCompleteOptionList from "./autocomplete-option-list";
 import { get } from "./stores/requests";
 import ID from "./UUID";
 import store from "./stores/store";
@@ -641,8 +642,20 @@ export default class FormElementsEdit extends React.Component {
           </div>
         )}
 
-        {(this.props.element.Type === 12 || this.props.element.Type===15) && (
+        {this.props.element.Type === 12 && (
           <DynamicOptionList
+            showCorrectColumn={this.props.showCorrectColumn}
+            canHaveOptionCorrect={canHaveOptionCorrect}
+            canHaveOptionValue={canHaveOptionValue}
+            data={this.props.preview.state.data}
+            updateElement={this.props.updateElement}
+            preview={this.props.preview}
+            element={this.props.element}
+            key={this.props.element.TypeDetail.length}
+          />
+        )}
+         {this.props.element.Type===15 && (
+          <AutoCompleteOptionList
             showCorrectColumn={this.props.showCorrectColumn}
             canHaveOptionCorrect={canHaveOptionCorrect}
             canHaveOptionValue={canHaveOptionValue}
