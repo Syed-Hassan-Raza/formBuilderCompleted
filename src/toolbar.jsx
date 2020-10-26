@@ -65,7 +65,10 @@ export default class Toolbar extends React.Component {
       //   return  Checkboxes = { prop_place_holder_option_1: ''}
       case 'RadioButtons':
         return RadioButtons = { prop_place_holder_option_1: 'Place_holder_option_1',prop_place_holder_option_2: 'Place_holder_option_2'}
-       default:
+        case 'Autocomplete':
+        return RadioButtons = { prop_place_holder_option_1: 'Place_holder_option_1',prop_place_holder_option_2: 'Place_holder_option_2'}
+      
+        default:
         return [];
     }
   }
@@ -214,6 +217,7 @@ export default class Toolbar extends React.Component {
         label: 'Placeholder Label',
         icon: 'fas fa-list-alt',
         field_name: 'autocomplete_',
+        TypeDetail: [],
         Type: 15,
       },
       {

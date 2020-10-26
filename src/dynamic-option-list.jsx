@@ -61,11 +61,6 @@ export default class DynamicOptionList extends React.Component {
       Object.assign(_typeDetail, JSON.parse(this.state.element.TypeDetail));
       this_element.TypeDetail = null;
 
-      let found = this.found(_typeDetail, e.target.value);
-      if (found) {
-        alert("Values should be unique");
-      }
-
       Object.keys(_typeDetail).map((option, index) => {
         let val = _typeDetail[option];
         if (val) {
@@ -85,6 +80,7 @@ export default class DynamicOptionList extends React.Component {
     
   }
   found(obj, val) {
+    debugger
     let found = false;
     const propertyNames = Object.keys(obj);
 
@@ -127,7 +123,7 @@ export default class DynamicOptionList extends React.Component {
           <li>
             <div className="row">
               <div className="col-sm-6">
-                <b>Options</b>
+                <b>Options </b> <font className="text-muted">(Values should be unique)</font> 
               </div>
               {this.props.canHaveOptionValue && (
                 <div className="col-sm-2">

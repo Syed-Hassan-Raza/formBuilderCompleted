@@ -46,11 +46,11 @@ const store = new Store({
       }
 
       this.setData(context, data, true);
-     console.log(data)
+     //console.log(data)
     },
 
     createTypeDetails(element) {
-      if (element.element === "RadioButtons")
+      if (element.element === "RadioButtons" || element.Type===15)
        element.TypeDetail = JSON.stringify(element.TypeDetail);            
     },
 

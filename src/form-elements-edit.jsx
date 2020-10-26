@@ -32,6 +32,7 @@ export default class FormElementsEdit extends React.Component {
       data: this.props.data,
       dirty: false,
     };
+    console.log(this.props.element)
   }
   fieldsName = [
     { name: null, typeDetail: '' },
@@ -289,7 +290,7 @@ export default class FormElementsEdit extends React.Component {
           <div className="row">
             <div className="col-md-12">
               <label className="control-label" htmlFor="elementWidth">
-                Field Name:
+                Field Name: <font className="label-Mandatory" color="red">*</font>
               </label>
               <input
                 list="fileSelect"
@@ -640,7 +641,7 @@ export default class FormElementsEdit extends React.Component {
           </div>
         )}
 
-        {this.props.element.element === "RadioButtons" && (
+        {(this.props.element.Type === 12 || this.props.element.Type===15) && (
           <DynamicOptionList
             showCorrectColumn={this.props.showCorrectColumn}
             canHaveOptionCorrect={canHaveOptionCorrect}
