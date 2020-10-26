@@ -61,12 +61,18 @@ export default class Preview extends React.Component {
   }
 
   manualEditModeOff = () => {
+  
     const { editElement } = this.props;
+    if(editElement.Name || editElement.element==='FieldGroups'){
     if (editElement && editElement.dirty) {
       editElement.dirty = false;
       this.updateElement(editElement);
     }
     this.props.manualEditModeOff();
+  }
+  else{
+    alert('Field Name is missing.')
+  }
   }
 
   _setValue(text) {

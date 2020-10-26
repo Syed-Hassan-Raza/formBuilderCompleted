@@ -46,7 +46,10 @@ const ComponentLabel = (props) => {
         dangerouslySetInnerHTML={{ __html: myxss.process(props.data.Label) }}
       />
       {hasMandatoryLabel && (
-        <span className="label-Mandatory badge badge-danger">Mandatory</span>
+          <>
+            <span> </span>
+            <span className="label-Mandatory badge badge-danger">Mandatory</span>
+          </>
       )}
     </label>
   );
@@ -130,7 +133,7 @@ class FieldGroups extends React.Component {
 
     return (
       <div className={baseClasses}>
-        <ComponentHeader {...this.props} />
+        <ComponentHeader {...this.props} /> 
         {/* {this.props.data.Label} */}
         {<FieldsGroup {...this.props} />}
       </div>
@@ -219,7 +222,7 @@ class Calculated extends React.Component {
           dangerouslySetInnerHTML={{
             __html: myxss.process(this.props.data.Label),
           }}
-        />
+        /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
       </div>
     );
   }
@@ -248,7 +251,7 @@ class Counter extends React.Component {
           dangerouslySetInnerHTML={{
             __html: myxss.process(this.props.data.Label),
           }}
-        />
+        /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
       </div>
     );
   }
@@ -301,9 +304,9 @@ class TextInput extends React.Component {
 
     return (
       <div className={baseClasses}>
-        <ComponentHeader {...this.props} />
+        <ComponentHeader {...this.props} />  
         <div className="form-group">
-          <ComponentLabel {...this.props} />
+          <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
           <input {...props} value={this.props.data.DefaultValue} onChange={this.handleValueChange}/>
         </div>
       </div>
@@ -344,7 +347,7 @@ class NumberInput extends React.Component {
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
-          <ComponentLabel {...this.props} />
+          <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
           <input {...props} value={this.props.data.DefaultValue} onChange={this.handleValueChange}/>
         </div>
       </div>
@@ -385,7 +388,7 @@ class DecimalInput extends React.Component {
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
-          <ComponentLabel {...this.props} />
+          <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
           <input {...props} value={this.props.data.DefaultValue} onChange={this.handleValueChange}/>
         </div>
       </div>
@@ -422,7 +425,7 @@ class StaticText extends React.Component {
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
-          <ComponentLabel {...this.props} />
+          <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
         </div>
       </div>
     );
@@ -462,7 +465,7 @@ class TextArea extends React.Component {
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
-          <ComponentLabel {...this.props} />
+          <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
     <textarea {...props} value={this.props.data.DefaultValue} onChange={this.handleValueChange} />
         </div>
       </div>
@@ -503,7 +506,7 @@ class TimePicker extends React.Component {
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
-          <ComponentLabel {...this.props} />
+          <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
           <input {...props} value="hh:mm:ss"onChange={this.handleValueChange} />
         </div>
       </div>
@@ -541,7 +544,7 @@ class DatePicker extends React.Component {
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
-          <ComponentLabel {...this.props} />
+          <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
           <div>
             <input {...props} value="mm/dd/yyyy" onChange={this.handleValueChange}/>
           </div>
@@ -580,7 +583,7 @@ class Dropdown extends React.Component {
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
-          <ComponentLabel {...this.props} />
+          <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
           <select {...props}>
             {/* {this.props.data.options.map((option) => {
               const this_key = `preview_${option.key}`;
@@ -626,7 +629,7 @@ class Assignee extends React.Component {
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
-          <ComponentLabel {...this.props} />
+          <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
           <select {...props}>
             {/* {this.props.data.options.map((option) => {
               const this_key = `preview_${option.key}`;
@@ -672,7 +675,7 @@ class Autocomplete extends React.Component {
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
-          <ComponentLabel {...this.props} />
+          <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
           <select {...props}>
             {/* {this.props.data.options.map((option) => {
               const this_key = `preview_${option.key}`;
@@ -740,7 +743,7 @@ class Signature extends React.Component {
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
-          <ComponentLabel {...this.props} />
+          <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
           {this.props.ReadOnly === true || !!sourceDataURL ? (
             <img src={sourceDataURL} />
           ) : (
@@ -1333,7 +1336,7 @@ class Barcode extends React.Component {
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
-          <ComponentLabel {...this.props} />
+          <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
           <input {...props} />
         </div>
       </div>

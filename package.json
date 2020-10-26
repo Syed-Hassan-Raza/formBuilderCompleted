@@ -1,6 +1,6 @@
 {
   "name": "react-form-builder2-workaware",
-  "version": "0.5.20",
+  "version": "0.0.3",
   "description": "A complete form builder for react.",
   "main": "lib/index.js",
   "license": "MIT",
@@ -42,7 +42,8 @@
     "react-signature-canvas": "^1.0.3",
     "react-star-rating": "^1.4.2",
     "react-textarea-autosize": "^7.1.2",
-    "xss": "^1.0.6"
+    "xss": "^1.0.6",
+    "jquery": "^3.5.1"
   },
   "peerDependencies": {
     "react": ">=16.8.6",

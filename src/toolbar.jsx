@@ -113,7 +113,7 @@ export default class Toolbar extends React.Component {
         name: 'Decimal Entry',
         label: 'Placeholder Label',
         icon: 'fas fa-circle',
-        field_name: 'Decimal',
+        field_name: 'decimal_',
         Type: 3,
       },
 
@@ -249,7 +249,6 @@ export default class Toolbar extends React.Component {
      id: ID.uuid(),
      element: item.element || item.key,
 
-      Name: "",
       Label: item.label,
       Type: item.Type,
       //Fields: item.Fields,
@@ -257,7 +256,7 @@ export default class Toolbar extends React.Component {
     };
 
     if(item.key!=='FieldGroups'){
-     elementOptions.TypeDetail=null,
+     elementOptions.TypeDetail='',
      elementOptions.DefaultValue='',
      elementOptions.MaxWidth=null,
      elementOptions.MinWidth=null,
