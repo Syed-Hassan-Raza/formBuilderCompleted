@@ -33,7 +33,7 @@ export default class FormElementsEdit extends React.Component {
       data: this.props.data,
       dirty: false,
     };
-    console.log(this.props.element)
+    //console.log(this.props.element)
   }
   fieldsName = [
     { name: null, typeDetail: '' },

@@ -89,7 +89,7 @@ export default class Toolbar extends React.Component {
         icon: 'fa fa-object-group',
         label: 'Placeholder Label',
         static: true,
-        Type: null,
+        Type: 22,
         Fields: [],
         FieldGroups: [],
       },

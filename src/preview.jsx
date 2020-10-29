@@ -7,6 +7,7 @@ import update from 'immutability-helper';
 import store from './stores/store';
 import FormElementsEdit from './form-elements-edit';
 import SortableFormElements from './sortable-form-elements';
+import getElementName from './element-mapper'
 
 const { PlaceHolder } = SortableFormElements;
 
@@ -63,16 +64,20 @@ export default class Preview extends React.Component {
   manualEditModeOff = () => {
   
     const { editElement } = this.props;
-   // if(editElement.Name || editElement.element==='FieldGroups'){
+
+    if (editElement == null)
+      return;
+
+    if(editElement.Name || editElement.element==='FieldGroups'){
     if (editElement && editElement.dirty) {
       editElement.dirty = false;
       this.updateElement(editElement);
     }
     this.props.manualEditModeOff();
-  //}
- // else{
-   // alert('Field Name is missing.')
- // }
+  }
+  else{
+   alert('Field Name is missing.')
+  }
   }
 
   _setValue(text) {
@@ -142,7 +147,6 @@ export default class Preview extends React.Component {
   }
 
   insertCard(item, hoverIndex) {
-    debugger
     //const { data } = this.state;
     //const { data } = store.state;
     //data.splice(hoverIndex, 0, item);
@@ -151,7 +155,6 @@ export default class Preview extends React.Component {
   }
 
   moveCard(dragIndex, hoverIndex) {
-    debugger
     const { data } = this.state;
     const dragCard = data[dragIndex];
     this.saveData(dragCard, dragIndex, hoverIndex);
@@ -173,7 +176,9 @@ export default class Preview extends React.Component {
   }
 
   getElement(item, index) {
-    const SortableFormElement = SortableFormElements[item.element];
+    const elementName = getElementName(item.Type);
+    item.element = elementName;
+    const SortableFormElement = SortableFormElements[elementName];
     return <SortableFormElement id={item.id} seq={this.seq} index={index} moveCard={this.moveCard} insertCard={this.insertCard} mutable={false} parent={this.props.parent} editModeOn={this.props.editModeOn} isDraggable={true} key={item.id} sortData={item.id} data={item} _onDestroy={this._onDestroy} />;
   }
   format(){

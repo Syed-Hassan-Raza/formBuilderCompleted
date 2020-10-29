@@ -7,6 +7,8 @@ import { SelectionState } from "draft-js";
 import { DropTarget } from 'react-dnd'
 import { findDOMNode } from 'react-dom'
 import store from './stores/store';
+import getElementName from './element-mapper'
+
 const style = {
 
   boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
@@ -114,7 +116,9 @@ class FieldsGroup extends React.Component {
 
 
   getElement(item, index) {
-    const FormElement = FormElements[item.element];
+    const elementName = getElementName(item.Type);
+    item.element = elementName;
+    const FormElement = FormElements[elementName];
     //return <FormElement id={item.id} seq={Math.random()} index={index} moveCard={moveCard} insertCard={insertCard} mutable={false} parent={this.props.parent} editModeOn={() => {}} isDraggable={true} key={item.id} sortData={item.id} data={item} _onDestroy={_onDestroy} />;
     return <FormElement id={item.id} seq={Math.random()} index={index} moveCard={this.moveCard} insertCard={this.insertCard} mutable={false} parent={this.props.parent} editModeOn={this.props.editModeOn} isDraggable={true} key={item.id} sortData={item.id} data={item} _onDestroy={this.props._onDestroy} />;
   }

@@ -54,7 +54,6 @@ export default class AutoCompleteOptionList extends React.Component {
     return found;
   }
   addOption() {
-      debugger
     const this_element = this.state.element;
     const _typeDetail = JSON.parse(this.state.element.TypeDetail);
 
@@ -66,7 +65,7 @@ export default class AutoCompleteOptionList extends React.Component {
   }
 
   removeOption(index) {
-      debugger
+      
     const this_element = this.state.element;
     const _typeDetail = JSON.parse(this.state.element.TypeDetail);
     //this_element.TypeDetail.splice(index, 1);
