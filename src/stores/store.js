@@ -1,5 +1,6 @@
 import Store from "beedle";
 import { get, post } from "./requests";
+import ID from '../UUID';
 
 let _saveUrl;
 let _onPost;
@@ -15,7 +16,10 @@ const store = new Store({
     load(context, { loadUrl, saveUrl, data }) {
       _saveUrl = saveUrl;
       if (_onLoad) {
-        _onLoad().then((x) => this.setData(context, x));
+        _onLoad().then((x) => {
+          this.assignIds(x);
+          this.setData(context, x);
+        });
       } else if (loadUrl) {
         get(loadUrl).then((x) => {
           if (data && data.length > 0 && x.length === 0) {
@@ -28,10 +32,21 @@ const store = new Store({
       }
     },
 
+    assignIds(data) {
+      data.Fields.forEach((item) => {
+        item.id = ID.uuid();
+      });
+
+      if (data.FieldGroups && data.FieldGroups.length > 0) {
+        data.FieldGroups.forEach(item => {
+          item.id = ID.uuid();
+          this.assignIds(item);
+        });
+      }
+    },
+
     create(context, element) {
       const { data } = context.state;
-      
-
       if (element.parentId) {
         this.createTypeDetails(element.item);
         this.addChild(data.FieldGroups, element);
