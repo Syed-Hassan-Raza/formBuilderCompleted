@@ -189,6 +189,9 @@ export default class Preview extends React.Component {
     if (this.props.editMode) { classes += ' is-editing'; }
     const fields = this.state.data.Fields ? this.state.data.Fields.filter(x => !!x) : [];
     const fieldGroups = this.state.data.FieldGroups ? this.state.data.FieldGroups.filter(x => !!x) : [];
+    fieldGroups.forEach(item => {
+      item.Type = "FieldGroups";
+    });
     const data = [].concat(fields, fieldGroups)
     const items = data.map((item, index) => this.getElement(item, index));
 

@@ -40,8 +40,6 @@ export default function getElementName(type) {
             return "collapsible matrix";
         case 21:
             return "options matrix";
-        case 22:
-            return "FieldGroups";
         case 30:
             return "StaticText";
         case 100:

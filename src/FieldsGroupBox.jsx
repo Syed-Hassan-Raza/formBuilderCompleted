@@ -65,8 +65,15 @@ class FieldsGroup extends React.Component {
     store.subscribe(state => {
       let data = this.findData(state.data.FieldGroups, this.props.id);
       if (data && (data.Fields || data.FieldGroups)) {
-        if (this.isMounted)
-          this.setState({ components: [].concat(data.Fields, data.FieldGroups) });
+        if (this.isMounted) {
+          let fieldGroups = data.FieldGroups ? data.FieldGroups.filter(x => !!x) : [];
+
+          fieldGroups.forEach(item => {
+            item.Type = "FieldGroups";
+          });
+
+          this.setState({ components: [].concat(data.Fields, fieldGroups) });
+        }
       }
     });
   }
@@ -91,7 +98,13 @@ class FieldsGroup extends React.Component {
     this.isMounted = true;
     let data = this.findData(store.state.data.FieldGroups, this.props.id);
     if (data && (data.Fields || data.FieldGroups)) {
-      this.setState({ components: [].concat(data.Fields, data.FieldGroups) });
+      let fieldGroups = data.FieldGroups ? data.FieldGroups.filter(x => !!x) : [];
+
+      fieldGroups.forEach(item => {
+        item.Type = "FieldGroups";
+      });
+
+      this.setState({ components: [].concat(data.Fields, fieldGroups) });
     }
   }
 
