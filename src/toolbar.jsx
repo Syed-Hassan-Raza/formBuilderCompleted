@@ -32,21 +32,7 @@ export default class Toolbar extends React.Component {
     
     this.create = this.create.bind(this);
   }
-  sortBy(key) {
-    debugger
-    let arrayCopy = this.state.items;
-    if(this.state.sortBy==true){
-      arrayCopy.sort(this.compareValues(key,'asc'));
-      this.setState({items: arrayCopy});
 
-      this.setState({sortBy: false});
-    }
-    else{
-      arrayCopy.sort(this.compareValues(key,'desc'));
-      this.setState({items: arrayCopy});
-      this.setState({sortBy:true});
-    }
-  }
   componentDidMount() {
     this.isMounted = true;
   }
@@ -395,6 +381,18 @@ export default class Toolbar extends React.Component {
         (order === 'desc') ? (comparison * -1) : comparison
       );
     };
+  }
+
+  sortBy(key) {
+    let arrayCopy = this.state.items;
+    if(this.state.sortBy==true){
+      arrayCopy.sort(this.compareValues(key,'asc'));
+      this.setState({items: arrayCopy,sortBy: false});
+    }
+    else{
+      arrayCopy.sort(this.compareValues(key,'desc'));
+      this.setState({items: arrayCopy,sortBy:true});
+    }
   }
 
   render() {
