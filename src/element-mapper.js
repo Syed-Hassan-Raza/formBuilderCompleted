@@ -15,7 +15,7 @@ export default function getElementName(type) {
         case 7:
             return "TimePicker";
         case 8:
-            return "action";
+            return "Action";
         case 9:
             return "TextArea";
         case 10:

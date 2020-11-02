@@ -15,10 +15,14 @@ export default class Toolbar extends React.Component {
 
   constructor(props) {
     super(props);
-
+    debugger
     const items = (this.props.items) ? this.props.items : this._defaultItems();
+    
+   
+
     this.state = {
       items,
+      sortBy:false,
     };
 
     store.subscribe(state => {
@@ -28,7 +32,21 @@ export default class Toolbar extends React.Component {
     
     this.create = this.create.bind(this);
   }
+  sortBy(key) {
+    debugger
+    let arrayCopy = this.state.items;
+    if(this.state.sortBy==true){
+      arrayCopy.sort(this.compareValues(key,'asc'));
+      this.setState({items: arrayCopy});
 
+      this.setState({sortBy: false});
+    }
+    else{
+      arrayCopy.sort(this.compareValues(key,'desc'));
+      this.setState({items: arrayCopy});
+      this.setState({sortBy:true});
+    }
+  }
   componentDidMount() {
     this.isMounted = true;
   }
@@ -221,6 +239,14 @@ export default class Toolbar extends React.Component {
         Type: 15,
       },
       {
+        key: 'Action',
+        name: 'Action',
+        label: 'Placeholder Label',
+        icon: 'fa fa-bolt',
+        field_name: 'action_',
+        Type: 8,
+      },
+      {
         key: 'StaticText',
         name: 'Static text',
         label: 'Placeholder Label',
@@ -252,7 +278,7 @@ export default class Toolbar extends React.Component {
     const elementOptions = {
      id: ID.uuid(),
      element: item.element || item.key,
-
+      Name:'',
       Label: item.label,
       Type: item.Type,
       //Fields: item.Fields,
@@ -339,7 +365,6 @@ export default class Toolbar extends React.Component {
         elementOptions.TypeDetail = typeDetail;
       }
     }
-
     return elementOptions;
   }
 
@@ -348,10 +373,35 @@ export default class Toolbar extends React.Component {
     store.dispatch('create', this.create(item));
   }
 
+   compareValues(key, order = 'asc') {
+    return function innerSort(a, b) {
+      if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+        // property doesn't exist on either object
+        return 0;
+      }
+  
+      const varA = (typeof a[key] === 'string')
+        ? a[key].toUpperCase() : a[key];
+      const varB = (typeof b[key] === 'string')
+        ? b[key].toUpperCase() : b[key];
+  
+      let comparison = 0;
+      if (varA > varB) {
+        comparison = 1;
+      } else if (varA < varB) {
+        comparison = -1;
+      }
+      return (
+        (order === 'desc') ? (comparison * -1) : comparison
+      );
+    };
+  }
+
   render() {
     return (
       <div className="react-form-builder-toolbar float-right">
         <h4>Toolbox</h4>
+    <button type="button" class="btn btn-link"  onClick={() => this.sortBy('key')}> {this.state.sortBy? <i className="fas fa-sort-alpha-down-alt"></i>: <i className="fas fa-sort-alpha-up"></i>}</button> 
         <ul>
           {
             this.state.items.map((item) => (<ToolbarItem data={item} key={item.key} onClick={this._onClick.bind(this, item)} onCreate={this.create} />))

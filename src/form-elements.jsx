@@ -257,6 +257,35 @@ class Counter extends React.Component {
   }
 }
 
+class Action extends React.Component {
+  render() {
+    let classNames = "static";
+    if (this.props.data.bold) {
+      classNames += " bold";
+    }
+    if (this.props.data.italic) {
+      classNames += " italic";
+    }
+
+    let baseClasses = "SortableItem rfb-item";
+    if (this.props.data.pageBreakBefore) {
+      baseClasses += " alwaysbreak";
+    }
+
+    return (
+      <div className={baseClasses}>
+        <ComponentHeader {...this.props} />
+        <label
+          className={classNames}
+          dangerouslySetInnerHTML={{
+            __html: myxss.process(this.props.data.Label),
+          }}
+        /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
+      </div>
+    );
+  }
+}
+
 class LineBreak extends React.Component {
   render() {
     let baseClasses = "SortableItem rfb-item";
@@ -1367,6 +1396,7 @@ FormElements.Barcode = Barcode;
 FormElements.DecimalInput = DecimalInput;
 FormElements.Assignee = Assignee;
 FormElements.StaticText = StaticText;
+FormElements.Action = Action;
 FormElements.Calculated = Calculated;
 FormElements.Counter = Counter;
 FormElements.Autocomplete = Autocomplete;

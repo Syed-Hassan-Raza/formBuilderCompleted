@@ -32,6 +32,7 @@ export default class FormElementsEdit extends React.Component {
       element: this.props.element,
       data: this.props.data,
       dirty: false,
+      
     };
     //console.log(this.props.element)
   }
@@ -291,7 +292,7 @@ export default class FormElementsEdit extends React.Component {
           <div className="row">
             <div className="col-md-12">
               <label className="control-label" htmlFor="elementWidth">
-                Field Name: <font className="label-Mandatory" color="red">*</font>
+                Field Name: {this.props.element.element!=="FieldGroups"&& (<font className="label-Mandatory" color="red"> * </font>)}
               </label>
               <input
                 list="fileSelect"
@@ -504,8 +505,10 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         )}
-        {this.props.element.element !== "RadioButtons" &&
-          this.props.element.element !== "Checkboxes" && (
+        {
+          this.props.element.element !== "RadioButtons" &&
+          this.props.element.element !== "Checkboxes" &&
+          this.props.element.element !== "Action" && (
             <div className="form-group">
               <br />
               <div className="row">
