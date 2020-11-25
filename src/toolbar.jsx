@@ -15,7 +15,6 @@ export default class Toolbar extends React.Component {
 
   constructor(props) {
     super(props);
-    debugger
     const items = (this.props.items) ? this.props.items : this._defaultItems();
     
    
@@ -71,7 +70,9 @@ export default class Toolbar extends React.Component {
         return values = { prop_place_holder_option_1: 'Place_holder_option_1',prop_place_holder_option_2: 'Place_holder_option_2'}
         case 'Autocomplete':
         return values = ['Place_holder_option_1','Place_holder_option_2']
-      
+        case 'Dropdown':
+          return values = ['Place_holder_option_1','Place_holder_option_2']
+
         default:
         return [];
     }
@@ -141,6 +142,7 @@ export default class Toolbar extends React.Component {
         icon: 'far fa-caret-square-down',
         label: 'Placeholder Label',
         field_name: 'dropdown_',
+        TypeDetail: [],
         Type: 5,
       },
       {
@@ -166,15 +168,11 @@ export default class Toolbar extends React.Component {
 
       {
         key: 'DatePicker',
-        canDefaultToday: true,
-        dateFormat: 'MM/dd/yyyy',
-        timeFormat: 'hh:mm aa',
-        showTimeSelect: false,
-        showTimeSelectOnly: false,
         name: 'Date',
         icon: 'far fa-calendar-alt',
         label: 'Placeholder Label',
         field_name: 'date_picker_',
+        TypeDetail:'yyyy/MM/dd',
         Type: 4,
       },
       {
@@ -183,6 +181,7 @@ export default class Toolbar extends React.Component {
         label: 'Placeholder Label',
         icon: 'fas fa-clock',
         field_name: 'time_',
+        TypeDetail:'hh:mm:ss',
         Type: 7,
       },
       {
@@ -273,7 +272,7 @@ export default class Toolbar extends React.Component {
 
     if(item.key!=='FieldGroups'){
      elementOptions.TypeDetail='',
-     elementOptions.DefaultValue='',
+    // elementOptions.DefaultValue='',
      elementOptions.MaxWidth=null,
      elementOptions.MinWidth=null,
      elementOptions.ReadOnly= false,
@@ -283,7 +282,10 @@ export default class Toolbar extends React.Component {
      elementOptions.States={},
      elementOptions.ExternalAutoFill=[]
     }
-
+    
+if(item.Type===7 || item.Type===4){
+  elementOptions.DefaultValue="NOW";
+}
    // if(item.canHaveTypeDetail){
     //    elementOptions.TypeDetail=item.TypeDetail;
   //}
@@ -336,12 +338,6 @@ export default class Toolbar extends React.Component {
 
     if (item.label) { elementOptions.Label = item.label; }
    
-    if (item.key === 'DatePicker') {
-      elementOptions.dateFormat = item.dateFormat;
-      elementOptions.timeFormat = item.timeFormat;
-      elementOptions.showTimeSelect = item.showTimeSelect;
-      elementOptions.showTimeSelectOnly = item.showTimeSelectOnly;
-    }
     if (item.TypeDetail) {
       if (item.TypeDetail.length > 0) {
         elementOptions.TypeDetail = item.TypeDetail;
@@ -399,8 +395,8 @@ export default class Toolbar extends React.Component {
     return (
       <div className="react-form-builder-toolbar float-right">
         <h4>Toolbox</h4>
-    <button type="button" class="btn btn-link"  onClick={() => this.sortBy('key')}> {this.state.sortBy? <i className="fas fa-sort-alpha-down-alt"></i>: <i className="fas fa-sort-alpha-up"></i>}</button> 
-        <ul>
+ {/* <button type="button" class="btn btn-link"  onClick={() => this.sortBy('key')}> {this.state.sortBy? <i className="fas fa-sort-alpha-down-alt"></i>: <i className="fas fa-sort-alpha-up"></i>}</button>  */}
+     <ul>
           {
             this.state.items.map((item) => (<ToolbarItem data={item} key={item.key} onClick={this._onClick.bind(this, item)} onCreate={this.create} />))
           }

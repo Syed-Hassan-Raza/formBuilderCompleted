@@ -32,65 +32,68 @@ export default class FormElementsEdit extends React.Component {
       element: this.props.element,
       data: this.props.data,
       dirty: false,
-      
+      picklistItems: this.props.picklistItems,
     };
-    //console.log(this.props.element)
   }
+
+  componentDidMount() {}
+
+  formats = ["html", "html64", "md", "md64"];
   fieldsName = [
-    { name: null, typeDetail: '' },
-    { name: "sm_asset_category", typeDetail: '' },
-    { name: "sm_asset_child_site", typeDetail: '' },
-    { name: "sm_asset_child_site", typeDetail: '' },
-    { name: "sm_asset_location", typeDetail: '' },
-    { name: "sm_asset_machinehours", typeDetail: '' },
-    { name: "sm_asset_make", typeDetail: '' },
-    { name: "sm_asset_model", typeDetail: '' },
-    { name: "sm_asset_name", typeDetail: '' },
-    { name: "sm_asset_odometer", typeDetail: '' },
+    { name: null, typeDetail: "" },
+    { name: "sm_asset_category", typeDetail: "" },
+    { name: "sm_asset_child_site", typeDetail: "" },
+    { name: "sm_asset_child_site", typeDetail: "" },
+    { name: "sm_asset_location", typeDetail: "" },
+    { name: "sm_asset_machinehours", typeDetail: "" },
+    { name: "sm_asset_make", typeDetail: "" },
+    { name: "sm_asset_model", typeDetail: "" },
+    { name: "sm_asset_name", typeDetail: "" },
+    { name: "sm_asset_odometer", typeDetail: "" },
     { name: "sm_asset_odometerunit", typeDetail: 9 },
-    { name: "sm_asset_operator", typeDetail: '' },
-    { name: "sm_asset_operator_out", typeDetail: '' },
-    { name: "sm_asset_serialnumber", typeDetail: '' },
-    { name: "sm_asset_site_location", typeDetail: '' },
-    { name: "sm_populate_best_cell_phone", typeDetail: '' },
-    { name: "sm_populate_best_email", typeDetail: '' },
+    { name: "sm_asset_operator", typeDetail: "" },
+    { name: "sm_asset_operator_out", typeDetail: "" },
+    { name: "sm_asset_serialnumber", typeDetail: "" },
+    { name: "sm_asset_site_location", typeDetail: "" },
+    { name: "sm_populate_best_cell_phone", typeDetail: "" },
+    { name: "sm_populate_best_email", typeDetail: "" },
     { name: "sm_populate_client", typeDetail: 6 },
-    { name: "sm_populate_date", typeDetail: '' },
-    { name: "sm_populate_datetime", typeDetail: '' },
+    { name: "sm_populate_date", typeDetail: "" },
+    { name: "sm_populate_datetime", typeDetail: "" },
     { name: "sm_populate_department", typeDetail: 2 },
     { name: "sm_populate_division", typeDetail: 3 },
     { name: "sm_populate_job_classification", typeDetail: 1 },
     { name: "sm_populate_location", typeDetail: 4 },
-    { name: "sm_populate_name", typeDetail: '' },
-    { name: "sm_populate_personal_cell_phone", typeDetail: '' },
-    { name: "sm_populate_personal_email", typeDetail: '' },
-    { name: "sm_populate_priority", typeDetail: '' },
+    { name: "sm_populate_name", typeDetail: "" },
+    { name: "sm_populate_personal_cell_phone", typeDetail: "" },
+    { name: "sm_populate_personal_email", typeDetail: "" },
+    { name: "sm_populate_priority", typeDetail: "" },
     { name: "sm_populate_subcontractor", typeDetail: 19 },
-    { name: "sm_populate_time", typeDetail: '' },
-    { name: "sm_populate_title", typeDetail: '' },
-    { name: "sm_populate_update_date", typeDetail: '' },
-    { name: "sm_populate_update_name", typeDetail: '' },
-    { name: "sm_populate_work_cell_phone", typeDetail: '' },
-    { name: "sm_populate_work_email", typeDetail: '' },
-    { name: "sm_populate_latitude", typeDetail: '' },
-    { name: "sm_populate_longitude", typeDetail: '' },
-    { name: "sm_shapefile_hectare", typeDetail: '' },
-    { name: "sm_shapefile_line", typeDetail: '' },
-    { name: "sm_shapefile_name", typeDetail: '' },
-    { name: "sm_shapefile_pline_id", typeDetail: '' },
-    { name: "sm_shapefile_<name>", typeDetail: '' },
+    { name: "sm_populate_time", typeDetail: "" },
+    { name: "sm_populate_title", typeDetail: "" },
+    { name: "sm_populate_update_date", typeDetail: "" },
+    { name: "sm_populate_update_name", typeDetail: "" },
+    { name: "sm_populate_work_cell_phone", typeDetail: "" },
+    { name: "sm_populate_work_email", typeDetail: "" },
+    { name: "sm_populate_latitude", typeDetail: "" },
+    { name: "sm_populate_longitude", typeDetail: "" },
+    { name: "sm_shapefile_hectare", typeDetail: "" },
+    { name: "sm_shapefile_line", typeDetail: "" },
+    { name: "sm_shapefile_name", typeDetail: "" },
+    { name: "sm_shapefile_pline_id", typeDetail: "" },
+    { name: "sm_shapefile_<name>", typeDetail: "" },
     { name: "sm_tag_identifier", typeDetail: 2 },
-    { name: "sm_usershape_segment_end_lat", typeDetail: '' },
-    { name: "sm_usershape_segment_end_lng", typeDetail: '' },
-    { name: "sm_usershape_segment_start_lat", typeDetail: '' },
-    { name: "sm_usershape_segment_start_lng", typeDetail: '' },
-    { name: "sm_usershape_segmentlength", typeDetail: '' },
-    { name: "sm_usershape_shapearea", typeDetail: '' },
-    { name: "sm_usershape_shapelength", typeDetail: '' },
-    { name: "sm_auto_formid", typeDetail: '' },
-    { name: "sm_populate_subject", typeDetail: '' },
-    { name: "sm_populate_assignee", typeDetail: '' },
-    { name: "sm_populate_attendee", typeDetail: '' },
+    { name: "sm_usershape_segment_end_lat", typeDetail: "" },
+    { name: "sm_usershape_segment_end_lng", typeDetail: "" },
+    { name: "sm_usershape_segment_start_lat", typeDetail: "" },
+    { name: "sm_usershape_segment_start_lng", typeDetail: "" },
+    { name: "sm_usershape_segmentlength", typeDetail: "" },
+    { name: "sm_usershape_shapearea", typeDetail: "" },
+    { name: "sm_usershape_shapelength", typeDetail: "" },
+    { name: "sm_auto_formid", typeDetail: "" },
+    { name: "sm_populate_subject", typeDetail: "" },
+    { name: "sm_populate_assignee", typeDetail: 13 },
+    { name: "sm_populate_attendee", typeDetail: "" },
   ];
   toggleRequired() {
     // const this_element = this.state.element;
@@ -200,7 +203,6 @@ export default class FormElementsEdit extends React.Component {
   }
 
   render() {
- 
     if (this.state.dirty) {
       this.props.element.dirty = true;
     }
@@ -292,7 +294,13 @@ export default class FormElementsEdit extends React.Component {
           <div className="row">
             <div className="col-md-12">
               <label className="control-label" htmlFor="elementWidth">
-                Field Name: {this.props.element.element!=="FieldGroups"&& (<font className="label-Mandatory" color="red"> * </font>)}
+                Field Name:{" "}
+                {this.props.element.element !== "FieldGroups" && (
+                  <font className="label-Mandatory" color="red">
+                    {" "}
+                    *{" "}
+                  </font>
+                )}
               </label>
               <input
                 list="fileSelect"
@@ -448,6 +456,34 @@ export default class FormElementsEdit extends React.Component {
           </div>
         )}
 
+        {(this.props.element.Type === 4 || this.props.element.Type === 7) && (
+          <div className="form-group">
+            <div className="row">
+              <div className="col-sm-6">
+                <label className="control-label" htmlFor="elementWidth">
+                  Format:
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder={
+                    this.props.element.Type === 4
+                      ? "e.g. dd/MM/yyyy"
+                      : "e.g. hh:mm:ss"
+                  }
+                  defaultValue={this.props.element.TypeDetail}
+                  onBlur={this.updateElement.bind(this)}
+                  onChange={this.editElementProp.bind(
+                    this,
+                    "TypeDetail",
+                    "value"
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         {this.props.element.element === "Checkboxes" && (
           <div className="form-group">
             <div className="custom-control custom-checkbox">
@@ -468,6 +504,68 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         )}
+
+        {this.props.element.Type === 30 && (
+          <div className="form-group">
+            <div className="row">
+              <div className="col-sm-6">
+                <label className="control-label" htmlFor="defaultValue">
+                  Format:
+                </label>
+                <select
+                  id="defaultValue"
+                  className="form-control"
+                  onBlur={this.updateElement.bind(this)}
+                  onChange={this.editElementProp.bind(
+                    this,
+                    "TypeDetail",
+                    "value"
+                  )}
+                >
+                  <option></option>
+                  {this.formats.map((k, i) => {
+                    return (
+                      <option value={k} key={i}>
+                        {k}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+        {this.props.element.Type === 5 && (
+          <div className="form-group">
+            <div className="row">
+              <div className="col-sm-6">
+                <label className="control-label" htmlFor="defaultValue">
+                  PickList:
+                </label>
+                <select
+                  id="defaultValue"
+                  className="form-control"
+                  onBlur={this.updateElement.bind(this)}
+                  onChange={this.editElementProp.bind(
+                    this,
+                    "TypeDetail",
+                    "value"
+                  )}
+                >
+                  <option></option>
+                  {Object.keys(this.state.picklistItems).map((obj, i) => {
+                    return (
+                      <option value={this.state.picklistItems[obj].Key} key={i}>
+                        {this.state.picklistItems[obj].Value}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+
         {this.props.element.element === "RadioButtons" && (
           <div className="form-group">
             <div className="row">
@@ -475,7 +573,8 @@ export default class FormElementsEdit extends React.Component {
                 <label className="control-label" htmlFor="defaultValue">
                   Default Value:
                 </label>
-                <select value= {this.props.element.DefaultValue}
+                <select
+                  value={this.props.element.DefaultValue}
                   id="defaultValue"
                   className="form-control"
                   onBlur={this.updateElement.bind(this)}
@@ -484,17 +583,12 @@ export default class FormElementsEdit extends React.Component {
                     "DefaultValue",
                     "value"
                   )}
-                 
                 >
-                   <option></option>
+                  <option></option>
                   {Object.keys(JSON.parse(this.props.element.TypeDetail)).map(
                     (k, i) => {
                       return (
-                        <option
-                          value={k}
-                          key={i}
-                         
-                        >
+                        <option value={k} key={i}>
                           {k}
                         </option>
                       );
@@ -505,8 +599,7 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         )}
-        {
-          this.props.element.element !== "RadioButtons" &&
+        {this.props.element.element !== "RadioButtons" &&
           this.props.element.element !== "Checkboxes" &&
           this.props.element.element !== "Action" && (
             <div className="form-group">
@@ -645,7 +738,7 @@ export default class FormElementsEdit extends React.Component {
           </div>
         )}
 
-        {this.props.element.Type === 12 && (
+        {(this.props.element.Type === 12 || this.props.element.Type === 5) && (
           <DynamicOptionList
             showCorrectColumn={this.props.showCorrectColumn}
             canHaveOptionCorrect={canHaveOptionCorrect}
@@ -657,7 +750,7 @@ export default class FormElementsEdit extends React.Component {
             key={this.props.element.TypeDetail.length}
           />
         )}
-         {this.props.element.Type===15 && (
+        {this.props.element.Type === 15 && (
           <AutoCompleteOptionList
             showCorrectColumn={this.props.showCorrectColumn}
             canHaveOptionCorrect={canHaveOptionCorrect}
