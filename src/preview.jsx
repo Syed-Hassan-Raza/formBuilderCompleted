@@ -8,6 +8,7 @@ import store from './stores/store';
 import FormElementsEdit from './form-elements-edit';
 import SortableFormElements from './sortable-form-elements';
 import getElementName from './element-mapper'
+import apiService from './stores/apiService';
 
 const { PlaceHolder } = SortableFormElements;
 
@@ -24,6 +25,7 @@ export default class Preview extends React.Component {
     this.state = {
       data: [],
       answer_data: {},
+      picklistItems:[],
     };
     this.seq = 0;
 
@@ -35,6 +37,7 @@ export default class Preview extends React.Component {
 
     this.moveCard = this.moveCard.bind(this);
     this.insertCard = this.insertCard.bind(this);
+    this.apiService=new apiService();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -48,6 +51,11 @@ export default class Preview extends React.Component {
     const { data, url, saveUrl } = this.props;
     store.dispatch('load', { loadUrl: url, saveUrl, data: data || [] });
     document.addEventListener('mousedown', this.editModeOff);
+    this.apiService.picklistItems.then(response=>{
+          this.setState({
+            picklistItems: response
+      })
+    });
   }
 
   componentWillUnmount() {
@@ -200,7 +208,7 @@ export default class Preview extends React.Component {
         
         <div className="edit-form" ref={this.editForm}>
           { this.props.editElement !== null &&
-            <FormElementsEdit showCorrectColumn={this.props.showCorrectColumn} files={this.props.files} manualEditModeOff={this.manualEditModeOff} preview={this} element={this.props.editElement} updateElement={this.updateElement} />
+            <FormElementsEdit showCorrectColumn={this.props.showCorrectColumn} picklistItems={this.state.picklistItems} files={this.props.files} manualEditModeOff={this.manualEditModeOff} preview={this} element={this.props.editElement} updateElement={this.updateElement} />
           }
         </div>
         <div className="Sortable">{items}

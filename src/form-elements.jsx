@@ -536,7 +536,7 @@ class TimePicker extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
-          <input {...props} value="hh:mm:ss"onChange={this.handleValueChange} />
+          <input {...props} value={this.props.data.TypeDetail} onChange={this.handleValueChange} />
         </div>
       </div>
     );
@@ -555,7 +555,7 @@ class DatePicker extends React.Component {
 
   render() {
     const props = {};
-    props.type = "date";
+    props.type = "text";
     props.className = "form-control";
     props.name = this.props.data.field_name;
 
@@ -568,14 +568,16 @@ class DatePicker extends React.Component {
     if (this.props.data.pageBreakBefore) {
       baseClasses += " alwaysbreak";
     }
-
+    if (this.props.ReadOnly) {
+      props.disabled = "disabled";
+    }
     return (
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
           <div>
-            <input {...props} value="mm/dd/yyyy" onChange={this.handleValueChange}/>
+            <input {...props} value={this.props.data.TypeDetail} onChange={this.handleValueChange}/>
           </div>
         </div>
       </div>
