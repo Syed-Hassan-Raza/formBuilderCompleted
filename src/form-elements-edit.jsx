@@ -15,6 +15,7 @@ import { get } from "./stores/requests";
 import ID from "./UUID";
 import store from "./stores/store";
 import { parseJSON } from "date-fns";
+import CondtionalFlowList from "./CondtionalFlowList"
 
 const toolbar = {
   options: [],
@@ -668,6 +669,14 @@ export default class FormElementsEdit extends React.Component {
             element={this.props.element}
             key={this.props.element.TypeDetail.length}
           />
+        )}
+        {this.props.element.hasOwnProperty("ConditionalFlow") && (
+          /*<ul>
+            {this.props.element.ConditionalFlow.entries[0].then.show.map(i => {
+              return <li>{i}</li>
+            })}
+          </ul>*/
+          <CondtionalFlowList ConditionalFlow={this.props.element.ConditionalFlow}></CondtionalFlowList>
         )}
       </div>
     );
