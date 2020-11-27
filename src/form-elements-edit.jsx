@@ -739,7 +739,7 @@ export default class FormElementsEdit extends React.Component {
           </div>
         )}
 
-        {(this.props.element.Type === 12 || this.props.element.Type === 5) && (
+        {this.props.element.Type === 12 && (
           <DynamicOptionList
             showCorrectColumn={this.props.showCorrectColumn}
             canHaveOptionCorrect={canHaveOptionCorrect}

@@ -77,7 +77,7 @@ const store = new Store({
     createTypeDetails(element) {
       if (element.Type === 15) {
         element.TypeDetail = JSON.stringify({ data: element.TypeDetail });
-      } else if (element.Type === 12 || element.Type === 5) {
+      } else if (element.Type === 12) {
         element.TypeDetail = JSON.stringify(element.TypeDetail);
       }
     },
