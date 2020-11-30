@@ -7,17 +7,21 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 export default class CondtionalFlowList extends React.Component {
     constructor(props) {
         super(props);
+        this.thenShowRef = React.createRef();
+        this.thenHideRef = React.createRef();
+        this.elseShowRef = React.createRef();
+        this.elseHideRef = React.createRef();
         this.state = {
-            data: this.props.ConditionalFlow.entries,
+            data: this.props.conditionalFlow.entries,
             editState: {
-                value: '50',
+                value: '',
                 then: {
-                    show: ['S1', 'S2'],
-                    hide: ['H1', 'H2']
+                    show: [],
+                    hide: []
                 },
                 else: {
-                    show: ['S1', 'S2'],
-                    hide: ['H1', 'H2']
+                    show: [],
+                    hide: []
                 }
             }
         }
@@ -63,7 +67,7 @@ export default class CondtionalFlowList extends React.Component {
 
             this.setState({
                 data: this.state.data.concat(newCondition)
-            })
+            }, this.liftStateUp);
 
             this.clearEdit();
         }
@@ -84,7 +88,7 @@ export default class CondtionalFlowList extends React.Component {
 
                 this.setState({
                     data: this.state.data
-                })
+                }, this.liftStateUp);
 
                 this.clearEdit();
             }
@@ -92,7 +96,6 @@ export default class CondtionalFlowList extends React.Component {
     }
 
     edit = (value) => {
-        debugger
         let item = this.state.data.find(i => i.value == value);
         this.setState({
             editState: item
@@ -104,11 +107,10 @@ export default class CondtionalFlowList extends React.Component {
         this.state.data.splice(index, 1);
         this.setState({
             data: this.state.data
-        })
+        }, this.liftStateUp);
     }
 
     onChange = (e, p1, p2) => {
-        debugger
         if (!p2) {
             this.state.editState[p1] = e.target.value;
         }
@@ -122,6 +124,11 @@ export default class CondtionalFlowList extends React.Component {
     }
 
     clearEdit = () => {
+        this.thenShowRef.current.clear();
+        this.thenHideRef.current.clear();
+        this.elseShowRef.current.clear();
+        this.elseHideRef.current.clear();
+
         this.setState({
             editState: {
                 value: '',
@@ -135,6 +142,16 @@ export default class CondtionalFlowList extends React.Component {
                 }
             }
         })
+    }
+    
+    liftStateUp = () => {
+        this.props.onConditionalFlowChange.call(this.props.parent, 'ConditionalFlow', 'ConditionalFlow', {
+            target: {
+                ConditionalFlow: {
+                    entries: this.state.data
+                }
+            }
+        });
     }
 
     render() {
@@ -157,13 +174,13 @@ export default class CondtionalFlowList extends React.Component {
                                 <div className="col-sm-6">
                                     <div className="form-group">
                                         <label>Show Fields</label>
-                                        <Typeahead id="thenshow" multiple options={this.fieldNames} selected={this.state.editState.then.show} onChange={e => this.onChange(e, 'then', 'show')}></Typeahead>
+                                        <Typeahead id="thenshow" ref={this.thenShowRef} multiple options={this.fieldNames} selected={this.state.editState.then.show} onChange={e => this.onChange(e, 'then', 'show')}></Typeahead>
                                     </div>
                                 </div>
                                 <div className="col-sm-6">
                                     <div className="form-group">
                                         <label>Hide Fields</label>
-                                        <Typeahead id="thenhide" multiple options={this.fieldNames} selected={this.state.editState.then.hide} onChange={e => this.onChange(e, 'then', 'hide')}></Typeahead>
+                                        <Typeahead id="thenhide" ref={this.thenHideRef} multiple options={this.fieldNames} selected={this.state.editState.then.hide} onChange={e => this.onChange(e, 'then', 'hide')}></Typeahead>
                                     </div>
                                 </div>
                             </div>
@@ -174,13 +191,13 @@ export default class CondtionalFlowList extends React.Component {
                                 <div className="col-sm-6">
                                     <div className="form-group">
                                         <label>Show Fields</label>
-                                        <Typeahead id="elseshow" multiple options={this.fieldNames} selected={this.state.editState.else.show} onChange={e => this.onChange(e, 'else', 'show')}></Typeahead>
+                                        <Typeahead id="elseshow" ref={this.elseShowRef} multiple options={this.fieldNames} selected={this.state.editState.else.show} onChange={e => this.onChange(e, 'else', 'show')}></Typeahead>
                                     </div>
                                 </div>
                                 <div className="col-sm-6">
                                     <div className="form-group">
                                         <label>Hide Fields</label>
-                                        <Typeahead id="elsehide" multiple options={this.fieldNames} selected={this.state.editState.else.hide} onChange={e => this.onChange(e, 'else', 'hide')}></Typeahead>
+                                        <Typeahead id="elsehide" ref={this.elseHideRef} multiple options={this.fieldNames} selected={this.state.editState.else.hide} onChange={e => this.onChange(e, 'else', 'hide')}></Typeahead>
                                     </div>
                                 </div>
                             </div>

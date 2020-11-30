@@ -281,19 +281,7 @@ export default class Toolbar extends React.Component {
      elementOptions.ControlWidthRatio=null,
      elementOptions.States={},
      elementOptions.ExternalAutoFill=[],
-     elementOptions.ConditionalFlow = { entries: [
-       {
-         value: 50,
-         then:{
-           show: ['Show 1', 'Show 2'],
-           hide: ['Hide 1', 'Hide 2']
-         },
-         else:{
-          show: ['Show 1', 'Show 2'],
-          hide: ['Hide 1', 'Hide 2']
-        }
-       }
-     ] }
+     elementOptions.ConditionalFlow = { entries: [] }
     }
     
 if(item.Type===7 || item.Type===4){

@@ -135,7 +135,6 @@ export default class FormElementsEdit extends React.Component {
     // targProperty could be value or checked
     const this_element = this.state.element;
     this_element[elemProperty] = e.target[targProperty];
-
     this.setState(
       {
         element: this_element,
@@ -764,12 +763,7 @@ export default class FormElementsEdit extends React.Component {
           />
         )}
         {this.props.element.hasOwnProperty("ConditionalFlow") && (
-          /*<ul>
-            {this.props.element.ConditionalFlow.entries[0].then.show.map(i => {
-              return <li>{i}</li>
-            })}
-          </ul>*/
-          <CondtionalFlowList ConditionalFlow={this.props.element.ConditionalFlow}></CondtionalFlowList>
+          <CondtionalFlowList parent={this} conditionalFlow={this.props.element.ConditionalFlow} onConditionalFlowChange={this.editElementProp}></CondtionalFlowList>
         )}
       </div>
     );
