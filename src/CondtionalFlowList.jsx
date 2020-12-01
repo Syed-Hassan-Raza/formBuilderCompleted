@@ -11,8 +11,11 @@ export default class CondtionalFlowList extends React.Component {
         this.thenHideRef = React.createRef();
         this.elseShowRef = React.createRef();
         this.elseHideRef = React.createRef();
+        
+        let data = JSON.parse(this.props.conditionalFlow);
+
         this.state = {
-            data: this.props.conditionalFlow.entries,
+            data: data.entries,
             editState: {
                 value: '',
                 then: {
@@ -56,12 +59,12 @@ export default class CondtionalFlowList extends React.Component {
             let newCondition = {
                 value: this.state.editState.value,
                 then: {
-                    show: this.state.editState.then.show,
-                    hide: this.state.editState.then.hide
+                    show: this.state.editState.then.show.join(',').split(','),
+                    hide: this.state.editState.then.hide.join(',').split(',')
                 },
                 else: {
-                    show: this.state.editState.else.show,
-                    hide: this.state.editState.else.hide
+                    show: this.state.editState.else.show.join(',').split(','),
+                    hide: this.state.editState.else.hide.join(',').split(',')
                 }
             }
 
@@ -77,12 +80,12 @@ export default class CondtionalFlowList extends React.Component {
                 this.state.data[index] = {
                     value: this.state.editState.value,
                     then: {
-                        show: this.state.editState.then.show,
-                        hide: this.state.editState.then.hide
+                        show: this.state.editState.then.show.join(',').split(','),
+                        hide: this.state.editState.then.hide.join(',').split(',')
                     },
                     else: {
-                        show: this.state.editState.else.show,
-                        hide: this.state.editState.else.hide
+                        show: this.state.editState.else.show.join(',').split(','),
+                        hide: this.state.editState.else.hide.join(',').split(',')
                     }
                 }
 
@@ -147,9 +150,9 @@ export default class CondtionalFlowList extends React.Component {
     liftStateUp = () => {
         this.props.onConditionalFlowChange.call(this.props.parent, 'ConditionalFlow', 'ConditionalFlow', {
             target: {
-                ConditionalFlow: {
+                ConditionalFlow: JSON.stringify({
                     entries: this.state.data
-                }
+                })
             }
         });
     }
