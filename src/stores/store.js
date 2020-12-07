@@ -43,10 +43,11 @@ const store = new Store({
     },
 
     assignIds(data) {
+      if(data.Fields){
       data.Fields.forEach((item) => {
         item.id = ID.uuid();
       });
-
+    }
       if (data.FieldGroups && data.FieldGroups.length > 0) {
         data.FieldGroups.forEach((item) => {
           item.id = ID.uuid();
@@ -56,6 +57,7 @@ const store = new Store({
     },
 
     create(context, element) {
+      debugger
       const { data } = context.state;
       if (element.parentId) {
         this.createTypeDetails(element.item);
@@ -71,7 +73,7 @@ const store = new Store({
       }
 
       this.setData(context, data, true);
-      //console.log(data);
+      console.log(data);
     },
 
     createTypeDetails(element) {

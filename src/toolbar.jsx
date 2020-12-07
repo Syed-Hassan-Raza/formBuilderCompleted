@@ -260,6 +260,7 @@ export default class Toolbar extends React.Component {
   }
 
   create(item) {
+
     const elementOptions = {
      id: ID.uuid(),
      element: item.element || item.key,
@@ -283,7 +284,10 @@ export default class Toolbar extends React.Component {
      elementOptions.ExternalAutoFill=[],
      elementOptions.ConditionalFlow = '{ "entries": [] }'
     }
-    
+    if(item.key==='FieldGroups'){
+      elementOptions.Fields=[],
+      elementOptions.FieldGroups=[]
+      }
 if(item.Type===7 || item.Type===4){
   elementOptions.DefaultValue="NOW";
 }
