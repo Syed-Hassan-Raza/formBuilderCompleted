@@ -9,8 +9,12 @@ export default class CondtionalFlowList extends React.Component {
         super(props);
         this.thenShowRef = React.createRef();
         this.thenHideRef = React.createRef();
+        this.thenEnableRef = React.createRef();
+        this.thenDisableRef = React.createRef();
         this.elseShowRef = React.createRef();
         this.elseHideRef = React.createRef();
+        this.elseEnableRef = React.createRef();
+        this.elseDisableRef = React.createRef();
         
         let data = JSON.parse(this.props.conditionalFlow);
 
@@ -20,11 +24,15 @@ export default class CondtionalFlowList extends React.Component {
                 value: '',
                 then: {
                     show: [],
-                    hide: []
+                    hide: [],
+                    enable: [],
+                    disable: []
                 },
                 else: {
                     show: [],
-                    hide: []
+                    hide: [],
+                    enable: [],
+                    disable: []
                 }
             }
         }
@@ -44,7 +52,7 @@ export default class CondtionalFlowList extends React.Component {
                 if (item.Name)
                     addToList.push(item.Name);
 
-                this.getFieldNames(item);
+                this.getFieldNames(item, addToList);
             });
         }
     }
@@ -59,12 +67,16 @@ export default class CondtionalFlowList extends React.Component {
             let newCondition = {
                 value: this.state.editState.value,
                 then: {
-                    show: this.state.editState.then.show.join(',').split(','),
-                    hide: this.state.editState.then.hide.join(',').split(',')
+                    show: this.state.editState.then.show.join(',').split(',').filter(i => i),
+                    hide: this.state.editState.then.hide.join(',').split(',').filter(i => i),
+                    enable: this.state.editState.then.enable.join(',').split(',').filter(i => i),
+                    disable: this.state.editState.then.disable.join(',').split(',').filter(i => i)
                 },
                 else: {
-                    show: this.state.editState.else.show.join(',').split(','),
-                    hide: this.state.editState.else.hide.join(',').split(',')
+                    show: this.state.editState.else.show.join(',').split(',').filter(i => i),
+                    hide: this.state.editState.else.hide.join(',').split(',').filter(i => i),
+                    enable: this.state.editState.else.enable.join(',').split(',').filter(i => i),
+                    disable: this.state.editState.else.disable.join(',').split(',').filter(i => i)
                 }
             }
 
@@ -80,12 +92,16 @@ export default class CondtionalFlowList extends React.Component {
                 this.state.data[index] = {
                     value: this.state.editState.value,
                     then: {
-                        show: this.state.editState.then.show.join(',').split(','),
-                        hide: this.state.editState.then.hide.join(',').split(',')
+                        show: this.state.editState.then.show.join(',').split(',').filter(i => i),
+                        hide: this.state.editState.then.hide.join(',').split(',').filter(i => i),
+                        enable: this.state.editState.then.enable.join(',').split(',').filter(i => i),
+                        disable: this.state.editState.then.disable.join(',').split(',').filter(i => i)
                     },
                     else: {
-                        show: this.state.editState.else.show.join(',').split(','),
-                        hide: this.state.editState.else.hide.join(',').split(',')
+                        show: this.state.editState.else.show.join(',').split(',').filter(i => i),
+                        hide: this.state.editState.else.hide.join(',').split(',').filter(i => i),
+                        enable: this.state.editState.else.enable.join(',').split(',').filter(i => i),
+                        disable: this.state.editState.else.disable.join(',').split(',').filter(i => i)
                     }
                 }
 
@@ -129,19 +145,27 @@ export default class CondtionalFlowList extends React.Component {
     clearEdit = () => {
         this.thenShowRef.current.clear();
         this.thenHideRef.current.clear();
+        this.thenEnableRef.current.clear();
+        this.thenDisableRef.current.clear();
         this.elseShowRef.current.clear();
         this.elseHideRef.current.clear();
+        this.elseEnableRef.current.clear();
+        this.elseDisableRef.current.clear();
 
         this.setState({
             editState: {
                 value: '',
                 then: {
                     show: [],
-                    hide: []
+                    hide: [],
+                    enable: [],
+                    disable: []
                 },
                 else: {
                     show: [],
-                    hide: []
+                    hide: [],
+                    enable: [],
+                    disable: []
                 }
             }
         })
@@ -187,6 +211,20 @@ export default class CondtionalFlowList extends React.Component {
                                     </div>
                                 </div>
                             </div>
+                            <div className="row">
+                                <div className="col-sm-6">
+                                    <div className="form-group">
+                                        <label>Enable Fields</label>
+                                        <Typeahead id="thenenable" ref={this.thenEnableRef} multiple options={this.fieldNames} selected={this.state.editState.then.enable} onChange={e => this.onChange(e, 'then', 'enable')}></Typeahead>
+                                    </div>
+                                </div>
+                                <div className="col-sm-6">
+                                    <div className="form-group">
+                                        <label>Disable Fields</label>
+                                        <Typeahead id="thendisable" ref={this.thenDisableRef} multiple options={this.fieldNames} selected={this.state.editState.then.disable} onChange={e => this.onChange(e, 'then', 'disable')}></Typeahead>
+                                    </div>
+                                </div>
+                            </div>
                         </fieldset>
                         <fieldset>
                             <legend>Else</legend>
@@ -201,6 +239,20 @@ export default class CondtionalFlowList extends React.Component {
                                     <div className="form-group">
                                         <label>Hide Fields</label>
                                         <Typeahead id="elsehide" ref={this.elseHideRef} multiple options={this.fieldNames} selected={this.state.editState.else.hide} onChange={e => this.onChange(e, 'else', 'hide')}></Typeahead>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-sm-6">
+                                    <div className="form-group">
+                                        <label>Enable Fields</label>
+                                        <Typeahead id="elseenable" ref={this.elseEnableRef} multiple options={this.fieldNames} selected={this.state.editState.else.enable} onChange={e => this.onChange(e, 'else', 'enable')}></Typeahead>
+                                    </div>
+                                </div>
+                                <div className="col-sm-6">
+                                    <div className="form-group">
+                                        <label>Disable Fields</label>
+                                        <Typeahead id="elsedisable" ref={this.elseDisableRef} multiple options={this.fieldNames} selected={this.state.editState.else.disable} onChange={e => this.onChange(e, 'else', 'disable')}></Typeahead>
                                     </div>
                                 </div>
                             </div>
