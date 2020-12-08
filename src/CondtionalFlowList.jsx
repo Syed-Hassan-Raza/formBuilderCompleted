@@ -16,7 +16,7 @@ export default class CondtionalFlowList extends React.Component {
         this.elseEnableRef = React.createRef();
         this.elseDisableRef = React.createRef();
         
-        let data = JSON.parse(this.props.conditionalFlow);
+        let data = JSON.parse(this.props.conditionalFlow || '{ "entries": [] }');
 
         this.state = {
             data: data.entries,
