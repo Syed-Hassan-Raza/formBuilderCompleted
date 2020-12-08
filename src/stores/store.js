@@ -5,17 +5,7 @@ import ID from "../UUID";
 let _saveUrl;
 let _onPost;
 let _onLoad;
-let token =
-  "eyJhbGciOiJSUzI1NiIsImtpZCI6IjNkYjNiN2U4OTA3OWY1ZTkxN2RlMWRjMmUwNGMyOGMwIiwidHlwIjoiSldUIn0.eyJuYmYiOjE2MDYyOTcwODYsImV4cCI6MTYwNjMwMDY4NiwiaXNzIjoiaHR0cHM6Ly9pZC53b3JrYXdhcmUuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZC53b3JrYXdhcmUuY29tL3Jlc291cmNlcyIsImNsaWVudF9pZCI6IjJBM0JBMDExRDQ1NzUzRTc3REZCRTg2NjgxQkFBQzZCMjU3REJDODciLCJzdWIiOiI4YmI4Nzc3MC1mZTZkLTQzMGYtYTRlMi0zNzcwMjQ4OTk0NjgiLCJhdXRoX3RpbWUiOjE2MDYyOTY4NDYsImlkcCI6ImxvY2FsIiwidXNlcl9pZCI6IjE3NzQwIiwiY29tcGFueV9pZCI6IjEiLCJ1c2VyX25hbWUiOiJzYWpqYWRAZGVtbyIsIm1vYmlsZV9hcHBfdG9rZW4iOiIiLCJjbGllbnRfdHlwZV9pZCI6IjE3IiwicmVnaW9uX2lkIjoiMCIsInR3b19mYWN0b3JfYXV0aCI6Ik5vbmUiLCJzY29wZSI6WyJvcGVuaWQiLCJwcm9maWxlIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdfQ.N8omeKwpTjZsghxRk6oHP1-iWIicX7ho_1w2F3r3sPqj4FOARnn0DVxkTdrcWp6PKaFq4p3M1hiONTRo0OwaHwJazNy3jZ5ywAPPs8fwN_CTA7fSuaKIVGt6f1lBACzpPUc8aPPqnFau2ZExZzIp63kSs_zk6Vb8k9OmmXXnQ0AsstjvYHrmbf3B-25trZ15VvNqYKH12tjGG0PEfx-wgup_2ZxH3V1rqywh3aY455sPdTATLIqAsHKDO21P33ESZNp2lubIDezCUxIW901b2yfkgUCMWBtw204vUN1m-ggHVUb5l8R7DBYkvUX1NQhzYNXEgBrNmMWpp4J6Oi6NVw";
-let headers = {
-  Accept: "application/json",
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${token}`,
-  "OData-Version": "4.0",
-  "OData-MaxVersion": "4.0",
-  "ZUMO-API-VERSION": "2.0.0",
-  Prefer: "return=representation",
-};
+
 const store = new Store({
   actions: {
     setData(context, data, saveData) {
@@ -57,7 +47,6 @@ const store = new Store({
     },
 
     create(context, element) {
-      debugger
       const { data } = context.state;
       if (element.parentId) {
         this.createTypeDetails(element.item);
@@ -73,7 +62,6 @@ const store = new Store({
       }
 
       this.setData(context, data, true);
-      console.log(data);
     },
 
     createTypeDetails(element) {
@@ -185,13 +173,9 @@ const store = new Store({
         // this.setState({
         //   friends: response
         // })
-        alert('ff')
-
-        console.log(response);
         return response;
       })
       .catch((err) => {
-        console.log(err);
         return err;
       });
   },

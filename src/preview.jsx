@@ -1,19 +1,18 @@
 /**
-  * <Preview />
-  */
+ * <Preview />
+ */
 
-import React from 'react';
-import update from 'immutability-helper';
-import store from './stores/store';
-import FormElementsEdit from './form-elements-edit';
-import SortableFormElements from './sortable-form-elements';
-import getElementName from './element-mapper'
-import apiService from './stores/apiService';
+import React from "react";
+import update from "immutability-helper";
+import store from "./stores/store";
+import FormElementsEdit from "./form-elements-edit";
+import SortableFormElements from "./sortable-form-elements";
+import getElementName from "./element-mapper";
+import apiService from "./stores/apiService";
 
 const { PlaceHolder } = SortableFormElements;
 
 export default class Preview extends React.Component {
-
   isMounted = false;
 
   constructor(props) {
@@ -25,71 +24,67 @@ export default class Preview extends React.Component {
     this.state = {
       data: [],
       answer_data: {},
-      picklistItems:[],
+      picklistItems: [],
     };
     this.seq = 0;
 
     const onUpdate = this._onChange.bind(this);
-    store.subscribe(state => {
-      if (this.isMounted)
-        onUpdate(state.data)
+    store.subscribe((state) => {
+      if (this.isMounted) onUpdate(state.data);
     });
 
     this.moveCard = this.moveCard.bind(this);
     this.insertCard = this.insertCard.bind(this);
-    this.apiService=new apiService();
+    this.apiService = new apiService();
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.data !== nextProps.data) {
-      store.dispatch('updateOrder', nextProps.data);
+      store.dispatch("updateOrder", nextProps.data);
     }
   }
 
   componentDidMount() {
     this.isMounted = true;
     const { data, url, saveUrl } = this.props;
-    store.dispatch('load', { loadUrl: url, saveUrl, data: data || [] });
-    document.addEventListener('mousedown', this.editModeOff);
-    this.apiService.picklistItems.then(response=>{
-          this.setState({
-            picklistItems: response
-      })
+    store.dispatch("load", { loadUrl: url, saveUrl, data: data || [] });
+    document.addEventListener("mousedown", this.editModeOff);
+    this.apiService.picklistItems.then((response) => {
+      this.setState({
+        picklistItems: response,
+      });
     });
   }
 
   componentWillUnmount() {
     this.isMounted = false;
-    document.removeEventListener('mousedown', this.editModeOff);
+    document.removeEventListener("mousedown", this.editModeOff);
   }
 
   editModeOff = (e) => {
     if (this.editForm.current && !this.editForm.current.contains(e.target)) {
       this.manualEditModeOff();
     }
-  }
+  };
 
   manualEditModeOff = () => {
-  
     const { editElement } = this.props;
 
-    if (editElement == null)
-      return;
+    if (editElement == null) return;
 
-    if(editElement.Name || editElement.element==='FieldGroups'){
-    if (editElement && editElement.dirty) {
-      editElement.dirty = false;
-      this.updateElement(editElement);
+    if (editElement.Name || editElement.element === "FieldGroups") {
+      if (editElement && editElement.dirty) {
+        editElement.dirty = false;
+        this.updateElement(editElement);
+      }
+      this.props.manualEditModeOff();
+    } else {
+      alert("Field Name is missing.");
     }
-    this.props.manualEditModeOff();
-  }
-  else{
-   alert('Field Name is missing.')
-  }
-  }
+  };
 
   _setValue(text) {
-    return text.replace(/[^A-Z0-9]+/ig, '_').toLowerCase();
+    return text.replace(/[^A-Z0-9]+/gi, "_").toLowerCase();
   }
 
   updateElement(element) {
@@ -103,23 +98,21 @@ export default class Preview extends React.Component {
       }
     });
 
-    if (!updated)
-      this.updateChild(data.FieldGroups, element);
-      
+    if (!updated) this.updateChild(data.FieldGroups, element);
+
     this.seq = this.seq > 100000 ? 0 : this.seq + 1;
-    store.dispatch('updateOrder', data);
+    store.dispatch("updateOrder", data);
   }
 
   updateChild(data, element) {
     let updated = false;
     data.forEach((pItem, pIndex, pObject) => {
-      if (element.element == 'FieldGroups') {
+      if (element.element == "FieldGroups") {
         if (pItem.id == element.id) {
           data[pIndex] = element;
           return;
         }
-      }
-      else {
+      } else {
         pItem.Fields.forEach((cItem, cIndex, cObject) => {
           if (cItem.id === element.id) {
             pItem.Fields[cIndex] = element;
@@ -131,7 +124,6 @@ export default class Preview extends React.Component {
 
       if (!updated && pItem.FieldGroups && pItem.FieldGroups.length >= 0)
         this.updateChild(pItem.FieldGroups, element);
-
     });
   }
 
@@ -151,7 +143,7 @@ export default class Preview extends React.Component {
   }
 
   _onDestroy(item) {
-    store.dispatch('delete', item);
+    store.dispatch("delete", item);
   }
 
   insertCard(item, hoverIndex) {
@@ -159,7 +151,7 @@ export default class Preview extends React.Component {
     //const { data } = store.state;
     //data.splice(hoverIndex, 0, item);
     //this.saveData(item, hoverIndex, hoverIndex);
-    store.dispatch('create', item);
+    store.dispatch("create", item);
   }
 
   moveCard(dragIndex, hoverIndex) {
@@ -176,48 +168,91 @@ export default class Preview extends React.Component {
   saveData(dragCard, dragIndex, hoverIndex) {
     const newData = update(this.state, {
       data: {
-        $splice: [[dragIndex, 1], [hoverIndex, 0, dragCard]],
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, dragCard],
+        ],
       },
     });
     this.setState(newData);
-    store.dispatch('updateOrder', newData.data);
+    store.dispatch("updateOrder", newData.data);
   }
 
   getElement(item, index) {
     const elementName = getElementName(item.Type);
     item.element = elementName;
     const SortableFormElement = SortableFormElements[elementName];
-    return <SortableFormElement id={item.id} seq={this.seq} index={index} moveCard={this.moveCard} insertCard={this.insertCard} mutable={false} parent={this.props.parent} editModeOn={this.props.editModeOn} isDraggable={true} key={item.id} sortData={item.id} data={item} _onDestroy={this._onDestroy} />;
+    if (SortableFormElement) {
+      return (
+        <SortableFormElement
+          id={item.id}
+          seq={this.seq}
+          index={index}
+          moveCard={this.moveCard}
+          insertCard={this.insertCard}
+          mutable={false}
+          parent={this.props.parent}
+          editModeOn={this.props.editModeOn}
+          isDraggable={true}
+          key={item.id}
+          sortData={item.id}
+          data={item}
+          _onDestroy={this._onDestroy}
+        />
+      );
+    }
   }
-  format(){
-    store.dispatch('mapData');
+  format() {
+    store.dispatch("mapData");
   }
   render() {
     let classes = this.props.className;
-    if (this.props.editMode) { classes += ' is-editing'; }
-    const fields = this.state.data.Fields ? this.state.data.Fields.filter(x => !!x) : [];
-    const fieldGroups = this.state.data.FieldGroups ? this.state.data.FieldGroups.filter(x => !!x) : [];
-    fieldGroups.forEach(item => {
+    if (this.props.editMode) {
+      classes += " is-editing";
+    }
+    const fields = this.state.data.Fields
+      ? this.state.data.Fields.filter((x) => !!x)
+      : [];
+    const fieldGroups = this.state.data.FieldGroups
+      ? this.state.data.FieldGroups.filter((x) => !!x)
+      : [];
+    fieldGroups.forEach((item) => {
       item.Type = "FieldGroups";
     });
-    const data = [].concat(fields, fieldGroups)
+    const data = [].concat(fields, fieldGroups);
     const items = data.map((item, index) => this.getElement(item, index));
 
-    return ( 
+    return (
       <div className={classes}>
-        
         <div className="edit-form" ref={this.editForm}>
-          { this.props.editElement !== null &&
-            <FormElementsEdit showCorrectColumn={this.props.showCorrectColumn} picklistItems={this.state.picklistItems} files={this.props.files} manualEditModeOff={this.manualEditModeOff} preview={this} element={this.props.editElement} updateElement={this.updateElement} />
-          }
+          {this.props.editElement !== null && (
+            <FormElementsEdit
+              showCorrectColumn={this.props.showCorrectColumn}
+              picklistItems={this.state.picklistItems}
+              files={this.props.files}
+              manualEditModeOff={this.manualEditModeOff}
+              preview={this}
+              element={this.props.editElement}
+              updateElement={this.updateElement}
+            />
+          )}
         </div>
-        <div className="Sortable">{items}
-        </div>
-         <PlaceHolder id="form-place-holder" show={items.length === 0} index={items.length} moveCard={this.cardPlaceHolder} insertCard={this.insertCard}/>
+        <div className="Sortable">{items}</div>
+        <PlaceHolder
+          id="form-place-holder"
+          show={items.length === 0}
+          index={items.length}
+          moveCard={this.cardPlaceHolder}
+          insertCard={this.insertCard}
+        />
       </div>
     );
   }
 }
 Preview.defaultProps = {
-  showCorrectColumn: false, files: [], editMode: false, editElement: null, className: 'react-form-builder-preview float-left',
+  showCorrectColumn: false,
+  files: [],
+  editMode: false,
+  editElement: null,
+  className: "react-form-builder-preview float-left",
 };
