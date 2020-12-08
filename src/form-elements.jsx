@@ -37,20 +37,42 @@ const myxss = new xss.FilterXSS({
 const ComponentLabel = (props) => {
   const hasMandatoryLabel =
     props.data.hasOwnProperty("Mandatory") &&
-    props.data.Mandatory === true &&
-    !props.ReadOnly;
+    props.data.Mandatory === true;
+
+    const hasReadOnlyLabel =
+    props.data.hasOwnProperty("ReadOnly") &&
+    props.data.ReadOnly === true;
+
+    const hasVisibleLabel =
+    props.data.hasOwnProperty("Visible") &&
+    props.data.Visible === false;
 
   return (
     <label className={props.className || ""}>
       <span
         dangerouslySetInnerHTML={{ __html: myxss.process(props.data.Label) }}
       />
+
+      {hasVisibleLabel && (
+          <>
+            <span> </span>
+            <i className="far fa-eye-slash"></i>
+          </>
+      )}
+
       {hasMandatoryLabel && (
           <>
             <span> </span>
             <span className="label-Mandatory badge badge-danger">Mandatory</span>
           </>
       )}
+            {hasReadOnlyLabel && (
+          <>
+            <span> </span>
+            <span className="label-Mandatory badge badge-secondary">Read Only</span>
+          </>
+      )}
+
     </label>
   );
 };
@@ -73,6 +95,7 @@ const ComponentHeader = (props) => {
         static={props.data.static}
         Mandatory={props.data.Mandatory}
       />
+     <br/>
     </div>
   );
 };
@@ -158,7 +181,7 @@ class Paragraph extends React.Component {
 
     return (
       <div className={baseClasses}>
-        <ComponentHeader {...this.props} />
+        <ComponentHeader {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
         <p
           className={classNames}
           dangerouslySetInnerHTML={{
@@ -187,7 +210,7 @@ class Label extends React.Component {
 
     return (
       <div className={baseClasses}>
-        <ComponentHeader {...this.props} />
+        <ComponentHeader {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
         <label
           className={classNames}
           dangerouslySetInnerHTML={{
@@ -336,7 +359,7 @@ class TextInput extends React.Component {
         <ComponentHeader {...this.props} />  
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
-          <input {...props} value={this.props.data.DefaultValue} onChange={this.handleValueChange}/>
+          <input {...props} value={this.props.data.DefaultValue || undefined} onChange={this.handleValueChange}/>
         </div>
       </div>
     );
@@ -377,7 +400,7 @@ class NumberInput extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
-          <input {...props} value={this.props.data.DefaultValue} onChange={this.handleValueChange}/>
+          <input {...props} value={this.props.data.DefaultValue || undefined} onChange={this.handleValueChange}/>
         </div>
       </div>
     );
@@ -418,7 +441,7 @@ class DecimalInput extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
-          <input {...props} value={this.props.data.DefaultValue} onChange={this.handleValueChange}/>
+          <input {...props} value={this.props.data.DefaultValue || undefined} onChange={this.handleValueChange}/>
         </div>
       </div>
     );
@@ -495,7 +518,7 @@ class TextArea extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
-    <textarea {...props} value={this.props.data.DefaultValue} onChange={this.handleValueChange} />
+    <textarea {...props} value={this.props.data.DefaultValue || undefined} onChange={this.handleValueChange} />
         </div>
       </div>
     );
@@ -577,7 +600,7 @@ class DatePicker extends React.Component {
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
           <div>
-            <input {...props} value={this.props.data.TypeDetail} onChange={this.handleValueChange}/>
+            <input {...props} value={this.props.data.TypeDetail || undefined} onChange={this.handleValueChange}/>
           </div>
         </div>
       </div>
@@ -886,10 +909,14 @@ class Checkboxes extends React.Component {
     return (
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
+        
         <div className="form-group">
-          <label className="checkbox-inline">
-            <input type="checkbox" value="" checked={this.props.data.DefaultValue} onChange={this.handleValueChange} /> {this.props.data.Label}
+        <ComponentLabel {...this.props} /> 
+        <div className="form-group">
+             <label className="checkbox-inline">
+            <input type="checkbox" value="" checked={this.props.data.DefaultValue} onChange={this.handleValueChange} />
           </label>
+          </div>
         </div>
       </div>
     );
@@ -978,7 +1005,7 @@ class RadioButtons extends React.Component {
       <div className={baseClasses}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
-          <ComponentLabel className="form-label" {...this.props} />
+        <ComponentLabel {...this.props} />  <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
           {Object.keys(obj).map((option, i) => {
             const defaultValue=this.props.data.DefaultValue===option?true:false;
             
