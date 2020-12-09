@@ -15,8 +15,13 @@ export default class CondtionalFlowList extends React.Component {
         this.elseHideRef = React.createRef();
         this.elseEnableRef = React.createRef();
         this.elseDisableRef = React.createRef();
-        
-        let data = JSON.parse(this.props.conditionalFlow || '{ "entries": [] }');
+
+        let data;
+
+        if (this.props.conditionalFlowMode)
+            data = JSON.parse(this.props.conditionalFlow || '{ "entries": [] }');
+        else
+            data = JSON.parse(this.props.stateFlow || '{ "entries": [] }');
 
         this.state = {
             data: data.entries,
@@ -170,27 +175,39 @@ export default class CondtionalFlowList extends React.Component {
             }
         })
     }
-    
+
     liftStateUp = () => {
-        this.props.onConditionalFlowChange.call(this.props.parent, 'ConditionalFlow', 'ConditionalFlow', {
-            target: {
-                ConditionalFlow: JSON.stringify({
-                    entries: this.state.data
-                })
-            }
-        });
+
+        if (this.props.conditionalFlowMode) {
+            this.props.onConditionalFlowChange.call(this.props.parent, 'ConditionalFlow', 'ConditionalFlow', {
+                target: {
+                    ConditionalFlow: JSON.stringify({
+                        entries: this.state.data
+                    })
+                }
+            });
+        }
+        else {
+            this.props.onConditionalFlowChange.call(this.props.parent, 'StateFlow', 'StateFlow', {
+                target: {
+                    StateFlow: JSON.stringify({
+                        entries: this.state.data
+                    })
+                }
+            });
+        }
     }
 
     render() {
         return (
             <div>
                 <fieldset>
-                    <legend>Conditional Flow</legend>
+                    <legend>{this.props.conditionalFlowMode ? "Conditional" : "State"} Flow</legend>
                     <div>
                         <div className="row">
                             <div className="col-sm-12">
                                 <div className="form-group">
-                                    <label>When Value</label>
+                                    <label>When {this.props.conditionalFlowMode ? "Value" : "State"} <span className="badge badge-danger">Required</span></label>
                                     <input type="text" className="form-control" value={this.state.editState.value} onChange={e => this.onChange(e, 'value')} />
                                 </div>
                             </div>
@@ -271,21 +288,24 @@ export default class CondtionalFlowList extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.data.map((item, idx) => {
-                                    return (
-                                        <tr key={item.value}>
-                                            <td style={{ padding: "0.45rem 0.75rem" }}>
-                                                <div>
-                                                    <label style={{ marginTop: "9px" }}>
-                                                        {item.value}
-                                                    </label>
-                                                    <button type="button" className="btn btn-danger" style={{ float: "right", width: "85px", marginLeft: "5px" }} onClick={() => this.remove(item.value)}>Remove</button>
-                                                    <button type="button" className="btn btn-primary" style={{ float: "right", width: "85px" }} onClick={() => this.edit(item.value)}>Edit</button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )
-                                })}
+                                {this.state.data.length > 0
+                                    ? this.state.data.map((item, idx) => {
+                                        return (
+                                            <tr key={item.value}>
+                                                <td style={{ padding: "0.45rem 0.75rem" }}>
+                                                    <div>
+                                                        <label style={{ marginTop: "9px" }}>
+                                                            {item.value}
+                                                        </label>
+                                                        <button type="button" className="btn btn-danger" style={{ float: "right", width: "85px", marginLeft: "5px" }} onClick={() => this.remove(item.value)}>Remove</button>
+                                                        <button type="button" className="btn btn-primary" style={{ float: "right", width: "85px" }} onClick={() => this.edit(item.value)}>Edit</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                    : <tr><td style={{textAlign: 'center'}}>{this.props.conditionalFlowMode ? "Conditional" : "State"} Flow is not applied.</td></tr>
+                                }
                             </tbody>
                         </table>
                     </div>

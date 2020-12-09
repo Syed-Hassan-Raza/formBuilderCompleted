@@ -271,7 +271,7 @@ export default class Toolbar extends React.Component {
       //FieldGroups: item.FieldGroups
     };
 
-    if(item.key!=='FieldGroups'){
+    if (item.key!=='FieldGroups') {
      elementOptions.TypeDetail='',
     // elementOptions.DefaultValue='',
      elementOptions.MaxWidth=null,
@@ -282,15 +282,20 @@ export default class Toolbar extends React.Component {
      elementOptions.ControlWidthRatio=null,
      elementOptions.States={},
      elementOptions.ExternalAutoFill=[],
-     elementOptions.ConditionalFlow = '{ "entries": [] }'
+     elementOptions.ConditionalFlow = '{ "entries": [] }',
+     elementOptions.StateFlow = '{ "entries": [] }',
+     elementOptions.StateFlowTemplate = null
     }
-    if(item.key==='FieldGroups'){
+
+    if (item.key==='FieldGroups') {
       elementOptions.Fields=[],
       elementOptions.FieldGroups=[]
-      }
-if(item.Type===7 || item.Type===4){
-  elementOptions.DefaultValue="NOW";
-}
+    }
+
+  if(item.Type===7 || item.Type===4) {
+    elementOptions.DefaultValue="NOW";
+  }
+  
    // if(item.canHaveTypeDetail){
     //    elementOptions.TypeDetail=item.TypeDetail;
   //}

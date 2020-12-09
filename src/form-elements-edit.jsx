@@ -294,12 +294,9 @@ export default class FormElementsEdit extends React.Component {
           <div className="row">
             <div className="col-md-12">
               <label className="control-label" htmlFor="elementWidth">
-                Field Name:{" "}
+                Field Name {" "}
                 {this.props.element.element !== "FieldGroups" && (
-                  <font className="label-Mandatory" color="red">
-                    {" "}
-                    *{" "}
-                  </font>
+                  <span className="badge badge-danger">Required</span>
                 )}
               </label>
               <input
@@ -326,7 +323,7 @@ export default class FormElementsEdit extends React.Component {
             <div className="row">
               <div className="col-md-12">
                 <label className="control-label" htmlFor="elementWidth">
-                  Display To Text:
+                  Display To Text
                 </label>
                 <input
                   type="text"
@@ -342,7 +339,7 @@ export default class FormElementsEdit extends React.Component {
         {this.props.element.hasOwnProperty("file_path") && (
           <div className="form-group">
             <label className="control-label" htmlFor="fileSelect">
-              Choose file:
+              Choose file
             </label>
             <select
               id="fileSelect"
@@ -377,7 +374,7 @@ export default class FormElementsEdit extends React.Component {
           <div>
             <div className="form-group">
               <label className="control-label" htmlFor="srcInput">
-                Link to:
+                Link to
               </label>
               <input
                 id="srcInput"
@@ -410,7 +407,7 @@ export default class FormElementsEdit extends React.Component {
             <div className="row">
               <div className="col-sm-3">
                 <label className="control-label" htmlFor="elementWidth">
-                  Width:
+                  Width
                 </label>
                 <input
                   id="elementWidth"
@@ -423,7 +420,7 @@ export default class FormElementsEdit extends React.Component {
               </div>
               <div className="col-sm-3">
                 <label className="control-label" htmlFor="elementHeight">
-                  Height:
+                  Height
                 </label>
                 <input
                   id="elementHeight"
@@ -442,7 +439,7 @@ export default class FormElementsEdit extends React.Component {
             <div className="row">
               <div className="col-md-12">
                 <label className="control-label" htmlFor="elementWidth">
-                  Display Label:
+                  Display Label
                 </label>
                 <input
                   type="text"
@@ -461,7 +458,7 @@ export default class FormElementsEdit extends React.Component {
             <div className="row">
               <div className="col-sm-6">
                 <label className="control-label" htmlFor="elementWidth">
-                  Format:
+                  Format
                 </label>
                 <input
                   type="text"
@@ -499,7 +496,7 @@ export default class FormElementsEdit extends React.Component {
                 )}
               />
               <label className="custom-control-label" htmlFor="is-defaultvalue">
-                Default Value:
+                Default Value
               </label>
             </div>
           </div>
@@ -510,7 +507,7 @@ export default class FormElementsEdit extends React.Component {
             <div className="row">
               <div className="col-sm-6">
                 <label className="control-label" htmlFor="defaultValue">
-                  Format:
+                  Format
                 </label>
                 <select
                   id="defaultValue"
@@ -540,7 +537,7 @@ export default class FormElementsEdit extends React.Component {
             <div className="row">
               <div className="col-sm-6">
                 <label className="control-label" htmlFor="defaultValue">
-                  PickList:
+                  PickList
                 </label>
                 <select
                   id="defaultValue"
@@ -571,7 +568,7 @@ export default class FormElementsEdit extends React.Component {
             <div className="row">
               <div className="col-sm-6">
                 <label className="control-label" htmlFor="defaultValue">
-                  Default Value:
+                  Default Value
                 </label>
                 <select
                   value={this.props.element.DefaultValue}
@@ -607,7 +604,7 @@ export default class FormElementsEdit extends React.Component {
               <div className="row">
                 <div className="col-sm-3">
                   <label className="control-label" htmlFor="elementWidth">
-                    Default Value:
+                    Default Value
                   </label>
                   <input
                     type="text"
@@ -622,7 +619,7 @@ export default class FormElementsEdit extends React.Component {
                   />
                 </div>
                 <div className="col-sm-3">
-                  <label className="control-label">Max Width:</label>
+                  <label className="control-label">Max Width</label>
                   <input
                     type="number"
                     className="form-control"
@@ -636,7 +633,7 @@ export default class FormElementsEdit extends React.Component {
                   />
                 </div>
                 <div className="col-sm-3">
-                  <label className="control-label">Min Width:</label>
+                  <label className="control-label">Min Width</label>
                   <input
                     type="number"
                     className="form-control"
@@ -650,7 +647,7 @@ export default class FormElementsEdit extends React.Component {
                   />
                 </div>
                 <div className="col-sm-3">
-                  <label className="control-label">Width Ratio:</label>
+                  <label className="control-label">Width Ratio</label>
                   <input
                     type="number"
                     className="form-control"
@@ -763,7 +760,16 @@ export default class FormElementsEdit extends React.Component {
           />
         )}
         {this.props.element.hasOwnProperty("ConditionalFlow") && (
-          <CondtionalFlowList parent={this} conditionalFlow={this.props.element.ConditionalFlow} onConditionalFlowChange={this.editElementProp}></CondtionalFlowList>
+          <>
+            <hr />
+            <CondtionalFlowList conditionalFlowMode={true} parent={this} conditionalFlow={this.props.element.ConditionalFlow} onConditionalFlowChange={this.editElementProp}></CondtionalFlowList>
+          </>
+        )}
+        {this.props.element.hasOwnProperty("StateFlow") && (
+          <>
+            <hr />
+            <CondtionalFlowList conditionalFlowMode={false} parent={this} conditionalFlow={this.props.element.ConditionalFlow} onConditionalFlowChange={this.editElementProp}></CondtionalFlowList>
+          </>
         )}
       </div>
     );
