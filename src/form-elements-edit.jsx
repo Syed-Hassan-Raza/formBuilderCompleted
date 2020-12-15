@@ -32,12 +32,11 @@ export default class FormElementsEdit extends React.Component {
     this.state = {
       element: this.props.element,
       data: this.props.data,
-      dirty: false,
-      picklistItems: this.props.picklistItems,
+      dirty: false
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
   formats = ["html", "html64", "md", "md64"];
   fieldsName = [
@@ -505,7 +504,7 @@ export default class FormElementsEdit extends React.Component {
         {this.props.element.Type === 30 && (
           <div className="form-group">
             <div className="row">
-              <div className="col-sm-6">
+              <div className="col-sm-12">
                 <label className="control-label" htmlFor="defaultValue">
                   Format
                 </label>
@@ -535,9 +534,9 @@ export default class FormElementsEdit extends React.Component {
         {this.props.element.Type === 5 && (
           <div className="form-group">
             <div className="row">
-              <div className="col-sm-6">
+              <div className="col-sm-12">
                 <label className="control-label" htmlFor="defaultValue">
-                  PickList
+                  Pick List
                 </label>
                 <select
                   id="defaultValue"
@@ -550,10 +549,10 @@ export default class FormElementsEdit extends React.Component {
                   )}
                 >
                   <option></option>
-                  {Object.keys(this.state.picklistItems).map((obj, i) => {
+                  {store.state.pickLists && Object.keys(store.state.pickLists).map((obj, i) => {
                     return (
-                      <option value={this.state.picklistItems[obj].Key} key={i}>
-                        {this.state.picklistItems[obj].Value}
+                      <option value={store.state.pickLists[obj].Key} key={i}>
+                        {store.state.pickLists[obj].Value}
                       </option>
                     );
                   })}
@@ -599,66 +598,68 @@ export default class FormElementsEdit extends React.Component {
         {this.props.element.element !== "RadioButtons" &&
           this.props.element.element !== "Checkboxes" &&
           this.props.element.element !== "Action" && (
-            <div className="form-group">
-              <br />
-              <div className="row">
-                <div className="col-sm-3">
-                  <label className="control-label" htmlFor="elementWidth">
-                    Default Value
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    defaultValue={this.props.element.DefaultValue}
-                    onBlur={this.updateElement.bind(this)}
-                    onChange={this.editElementProp.bind(
-                      this,
-                      "DefaultValue",
-                      "value"
-                    )}
-                  />
+            <div>
+              <div className="form-group">
+                <div className="row">
+                  <div className="col-sm-12">
+                    <label className="control-label" htmlFor="elementWidth">Default Value</label>
+                    <textarea rows="3"
+                      className="form-control"
+                      defaultValue={this.props.element.DefaultValue}
+                      onBlur={this.updateElement.bind(this)}
+                      onChange={this.editElementProp.bind(
+                        this,
+                        "DefaultValue",
+                        "value"
+                      )}
+                    />
+                  </div>
                 </div>
-                <div className="col-sm-3">
-                  <label className="control-label">Max Width</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    defaultValue={this.props.element.MaxWidth}
-                    onBlur={this.updateElement.bind(this)}
-                    onChange={this.editElementProp.bind(
-                      this,
-                      "MaxWidth",
-                      "value"
-                    )}
-                  />
-                </div>
-                <div className="col-sm-3">
-                  <label className="control-label">Min Width</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    defaultValue={this.props.element.MinWidth}
-                    onBlur={this.updateElement.bind(this)}
-                    onChange={this.editElementProp.bind(
-                      this,
-                      "MinWidth",
-                      "value"
-                    )}
-                  />
-                </div>
-                <div className="col-sm-3">
-                  <label className="control-label">Width Ratio</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    defaultValue={this.props.element.ControlWidthRatio}
-                    onBlur={this.updateElement.bind(this)}
-                    onChange={this.editElementProp.bind(
-                      this,
-                      "ControlWidthRatio",
-                      "value"
-                    )}
-                  />
+              </div>
+              <div className="form-group">
+                <div className="row">
+                  <div className="col-sm-4">
+                    <label className="control-label">Max Width</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      defaultValue={this.props.element.MaxWidth}
+                      onBlur={this.updateElement.bind(this)}
+                      onChange={this.editElementProp.bind(
+                        this,
+                        "MaxWidth",
+                        "value"
+                      )}
+                    />
+                  </div>
+                  <div className="col-sm-4">
+                    <label className="control-label">Min Width</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      defaultValue={this.props.element.MinWidth}
+                      onBlur={this.updateElement.bind(this)}
+                      onChange={this.editElementProp.bind(
+                        this,
+                        "MinWidth",
+                        "value"
+                      )}
+                    />
+                  </div>
+                  <div className="col-sm-4">
+                    <label className="control-label">Width Ratio</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      defaultValue={this.props.element.ControlWidthRatio}
+                      onBlur={this.updateElement.bind(this)}
+                      onChange={this.editElementProp.bind(
+                        this,
+                        "ControlWidthRatio",
+                        "value"
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -768,7 +769,7 @@ export default class FormElementsEdit extends React.Component {
         {this.props.element.hasOwnProperty("StateFlow") && (
           <>
             <hr />
-            <CondtionalFlowList conditionalFlowMode={false} parent={this} conditionalFlow={this.props.element.ConditionalFlow} onConditionalFlowChange={this.editElementProp}></CondtionalFlowList>
+            <CondtionalFlowList conditionalFlowMode={false} parent={this} conditionalFlow={this.props.element.ConditionalFlow}></CondtionalFlowList>
           </>
         )}
       </div>

@@ -17,8 +17,10 @@ const store = new Store({
       _saveUrl = saveUrl;
       if (_onLoad) {
         _onLoad().then((x) => {
-          this.assignIds(x);
-          this.setData(context, x);
+          context.state.stateFlowTemplates = x.stateFlowTemplates;
+          context.state.pickLists = x.pickLists;
+          this.assignIds(x.formTemplate);
+          this.setData(context, x.formTemplate);
         });
       } else if (loadUrl) {
         get(loadUrl).then((x) => {
@@ -160,6 +162,12 @@ const store = new Store({
       // r.FieldGroups.push(newData);
       this.setData(context, r, false);
     },
+
+    handleStateFlow(context, stateFlowData) {
+      const { data } = context.state;
+      data.StateFlowTemplate = stateFlowData.templateId;
+      data.StateFlow = stateFlowData.stateFlow;
+    }
   },
 
   getPicklists() {
@@ -202,7 +210,11 @@ const store = new Store({
       FieldGroups: [],
       TemplateOptions: [],
       CompanyForm: [],
+      StateFlow: null,
+      StateFlowTemplate: null
     },
+    stateFlowTemplates: [],
+    pickLists: []
   },
 });
 

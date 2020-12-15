@@ -146,10 +146,8 @@ class FieldGroups extends React.Component {
     ));
   }
   render() {
-    // const headerClasses = `dynamic-input ${this.props.data.element}-input`;
-    let classNames = "form-control";
 
-    let baseClasses = "SortableItem rfb-item";
+    let baseClasses = "SortableItem rfb-item fields-group";
     if (this.props.data.pageBreakBefore) {
       baseClasses += " alwaysbreak";
     }
@@ -157,7 +155,6 @@ class FieldGroups extends React.Component {
     return (
       <div className={baseClasses}>
         <ComponentHeader {...this.props} /> 
-        {/* {this.props.data.Label} */}
         {<FieldsGroup {...this.props} />}
       </div>
     );
@@ -478,6 +475,7 @@ class StaticText extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
+          <p>{this.props.data.DefaultValue || undefined}</p>
         </div>
       </div>
     );
@@ -518,7 +516,7 @@ class TextArea extends React.Component {
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
-    <textarea {...props} value={this.props.data.DefaultValue || undefined} onChange={this.handleValueChange} />
+    <textarea {...props} value={this.props.data.DefaultValue || undefined} onChange={this.handleValueChange} rows="3" />
         </div>
       </div>
     );

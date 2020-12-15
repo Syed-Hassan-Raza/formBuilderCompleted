@@ -17,16 +17,21 @@ export default class CondtionalFlowList extends React.Component {
         this.elseDisableRef = React.createRef();
 
         let data;
+        let templateId;
 
-        if (this.props.conditionalFlowMode)
+        if (this.props.conditionalFlowMode) {
             data = JSON.parse(this.props.conditionalFlow || '{ "entries": [] }');
-        else
-            data = JSON.parse(this.props.stateFlow || '{ "entries": [] }');
+        }
+        else {
+            templateId = store.state.data.StateFlowTemplate;
+            data = JSON.parse(store.state.data.StateFlow || '{ "entries": [] }');
+        }
 
         this.state = {
             data: data.entries,
             editState: {
                 value: '',
+                templateId: templateId,
                 then: {
                     show: [],
                     hide: [],
@@ -65,6 +70,9 @@ export default class CondtionalFlowList extends React.Component {
     save = () => {
 
         if (!this.state.editState.value) {
+            return;
+        }
+        else if (!this.props.conditionalFlowMode && !this.state.editState.templateId) {
             return;
         }
 
@@ -160,6 +168,7 @@ export default class CondtionalFlowList extends React.Component {
         this.setState({
             editState: {
                 value: '',
+                templateId: this.state.editState.templateId,
                 then: {
                     show: [],
                     hide: [],
@@ -188,12 +197,9 @@ export default class CondtionalFlowList extends React.Component {
             });
         }
         else {
-            this.props.onConditionalFlowChange.call(this.props.parent, 'StateFlow', 'StateFlow', {
-                target: {
-                    StateFlow: JSON.stringify({
-                        entries: this.state.data
-                    })
-                }
+            store.dispatch("handleStateFlow", { 
+                templateId: this.state.editState.templateId, 
+                stateFlow: JSON.stringify({ entries: this.state.data })
             });
         }
     }
@@ -202,13 +208,40 @@ export default class CondtionalFlowList extends React.Component {
         return (
             <div>
                 <fieldset>
-                    <legend>{this.props.conditionalFlowMode ? "Conditional" : "State"} Flow</legend>
+                    <legend>
+                        {this.props.conditionalFlowMode ? "Conditional Flow" : "State Flow (Entire Form)"}
+                    </legend>
                     <div>
+                        {this.props.conditionalFlowMode ? <></> :
+                            <div className="row">
+                                <div className="col-sm-12">
+                                    <div className="form-group">
+                                        <label>Template <span className="badge badge-danger">Required</span></label>
+                                        <select class="form-control" value={this.state.editState.templateId} onChange={e => this.onChange(e, 'templateId')}>
+                                            <option></option>
+                                            {store.state.stateFlowTemplates && store.state.stateFlowTemplates.map(i => {
+                                                    return (<option value={i.Key}>{i.Value}</option>)
+                                                })
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                         <div className="row">
                             <div className="col-sm-12">
                                 <div className="form-group">
                                     <label>When {this.props.conditionalFlowMode ? "Value" : "State"} <span className="badge badge-danger">Required</span></label>
-                                    <input type="text" className="form-control" value={this.state.editState.value} onChange={e => this.onChange(e, 'value')} />
+                                    {this.props.conditionalFlowMode
+                                        ? <input type="text" className="form-control" value={this.state.editState.value} onChange={e => this.onChange(e, 'value')} />
+                                        : <select class="form-control" value={this.state.editState.value} onChange={e => this.onChange(e, 'value')}>
+                                            <option></option>
+                                            <option value="__DEFAULT__">__DEFAULT__</option>
+                                            <option value="completed">completed</option>
+                                            <option value="closed">closed</option>
+                                            <option value="cancelled">cancelled</option>
+                                        </select>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -304,7 +337,7 @@ export default class CondtionalFlowList extends React.Component {
                                             </tr>
                                         )
                                     })
-                                    : <tr><td style={{textAlign: 'center'}}>{this.props.conditionalFlowMode ? "Conditional" : "State"} Flow is not applied.</td></tr>
+                                    : <tr><td style={{ textAlign: 'center' }}>{this.props.conditionalFlowMode ? "Conditional" : "State"} Flow is not applied.</td></tr>
                                 }
                             </tbody>
                         </table>
