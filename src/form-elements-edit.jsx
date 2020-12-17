@@ -595,15 +595,14 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         )}
-        {this.props.element.element !== "RadioButtons" &&
-          this.props.element.element !== "Checkboxes" &&
-          this.props.element.element !== "Action" && (
+        {
+          this.props.element.element !== "Action" || this.props.element.element !== "FieldGroups" && (
             <div>
               <div className="form-group">
                 <div className="row">
                   <div className="col-sm-12">
                     <label className="control-label" htmlFor="elementWidth">Default Value</label>
-                    <textarea rows="3"
+                    <textarea rows="3" title="Default value of the control"
                       className="form-control"
                       defaultValue={this.props.element.DefaultValue}
                       onBlur={this.updateElement.bind(this)}
@@ -620,7 +619,7 @@ export default class FormElementsEdit extends React.Component {
                 <div className="row">
                   <div className="col-sm-4">
                     <label className="control-label">Max Width</label>
-                    <input
+                    <input title="maximum width of the control"
                       type="number"
                       className="form-control"
                       defaultValue={this.props.element.MaxWidth}
@@ -634,7 +633,7 @@ export default class FormElementsEdit extends React.Component {
                   </div>
                   <div className="col-sm-4">
                     <label className="control-label">Min Width</label>
-                    <input
+                    <input title="minimum width of the control"
                       type="number"
                       className="form-control"
                       defaultValue={this.props.element.MinWidth}
@@ -648,7 +647,7 @@ export default class FormElementsEdit extends React.Component {
                   </div>
                   <div className="col-sm-4">
                     <label className="control-label">Width Ratio</label>
-                    <input
+                    <input  title="The ratio of horizontal width the component should take up. 1 for full  width or 0.5 for half, etc."
                       type="number"
                       className="form-control"
                       defaultValue={this.props.element.ControlWidthRatio}
