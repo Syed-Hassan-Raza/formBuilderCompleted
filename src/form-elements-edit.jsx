@@ -440,7 +440,7 @@ export default class FormElementsEdit extends React.Component {
                 <label className="control-label" htmlFor="elementWidth">
                   Display Label
                 </label>
-                <input
+                <input title="A static label text which displays along with your field"
                   type="text"
                   className="form-control"
                   defaultValue={this.props.element.Label}
@@ -596,8 +596,14 @@ export default class FormElementsEdit extends React.Component {
           </div>
         )}
         {
-          this.props.element.element !== "Action" || this.props.element.element !== "FieldGroups" && (
+         (
             <div>
+              
+               {this.props.element.element !== "Action" && this.props.element.element !== "FieldGroups"
+               && this.props.element.element !== "RadioButtons"
+               && this.props.element.element !== "Checkboxes"
+               && this.props.element.element !== "Signature"
+               && (
               <div className="form-group">
                 <div className="row">
                   <div className="col-sm-12">
@@ -615,6 +621,8 @@ export default class FormElementsEdit extends React.Component {
                   </div>
                 </div>
               </div>
+               )}
+               
               <div className="form-group">
                 <div className="row">
                   <div className="col-sm-4">

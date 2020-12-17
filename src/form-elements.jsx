@@ -937,10 +937,10 @@ class Checkboxes extends React.Component {
         <ComponentHeader {...this.props} />
         
         <div className="form-group">
-        <ComponentLabel {...this.props} /> 
+        
         <div className="form-group">
              <label className="checkbox-inline">
-            <input type="checkbox" value="" checked={this.props.data.DefaultValue} onChange={this.handleValueChange} />
+             <ComponentLabel {...this.props} />    <input type="checkbox" value="" checked={this.props.data.DefaultValue} onChange={this.handleValueChange} />
           </label>
           </div>
         </div>
