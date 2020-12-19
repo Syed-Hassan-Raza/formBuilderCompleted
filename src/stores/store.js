@@ -35,11 +35,11 @@ const store = new Store({
     },
 
     assignIds(data) {
-      if(data.Fields){
-      data.Fields.forEach((item) => {
-        item.id = ID.uuid();
-      });
-    }
+      if (data.Fields) {
+        data.Fields.forEach((item) => {
+          item.id = ID.uuid();
+        });
+      }
       if (data.FieldGroups && data.FieldGroups.length > 0) {
         data.FieldGroups.forEach((item) => {
           item.id = ID.uuid();
@@ -154,7 +154,103 @@ const store = new Store({
         post(_saveUrl, { task_data: data });
       }
     },
+    moveElement(context, info) {
+      const { data } = context.state;
+      var dragIndex = undefined;
+      var hoverIndex = undefined;
+      let moved = false;
 
+      if (info.elementType == "FieldGroups") {
+        data.FieldGroups.forEach((item, index, object) => {
+          if (item.id == info.dragId) {
+            dragIndex = index;
+          }
+          else if (item.id == info.hoverId) {
+            hoverIndex = index;
+          }
+  
+          if (dragIndex != undefined && hoverIndex != undefined) {
+            let dragItem = data.FieldGroups.splice(dragIndex, 1)[0];
+            data.FieldGroups.splice(hoverIndex, 0, dragItem);
+            dragIndex = hoverIndex = undefined;
+            moved = true;
+            return;
+          }
+        });
+      }
+      else {
+        data.Fields.forEach((item, index, object) => {
+          if (item.id == info.dragId) {
+            dragIndex = index;
+          }
+          else if (item.id == info.hoverId) {
+            hoverIndex = index;
+          }
+  
+          if (dragIndex != undefined && hoverIndex != undefined) {
+            let dragItem = data.Fields.splice(dragIndex, 1)[0];
+            data.Fields.splice(hoverIndex, 0, dragItem);
+            dragIndex = hoverIndex = undefined;
+            moved = true;
+            return;
+          }
+        });
+      }
+
+      if (!moved) this.moveChildElement(data.FieldGroups, info.dragId, info.hoverId, info.elementType);
+
+      this.setData(context, data, true);
+    },
+    moveChildElement(data, dragId, hoverId, elementType) {
+      let moved = false;
+      var dragIndex = undefined; 
+      var hoverIndex = undefined;
+      data.forEach((pItem, pIndex, pObject) => {
+        if (elementType == "FieldGroups") {
+          if (pItem.id == dragId) {
+            dragIndex = pIndex;
+          }
+          else if (pItem.id == hoverId) {
+            hoverIndex = pIndex;
+          }
+
+          if (dragIndex != undefined && hoverIndex != undefined) {
+            let dragItem = data.splice(dragIndex, 1)[0];
+            data.splice(hoverIndex, 0, dragItem);
+            dragIndex = hoverIndex = undefined;
+            return;
+          }
+        } 
+        else {
+          if (pItem.Fields) {
+
+            var dragIndex = undefined; 
+            var hoverIndex = undefined;
+
+            pItem.Fields.forEach((cItem, cIndex, cObject) => {
+              if (cItem.id == dragId) {
+                dragIndex = cIndex;
+              }
+              else if (cItem.id == hoverId) {
+                hoverIndex = cIndex;
+              }
+
+              if (dragIndex != undefined && hoverIndex != undefined) {
+                let dragItem = pItem.Fields.splice(dragIndex, 1)[0];
+                pItem.Fields.splice(hoverIndex, 0, dragItem);
+                dragIndex = hoverIndex = undefined;
+                moved = true;
+                return;
+              }
+
+            });
+          }
+        }
+
+        if (!moved && pItem.FieldGroups && pItem.FieldGroups.length >= 0)
+          this.moveChildElement(pItem.FieldGroups, dragId, hoverId, elementType);
+      });
+    },
     svaveChanges(context, newData) {
       const { data } = context.state;
 
@@ -172,7 +268,7 @@ const store = new Store({
 
   getPicklists() {
     // read all entities
-   return fetch("https://api-staging.workaware.com/api/v2/picklists", {
+    return fetch("https://api-staging.workaware.com/api/v2/picklists", {
       method: "GET",
       headers: headers,
     })

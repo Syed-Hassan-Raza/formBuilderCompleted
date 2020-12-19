@@ -355,9 +355,9 @@ class TextInput extends React.Component {
   }
 
   render() {
-    debugger
+    //debugger
 
-    console.log(this.state.width)
+    //console.log(this.state.width)
     const props = {};
     props.width=this.props.data.ControlWidthRatio||1;
 
@@ -940,7 +940,8 @@ class Checkboxes extends React.Component {
         
         <div className="form-group">
              <label className="checkbox-inline">
-             <ComponentLabel {...this.props} />    <input type="checkbox" value="" checked={this.props.data.DefaultValue} onChange={this.handleValueChange} />
+                <input type="checkbox" value="" checked={this.props.data.DefaultValue} onChange={this.handleValueChange} />
+                {" "}<ComponentLabel {...this.props} />
           </label>
           </div>
         </div>

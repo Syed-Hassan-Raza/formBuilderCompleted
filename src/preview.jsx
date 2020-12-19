@@ -190,6 +190,7 @@ export default class Preview extends React.Component {
           sortData={item.id}
           data={item}
           _onDestroy={this._onDestroy}
+          sortableFormElements={SortableFormElements}
         />
       );
     }

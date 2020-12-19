@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { findDOMNode } from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
 import ItemTypes from './ItemTypes';
+import store from "./stores/store";
+
 const style = {
   padding: '0.5rem 1rem',
   marginBottom: '.5rem',
@@ -14,18 +16,17 @@ const cardSource = {
   beginDrag(props) {
     return {
       id: props.id,
-      index: props.index,
+      index: props.index
     };
-  },
-
+  }
 };
 
 const cardTarget = {
   hover(props, monitor, component) {
-    // const item = monitor.getItem();
-    // const dragIndex = item.index;
-    // const hoverIndex = props.index;
-
+    //const item = monitor.getItem();
+    //const dragIndex = item.index;
+    //const hoverIndex = props.index;
+    
     // // Don't replace items with themselves
     // if (dragIndex === hoverIndex) {
     //   return;
@@ -61,59 +62,64 @@ const cardTarget = {
     // }
 
     // // Time to actually perform the action
-    // props.moveCard(dragIndex, hoverIndex);
+    //props.moveCard(dragIndex, hoverIndex);
 
     // // Note: we're mutating the monitor item here!
     // // Generally it's better to avoid mutations,
     // // but it's good here for the sake of performance
     // // to avoid expensive index searches.
-    // item.index = hoverIndex;
+    //item.index = hoverIndex;
   },
   drop(props, monitor, component) {
     if (monitor.didDrop()) {
       return
     }
     const item = monitor.getItem();
-    const dragIndex = item.index;
-    const hoverIndex = props.index;
-    debugger
+    //const dragIndex = item.index;
+    //const hoverIndex = props.index;
+    
     // Don't replace items with themselves
-    if (dragIndex === hoverIndex) {
-      return;
-    } if (dragIndex === -1) {
-      item.index = hoverIndex;
-      props.insertCard(item.onCreate(item.data), hoverIndex);
-    }
+    // if (dragIndex === hoverIndex) {
+    //   return;
+    // } if (dragIndex === -1) {
+    //   item.index = hoverIndex;
+    //   props.insertCard(item.onCreate(item.data), hoverIndex);
+    // }
 
     // Determine rectangle on screen
-    const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
+    //const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
 
     // Get vertical middle
-    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+    //const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
 
     // Determine mouse position
-    const clientOffset = monitor.getClientOffset();
+    //const clientOffset = monitor.getClientOffset();
 
     // Get pixels to the top
-    const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+    //const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
     // Only perform the move when the mouse has crossed half of the items height
     // When dragging downwards, only move when the cursor is below 50%
     // When dragging upwards, only move when the cursor is above 50%
 
     // Dragging downwards
-    if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-      return;
-    }
+    // if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+    //   return;
+    // }
 
     // Dragging upwards
-    if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-      return;
-    }
+    // if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+    //   return;
+    // }
 
     // Time to actually perform the action
-    props.moveCard(dragIndex, hoverIndex);
-
+    //props.moveCard(dragIndex, hoverIndex);
+    debugger
+    store.dispatch("moveElement", {
+      dragId: item.id, 
+      hoverId: props.data.id, 
+      elementType: props.data.element
+    });
     // Note: we're mutating the monitor item here!
     // Generally it's better to avoid mutations,
     // but it's good here for the sake of performance

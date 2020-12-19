@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDrop } from "react-dnd";
 import ItemTypes from "./ItemTypes";
-import FormElements from "./form-elements";
 import ID from "./UUID";
 import { SelectionState } from "draft-js";
 import { DropTarget } from "react-dnd";
@@ -130,10 +129,10 @@ class FieldsGroup extends React.Component {
   getElement(item, index) {
     const elementName = getElementName(item.Type);
     item.element = elementName;
-    const FormElement = FormElements[elementName];
-    if (FormElement) {
+    const SortableFormElement = this.props.sortableFormElements[elementName];
+    if (SortableFormElement) {
       return (
-        <FormElement
+        <SortableFormElement
           id={item.id}
           seq={Math.random()}
           index={index}
