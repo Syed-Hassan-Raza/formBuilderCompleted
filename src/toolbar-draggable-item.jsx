@@ -14,8 +14,8 @@ const cardSource = {
       index: -1,
       data: props.data,    
       onCreate: props.onCreate,
+      toolbarItem: true
     };
-  
   },
 };
 

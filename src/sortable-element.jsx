@@ -75,16 +75,17 @@ const cardTarget = {
       return
     }
     const item = monitor.getItem();
-    //const dragIndex = item.index;
-    //const hoverIndex = props.index;
-    
-    // Don't replace items with themselves
-    // if (dragIndex === hoverIndex) {
-    //   return;
-    // } if (dragIndex === -1) {
-    //   item.index = hoverIndex;
-    //   props.insertCard(item.onCreate(item.data), hoverIndex);
-    // }
+    const dragIndex = item.index;
+    const hoverIndex = props.index;
+    //Don't replace items with themselves
+    if (dragIndex === hoverIndex) {
+      return;
+    } 
+    else if (dragIndex === -1) {
+      item.index = hoverIndex;
+      props.insertCard(item.onCreate(item.data), hoverIndex);
+      return;
+    }
 
     // Determine rectangle on screen
     //const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
@@ -114,7 +115,6 @@ const cardTarget = {
 
     // Time to actually perform the action
     //props.moveCard(dragIndex, hoverIndex);
-    debugger
     store.dispatch("moveElement", {
       dragId: item.id, 
       hoverId: props.data.id, 

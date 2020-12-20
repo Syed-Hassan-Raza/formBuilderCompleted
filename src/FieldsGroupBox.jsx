@@ -9,7 +9,7 @@ import store from "./stores/store";
 import getElementName from "./element-mapper";
 
 const style = {
-  boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+
 };
 const fieldsGroupTarget = {
   canDrop(props, monitor) {
@@ -47,6 +47,7 @@ function collect(connect, monitor) {
     isOverCurrent: monitor.isOver({ shallow: true }),
     canDrop: monitor.canDrop(),
     itemType: monitor.getItemType(),
+    item: monitor.getItem()
   };
 }
 
@@ -146,6 +147,7 @@ class FieldsGroup extends React.Component {
           sortData={item.id}
           data={item}
           _onDestroy={this.props._onDestroy}
+          sortableFormElements={this.props.sortableFormElements}
         />
       );
     }
@@ -160,9 +162,14 @@ class FieldsGroup extends React.Component {
   }
 
   insertCard(item, hoverIndex) {
-    const { data } = this.state;
-    data.splice(hoverIndex, 0, item);
-    this.saveData(item, hoverIndex, hoverIndex);
+    // const { data } = this.state;
+    // data.splice(hoverIndex, 0, item);
+    // this.saveData(item, hoverIndex, hoverIndex);
+    // debugger
+    // store.dispatch("create", {
+    //   parentId: this.state.id,
+    //   item: item,
+    // });
   }
 
   _onDestroy(item) {
@@ -171,16 +178,16 @@ class FieldsGroup extends React.Component {
 
   render() {
     const { position } = this.props;
-    const { isOver, canDrop, connectDropTarget, components } = this.props;
+    const { isOver, canDrop, connectDropTarget, components , item } = this.props;
     return connectDropTarget(
       <div>
         <div className="card">
           <div className="card-header">{this.props.data.Label}</div>
           <div className="card-body" style={isOver ? style : null}>
-            {/* {isOver ? <h6>Drop Here</h6> : null} */}
             {this.state.components.map((item, index) =>
               this.getElement(item, index)
             )}
+            {item && item.toolbarItem ? <label>You can drop new item here</label> : null}
           </div>
         </div>
       </div>
