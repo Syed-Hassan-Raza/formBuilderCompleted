@@ -34,7 +34,6 @@ export default class FormElementsEdit extends React.Component {
       data: this.props.data,
       dirty: false,
     };
-    console.log(this.props);
   }
   componentDidMount() {}
 
@@ -631,7 +630,7 @@ export default class FormElementsEdit extends React.Component {
                         }}
                         data-place="right"
                         data-type="info"
-                        data-tip="Default value of the control, if user not put any value this value will be use"
+                        data-tip="The default value of the control, if user is not put any value this value will be used"
                         rows="3"
                         className="form-control"
                         defaultValue={this.props.element.DefaultValue}
@@ -653,7 +652,7 @@ export default class FormElementsEdit extends React.Component {
                   <div className="col-sm-4">
                     <label className="control-label">Max Width</label>
                     <input
-                      data-tip="maximum width of the control"
+                      data-tip="Maximum width of the control"
                       ref={(ref) => (this.fooRef = ref)}
                       onClick={() => {
                         ReactTooltip.hide(this.fooRef);
@@ -675,7 +674,7 @@ export default class FormElementsEdit extends React.Component {
                   <div className="col-sm-4">
                     <label className="control-label">Min Width</label>
                     <input
-                      data-tip="minimum width of the control"
+                      data-tip="Minimum width of the control"
                       ref={(ref) => (this.fooRef = ref)}
                       onClick={() => {
                         ReactTooltip.hide(this.fooRef);
@@ -697,7 +696,7 @@ export default class FormElementsEdit extends React.Component {
                   <div className="col-sm-4">
                     <label className="control-label">Width Ratio</label>
                     <input
-                      data-tip="The ratio of horizontal width the component should take up. 1 for full  width or 0.5 for half, etc."
+                      data-tip="The ratio of the horizontal width of the control. 1 for full width or 0.5 for half, etc."
                       ref={(ref) => (this.fooRef = ref)}
                       onClick={() => {
                         ReactTooltip.hide(this.fooRef);

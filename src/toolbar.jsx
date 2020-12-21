@@ -107,7 +107,7 @@ export default class Toolbar extends React.Component {
         field_name: "text_input_",
         Type: 1,
         tip:
-          "A standard text box component, A text box is a rectangular area on the screen where you can enter text ie username, addresses, email",
+          "A standard text box control, A text box is a rectangular area on the screen where you can enter text ie username, addresses, email",
       },
       {
         key: "NumberInput",
@@ -118,7 +118,7 @@ export default class Toolbar extends React.Component {
         field_name: "number_input_",
         Type: 2,
         tip:
-          "An input component restricting entry to integer values e.g 0,1,2,3",
+          "An input control restricting entry to integer values e.g 0,1,2,3",
       },
       {
         key: "DecimalInput",
@@ -128,7 +128,7 @@ export default class Toolbar extends React.Component {
         field_name: "decimal_",
         Type: 3,
         tip:
-          "An input component restricting to floating point values e.g 0.1, 7.5",
+          "An input control restricting to floating point values e.g 0.1, 7.5",
       },
 
       {
@@ -140,7 +140,7 @@ export default class Toolbar extends React.Component {
         field_name: "text_area_",
         Type: 9,
         tip:
-          "A multiline text box. if you want to write a paragrah you can use it",
+          "A multiline text box. if you want to write a paragraph you can use it",
       },
 
       {
@@ -152,7 +152,7 @@ export default class Toolbar extends React.Component {
         field_name: "dropdown_",
         TypeDetail: [],
         Type: 5,
-        tip: "A dropdown list which consists of multiple options ",
+        tip: "A dropdown list that consists of multiple options ",
       },
       {
         key: "Checkboxes",
@@ -163,7 +163,7 @@ export default class Toolbar extends React.Component {
         field_name: "checkboxes_",
         Type: 6,
         tip:
-          "A checkbox component which may consists of multiple checked or unchecked options ",
+          "A checkbox control may consist of the checked or unchecked option ",
       },
       {
         key: "RadioButtons",
@@ -176,7 +176,7 @@ export default class Toolbar extends React.Component {
         canHaveTypeDetail: true,
         Type: 12,
         tip:
-          "A group of redio buttons, You can add multiple redio buttons in this group, Only one option from the list can be chosen",
+          "A group of radio buttons, You can add multiple radio buttons in this group, Only one option from the list can be chosen",
       },
 
       {
@@ -188,7 +188,7 @@ export default class Toolbar extends React.Component {
         TypeDetail: "yyyy/MM/dd",
         Type: 4,
         tip:
-          "A date picker component, if you want to put date time values you can use it.",
+          "A date picker control, if you want to put date-time values you can use it.",
       },
       {
         key: "TimePicker",
@@ -199,7 +199,7 @@ export default class Toolbar extends React.Component {
         TypeDetail: "hh:mm:ss",
         Type: 7,
         tip:
-          "A time picker component, if you want to put only time values you can use it.",
+          "A time picker control, if you want to put only time values you can use it.",
       },
       {
         key: "Signature",
@@ -208,7 +208,7 @@ export default class Toolbar extends React.Component {
         label: "Signature",
         field_name: "signature_",
         Type: 14,
-        tip: "User can drag her signature by use this.",
+        tip: "This Control provides a facility to draw signature in the form.",
       },
 
       {
@@ -220,7 +220,7 @@ export default class Toolbar extends React.Component {
         field_name: "barcode_",
         Type: 16,
         tip:
-          "If a barcode scanner is available display it to the user and populate the field with the results of the scan.  Otherwise allow the field to be filled in manually as a text field.  Users should be able to explicitly choose manual population of the field if they want.",
+          "If a barcode scanner is available display it to the user and populates the field with the results of the scan.  Otherwise, allow the field to be filled in manually as a text field.  Users should be able to explicitly choose the manual population of the field if they want.",
       },
 
       {
@@ -232,7 +232,7 @@ export default class Toolbar extends React.Component {
         field_name: "assignee_",
         Type: 13,
         tip:
-          "A select list of users and teams that can be ‘assigned’ to the form. When assignees are selected and the form submitted. Assignments will be created and the user / team will be notified that some action is required of them.",
+          "A select list of users and teams that can be ‘assigned’ to the form. When assignees are selected and the form submitted. Assignments will be created and the user/team will be notified that some action is required of them.",
       },
 
       {
@@ -253,7 +253,7 @@ export default class Toolbar extends React.Component {
         icon: "fa fa-bolt",
         field_name: "action_",
         Type: 8,
-        tip: "Field that defines an action",
+        tip: "The field that defines an action",
       },
       {
         key: "StaticText",
@@ -271,7 +271,7 @@ export default class Toolbar extends React.Component {
         icon: "fas fa-plus",
         field_name: "calculated_",
         Type: 10,
-        tip: "A calculated field values",
+        tip: "A control that contains calculated values",
       },
       {
         key: "Counter",
