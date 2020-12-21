@@ -7,7 +7,7 @@ export default class PlaceHolder extends React.Component {
   render() {
     return (
       this.props.show && (
-        <div className={PLACE_HOLDER}>
+        <div className={PLACE_HOLDER} style={{"height":"100%"}}>
           <div>{this.props.text}</div>
         </div>
       )

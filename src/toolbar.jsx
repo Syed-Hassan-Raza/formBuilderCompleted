@@ -97,6 +97,7 @@ export default class Toolbar extends React.Component {
         Type: 22,
         Fields: [],
         FieldGroups: [],
+        tip:"A fields group enables you to arrange the fields in your form in sections, and thereby provide your users a visual grouping of fields."
       },
 
       {
@@ -105,7 +106,8 @@ export default class Toolbar extends React.Component {
         label: 'Placeholder Label',
         icon: 'fas fa-font',
         field_name: 'text_input_',
-        Type: 1,   
+        Type: 1,  
+        tip:"A standard text box component" 
       },
       {
         key: 'NumberInput',
@@ -115,6 +117,7 @@ export default class Toolbar extends React.Component {
         icon: 'fas fa-plus',
         field_name: 'number_input_',
         Type: 2,
+        tip:"An input component restricting entry to integer values e.g 0,1,2,3"
       },
       {
         key: 'DecimalInput',
@@ -123,6 +126,7 @@ export default class Toolbar extends React.Component {
         icon: 'fas fa-circle',
         field_name: 'decimal_',
         Type: 3,
+        tip: "An input component restricting to floating point values e.g 0.1, 7.5"
       },
 
       {
@@ -133,6 +137,7 @@ export default class Toolbar extends React.Component {
         icon: 'fas fa-text-height',
         field_name: 'text_area_',
         Type: 9,
+        tip:"A multiline text box. if you want to write a paragrah you can use it"
       },
 
       {
@@ -144,6 +149,7 @@ export default class Toolbar extends React.Component {
         field_name: 'dropdown_',
         TypeDetail: [],
         Type: 5,
+        tip:"A dropdown list which consists of multiple options "
       },
       {
         key: 'Checkboxes',
@@ -153,6 +159,7 @@ export default class Toolbar extends React.Component {
         label: 'Placeholder Label',
         field_name: 'checkboxes_',
         Type: 6,
+        tip:"A checkbox component which may consists of multiple checked or unchecked options "
       },
       {
         key: 'RadioButtons',
@@ -164,6 +171,7 @@ export default class Toolbar extends React.Component {
         TypeDetail: [],
         canHaveTypeDetail:true,
         Type: 12,
+        tip:"A group of redio buttons, You can add multiple redio buttons in this group, Only one option from the list can be chosen"
       },
 
       {
@@ -174,6 +182,7 @@ export default class Toolbar extends React.Component {
         field_name: 'date_picker_',
         TypeDetail:'yyyy/MM/dd',
         Type: 4,
+        tip:"A date picker component, if you want to put date time values you can use it."
       },
       {
         key: 'TimePicker',
@@ -183,6 +192,7 @@ export default class Toolbar extends React.Component {
         field_name: 'time_',
         TypeDetail:'hh:mm:ss',
         Type: 7,
+        tip:"A time picker component, if you want to put only time values you can use it."
       },
       {
         key: 'Signature',
@@ -191,6 +201,7 @@ export default class Toolbar extends React.Component {
         label: 'Signature',
         field_name: 'signature_',
         Type: 14,
+        tip:"User can drag her signature by use this."
       },
 
       {
@@ -201,6 +212,7 @@ export default class Toolbar extends React.Component {
         icon: 'fas fa-barcode',
         field_name: 'barcode_',
         Type: 16,
+        tip:"If a barcode scanner is available display it to the user and populate the field with the results of the scan.  Otherwise allow the field to be filled in manually as a text field.  Users should be able to explicitly choose manual population of the field if they want."
       },
 
    
@@ -212,6 +224,7 @@ export default class Toolbar extends React.Component {
         icon: 'fas fa-plus-square',
         field_name: 'assignee_',
         Type: 13,
+        tip:"A select list of users and teams that can be ‘assigned’ to the form. When assignees are selected and the form submitted. Assignments will be created and the user / team will be notified that some action is required of them."
       },
 
       {
@@ -222,6 +235,7 @@ export default class Toolbar extends React.Component {
         field_name: 'autocomplete_',
         TypeDetail: [],
         Type: 15,
+        tip:"A list of choices that the user can pick from.  Optionally the user can be provided with a text box that they can type the name of a choice into."
       },
       {
         key: 'Action',
@@ -230,6 +244,7 @@ export default class Toolbar extends React.Component {
         icon: 'fa fa-bolt',
         field_name: 'action_',
         Type: 8,
+        tip:"Field that defines an action"
       },
       {
         key: 'StaticText',
@@ -238,6 +253,7 @@ export default class Toolbar extends React.Component {
         icon: 'fas fa-font',
         field_name: 'static_text_',
         Type: 30,
+        tip:"Non-input static information presented to the user"
       },
       {
         key: 'Calculated',
@@ -246,6 +262,7 @@ export default class Toolbar extends React.Component {
         icon: 'fas fa-plus',
         field_name: 'calculated_',
         Type: 10,
+        tip:"A calculated field values"
       },
       {
         key: 'Counter',
@@ -254,6 +271,7 @@ export default class Toolbar extends React.Component {
         icon: 'fa fa-calculator',
         field_name: 'counter_',
         Type: 11,
+        tip:"Auto increasing (changing) document identifier. this should not be editable as the value will come from the server"
       },
       
     ];
@@ -296,54 +314,7 @@ export default class Toolbar extends React.Component {
     elementOptions.DefaultValue="NOW";
   }
   
-   // if(item.canHaveTypeDetail){
-    //    elementOptions.TypeDetail=item.TypeDetail;
-  //}
-    //if (this.props.showDescription === true && !item.static) {  elementOptions.showDescription = true; }
-
-    //if (item.static) { elementOptions.bold = false; elementOptions.italic = false;}
-
-    //if (item.canReadOnly) { elementOptions.readOnly = false; }
-
-    //if (item.canDefaultToday) { elementOptions.defaultToday = false; }
-
-     //if (item.content) { elementOptions.Label = item.content; }
-
-    //if (item.href) { elementOptions.href = item.href; }
-
-   // elementOptions.canHavePageBreakBefore = item.canHavePageBreakBefore !== false;
-   // elementOptions.canHaveAlternateForm = item.canHaveAlternateForm !== false;
-   // elementOptions.canHaveDisplayHorizontal = item.canHaveDisplayHorizontal !== false;
-   // elementOptions.canHaveOptionCorrect = item.canHaveOptionCorrect !== false;
-   // elementOptions.canHaveOptionValue = item.canHaveOptionValue !== false;
-   // elementOptions.canPopulateFromApi = item.canPopulateFromApi !== false;
-
-  /*  if (item.key === 'Image') {
-      elementOptions.src = item.src;
-    }
-
-    if (item.key === 'DatePicker') {
-      elementOptions.dateFormat = item.dateFormat;
-      elementOptions.timeFormat = item.timeFormat;
-      elementOptions.showTimeSelect = item.showTimeSelect;
-      elementOptions.showTimeSelectOnly = item.showTimeSelectOnly;
-    }
-
-    if (item.key === 'Download') {
-      elementOptions._href = item._href;
-      elementOptions.file_path = item.file_path;
-    }
-
-    if (item.key === 'Range') {
-      elementOptions.step = item.step;
-      elementOptions.default_value = item.default_value;
-      elementOptions.min_value = item.min_value;
-      elementOptions.max_value = item.max_value;
-      elementOptions.min_label = item.min_label;
-      elementOptions.max_label = item.max_label;
-    }
-    */
-
+  
     //if (item.Name) { elementOptions.Name = item.Name + ID.uuid();}
 
     if (item.label) { elementOptions.Label = item.label; }

@@ -16,7 +16,7 @@ import ID from "./UUID";
 import store from "./stores/store";
 import { parseJSON } from "date-fns";
 import CondtionalFlowList from "./CondtionalFlowList"
-
+import ReactTooltip from "react-tooltip";
 const toolbar = {
   options: [],
   inline: {
@@ -35,7 +35,6 @@ export default class FormElementsEdit extends React.Component {
       dirty: false
     };
   }
-
   componentDidMount() { }
 
   formats = ["html", "html64", "md", "md64"];
@@ -440,13 +439,15 @@ export default class FormElementsEdit extends React.Component {
                 <label className="control-label" htmlFor="elementWidth">
                   Display Label
                 </label>
-                <input title="A static label text which displays along with your field"
+                <input ref={ref=>this.fooRef=ref} onClick={()=>{ReactTooltip.hide(this.fooRef)}} data-place="right" data-type="info" data-tip="A static label text which displays along with your field"
                   type="text"
                   className="form-control"
                   defaultValue={this.props.element.Label}
                   onBlur={this.updateElement.bind(this)}
                   onChange={this.editElementProp.bind(this, "Label", "value")}
                 />
+                <ReactTooltip/>
+
               </div>
             </div>
           </div>
@@ -608,7 +609,10 @@ export default class FormElementsEdit extends React.Component {
                 <div className="row">
                   <div className="col-sm-12">
                     <label className="control-label" htmlFor="elementWidth">Default Value</label>
-                    <textarea rows="3" title="Default value of the control"
+                    <textarea
+                    ref={ref=>this.fooRef=ref} onClick={()=>{ReactTooltip.hide(this.fooRef)}} data-place="right" data-type="info"
+                     data-tip="Default value of the control, if user not put any value this value will be use"
+                    rows="3"
                       className="form-control"
                       defaultValue={this.props.element.DefaultValue}
                       onBlur={this.updateElement.bind(this)}
@@ -617,7 +621,7 @@ export default class FormElementsEdit extends React.Component {
                         "DefaultValue",
                         "value"
                       )}
-                    />
+                    /><ReactTooltip/>
                   </div>
                 </div>
               </div>
@@ -627,7 +631,8 @@ export default class FormElementsEdit extends React.Component {
                 <div className="row">
                   <div className="col-sm-4">
                     <label className="control-label">Max Width</label>
-                    <input title="maximum width of the control"
+                    <input data-tip="maximum width of the control"
+                     ref={ref=>this.fooRef=ref} onClick={()=>{ReactTooltip.hide(this.fooRef)}} data-place="right" data-type="info"
                       type="number"
                       className="form-control"
                       defaultValue={this.props.element.MaxWidth}
@@ -637,11 +642,12 @@ export default class FormElementsEdit extends React.Component {
                         "MaxWidth",
                         "value"
                       )}
-                    />
+                    /><ReactTooltip/>
                   </div>
                   <div className="col-sm-4">
                     <label className="control-label">Min Width</label>
-                    <input title="minimum width of the control"
+                    <input data-tip="minimum width of the control"
+                     ref={ref=>this.fooRef=ref} onClick={()=>{ReactTooltip.hide(this.fooRef)}} data-place="right" data-type="info"
                       type="number"
                       className="form-control"
                       defaultValue={this.props.element.MinWidth}
@@ -651,12 +657,13 @@ export default class FormElementsEdit extends React.Component {
                         "MinWidth",
                         "value"
                       )}
-                    />
+                    /><ReactTooltip/>
                   </div>
                   <div className="col-sm-4">
                     <label className="control-label">Width Ratio</label>
-                    <input  title="The ratio of horizontal width the component should take up. 1 for full  width or 0.5 for half, etc."
-                      type="number"
+                    <input  data-tip="The ratio of horizontal width the component should take up. 1 for full  width or 0.5 for half, etc."
+                      ref={ref=>this.fooRef=ref} onClick={()=>{ReactTooltip.hide(this.fooRef)}} data-place="right" data-type="info"
+                     type="number"
                       className="form-control"
                       defaultValue={this.props.element.ControlWidthRatio}
                       onBlur={this.updateElement.bind(this)}
@@ -665,7 +672,7 @@ export default class FormElementsEdit extends React.Component {
                         "ControlWidthRatio",
                         "value"
                       )}
-                    />
+                    /><ReactTooltip/>
                   </div>
                 </div>
               </div>

@@ -60,6 +60,17 @@ class ReactFormBuilder extends React.Component {
            </p>
            <Container />
          </div> */}
+           <div className="form-group" >
+              
+                <div className="row" >
+                  <div className="col-sm-3">
+                <button className="btn btn-outline-primary">Conditional Flow</button>
+                </div>
+                <div className="col-sm-2">
+                <button className="btn btn-outline-secondary">State Flow</button>
+                </div>
+              </div>
+              </div>
          <div className="react-form-builder clearfix">
            <div>
              <Preview files={this.props.files}
