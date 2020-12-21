@@ -15,7 +15,6 @@ export default class CondtionalFlowList extends React.Component {
         this.elseHideRef = React.createRef();
         this.elseEnableRef = React.createRef();
         this.elseDisableRef = React.createRef();
-
         let data;
         let templateId;
 
@@ -217,10 +216,10 @@ export default class CondtionalFlowList extends React.Component {
                                 <div className="col-sm-12">
                                     <div className="form-group">
                                         <label>Template <span className="badge badge-danger">Required</span></label>
-                                        <select class="form-control" value={this.state.editState.templateId} onChange={e => this.onChange(e, 'templateId')}>
+                                        <select className="form-control" value={this.state.editState.templateId || ""} onChange={e => this.onChange(e, 'templateId') || ""}>
                                             <option></option>
                                             {store.state.stateFlowTemplates && store.state.stateFlowTemplates.map(i => {
-                                                    return (<option value={i.Key}>{i.Value}</option>)
+                                                    return (<option value={i.Key || ""}>{i.Value}</option>)
                                                 })
                                             }
                                         </select>
@@ -233,8 +232,8 @@ export default class CondtionalFlowList extends React.Component {
                                 <div className="form-group">
                                     <label>When {this.props.conditionalFlowMode ? "Value" : "State"} <span className="badge badge-danger">Required</span></label>
                                     {this.props.conditionalFlowMode
-                                        ? <input type="text" className="form-control" value={this.state.editState.value} onChange={e => this.onChange(e, 'value')} />
-                                        : <select class="form-control" value={this.state.editState.value} onChange={e => this.onChange(e, 'value')}>
+                                        ? <input type="text" className="form-control" value={this.state.editState.value || ""} onChange={e => this.onChange(e, 'value')} />
+                                        : <select className="form-control" value={this.state.editState.value || ""} onChange={e => this.onChange(e, 'value')}>
                                             <option></option>
                                             <option value="__DEFAULT__">__DEFAULT__</option>
                                             <option value="completed">completed</option>
