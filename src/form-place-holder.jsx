@@ -7,7 +7,7 @@ export default class PlaceHolder extends React.Component {
   render() {
     return (
       this.props.show && (
-        <div className={PLACE_HOLDER} style={{"height":"100%"}}>
+        <div className={PLACE_HOLDER} style={{height:"auto"}}>
           <div>{this.props.text}</div>
         </div>
       )
@@ -21,6 +21,6 @@ PlaceHolder.propTypes = {
 };
 
 PlaceHolder.defaultProps = {
-  text: "Drop a item here....",
+  text: "Drop a control here or click on control....",
   show: false,
 };

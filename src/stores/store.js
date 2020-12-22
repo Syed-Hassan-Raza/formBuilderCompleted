@@ -151,7 +151,7 @@ const store = new Store({
       if (_onPost) {
         _onPost({ task_data: data });
       } else if (_saveUrl) {
-        post(_saveUrl, { task_data: data });
+        //post(_saveUrl, { task_data: data });
       }
     },
     moveElement(context, info) {
