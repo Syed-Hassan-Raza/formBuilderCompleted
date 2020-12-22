@@ -16,11 +16,9 @@ const store = new Store({
     load(context, { loadUrl, saveUrl, data }) {
       _saveUrl = saveUrl;
       if (_onLoad) {
-        _onLoad().then((x) => {
-          context.state.stateFlowTemplates = x.stateFlowTemplates;
-          context.state.pickLists = x.pickLists;
-          this.assignIds(x.formTemplate);
-          this.setData(context, x.formTemplate);
+        _onLoad().then((d) => {
+          this.assignIds(d);
+          this.setData(context, d);
         });
       } else if (loadUrl) {
         get(loadUrl).then((x) => {
@@ -263,6 +261,10 @@ const store = new Store({
       const { data } = context.state;
       data.StateFlowTemplate = stateFlowData.templateId;
       data.StateFlow = stateFlowData.stateFlow;
+    },
+    setListItems (context, listItems) {
+      context.state.stateFlowTemplates = listItems.stateFlowTemplates;
+      context.state.pickLists = listItems.pickLists; 
     }
   },
 

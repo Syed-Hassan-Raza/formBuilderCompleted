@@ -19,6 +19,11 @@ class ReactFormBuilder extends React.Component {
       editMode: false,
       editElement: null,
     };
+
+    store.dispatch('setListItems', {
+      stateFlowTemplates: props.stateFlowTemplates, 
+      pickLists: props.pickLists
+    });
   }
   
 
