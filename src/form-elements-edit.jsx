@@ -15,8 +15,8 @@ import { get } from "./stores/requests";
 import ID from "./UUID";
 import store from "./stores/store";
 import { parseJSON } from "date-fns";
-import CondtionalFlowList from "./CondtionalFlowList"
-import ReactTooltip from "react-tooltip";
+import CondtionalFlowList from "./CondtionalFlowList";
+
 const toolbar = {
   options: [],
   inline: {
@@ -32,10 +32,10 @@ export default class FormElementsEdit extends React.Component {
     this.state = {
       element: this.props.element,
       data: this.props.data,
-      dirty: false
+      dirty: false,
     };
   }
-  componentDidMount() { }
+  componentDidMount() {}
 
   formats = ["html", "html64", "md", "md64"];
   fieldsName = [
@@ -287,53 +287,60 @@ export default class FormElementsEdit extends React.Component {
             onClick={this.props.manualEditModeOff}
           ></i>
         </div>
-
-        <div className="form-group">
-          <div className="row">
-            <div className="col-md-12">
-              <label className="control-label" htmlFor="elementWidth">
-                Field Name {" "}
-                {this.props.element.element !== "FieldGroups" && (
-                  <span className="badge badge-danger">Required</span>
-                )}
-              </label>
-              <input
-                list="fileSelect"
-                id="fieldsName"
-                value={this.props.element.Name}
-                className="form-control"
-                onBlur={this.updateElement.bind(this)}
-                onChange={this.editElementName.bind(this)}
-              />
-              <datalist id="fileSelect">
-                {Object.keys(this.fieldsName).map((k, i) => {
-                  return (
-                    <option value={this.fieldsName[k].name} key={i}></option>
-                  );
-                })}
-              </datalist>
-            </div>
-          </div>
-        </div>
-
-        {this.props.element.hasOwnProperty("content") && (
+        {this.props.element.Name !== "StateFlow" && (
           <div className="form-group">
             <div className="row">
-              <div className="col-md-12">
+              <div className="col-md-12 tooltip">
                 <label className="control-label" htmlFor="elementWidth">
-                  Display To Text
+                  Field Name{" "}
+                  {this.props.element.element !== "FieldGroups" && (
+                    <span className="badge badge-danger">Required</span>
+                  )}
                 </label>
                 <input
-                  type="text"
+                  list="fileSelect"
+                  id="fieldsName"
+                  value={this.props.element.Name}
                   className="form-control"
-                  defaultValue={this.props.element.label}
                   onBlur={this.updateElement.bind(this)}
-                  onChange={this.editElementProp.bind(this, "content", "value")}
-                />
+                  onChange={this.editElementName.bind(this)}
+                />                     
+                 <span className="tooltiptext tooltiptext-bottom">Control name, you can put your custom name or select from the list. used in form submission</span>
+
+                <datalist id="fileSelect">
+                  {Object.keys(this.fieldsName).map((k, i) => {
+                    return (
+                      <option value={this.fieldsName[k].name} key={i}></option>
+                    );
+                  })}
+                </datalist>
               </div>
             </div>
           </div>
         )}
+        {this.props.element.hasOwnProperty("content")
+           && (
+            <div className="form-group">
+              <div className="row">
+                <div className="col-md-12">
+                  <label className="control-label" htmlFor="elementWidth">
+                    Display To Text
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    defaultValue={this.props.element.label}
+                    onBlur={this.updateElement.bind(this)}
+                    onChange={this.editElementProp.bind(
+                      this,
+                      "content",
+                      "value"
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         {this.props.element.hasOwnProperty("file_path") && (
           <div className="form-group">
             <label className="control-label" htmlFor="fileSelect">
@@ -432,26 +439,26 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         )}
-        {this.props.element.hasOwnProperty("Label") && (
-          <div className="form-group">
-            <div className="row">
-              <div className="col-md-12">
-                <label className="control-label" htmlFor="elementWidth">
-                  Display Label
-                </label>
-                <input ref={ref=>this.fooRef=ref} onClick={()=>{ReactTooltip.hide(this.fooRef)}} data-place="right" data-type="info" data-tip="A static label text which displays along with your field"
-                  type="text"
-                  className="form-control"
-                  defaultValue={this.props.element.Label}
-                  onBlur={this.updateElement.bind(this)}
-                  onChange={this.editElementProp.bind(this, "Label", "value")}
-                />
-                <ReactTooltip/>
-
+        {this.props.element.hasOwnProperty("Label") &&
+           (
+            <div className="form-group">
+              <div className="row">
+                <div className="col-md-12 tooltip">
+                  <label className="control-label" htmlFor="elementWidth">
+                    Display Label
+                  </label>
+                  <input
+                   type="text"
+                    className="form-control"
+                    defaultValue={this.props.element.Label}
+                    onBlur={this.updateElement.bind(this)}
+                    onChange={this.editElementProp.bind(this, "Label", "value")}
+                  />
+                  <span className="tooltiptext tooltiptext-bottom">A static label text which displays along with your field</span>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
         {(this.props.element.Type === 4 || this.props.element.Type === 7) && (
           <div className="form-group">
@@ -535,7 +542,7 @@ export default class FormElementsEdit extends React.Component {
         {this.props.element.Type === 5 && (
           <div className="form-group">
             <div className="row">
-              <div className="col-sm-12">
+              <div className="col-sm-12 tooltip">
                 <label className="control-label" htmlFor="defaultValue">
                   Pick List
                 </label>
@@ -550,14 +557,16 @@ export default class FormElementsEdit extends React.Component {
                   )}
                 >
                   <option></option>
-                  {store.state.pickLists && Object.keys(store.state.pickLists).map((obj, i) => {
-                    return (
-                      <option value={store.state.pickLists[obj].Key} key={i}>
-                        {store.state.pickLists[obj].Value}
-                      </option>
-                    );
-                  })}
-                </select>
+                  {store.state.pickLists &&
+                    Object.keys(store.state.pickLists).map((obj, i) => {
+                      return (
+                        <option value={store.state.pickLists[obj].Key} key={i}>
+                          {store.state.pickLists[obj].Value}
+                        </option>
+                      );
+                    })}
+                </select>                   
+               <span className="tooltiptext tooltiptext-bottom">An auto-populated list from the server. select list values will be filled according to the selected Pick List.</span>
               </div>
             </div>
           </div>
@@ -597,42 +606,41 @@ export default class FormElementsEdit extends React.Component {
           </div>
         )}
         {
-         (
-            <div>
-              
-               {this.props.element.element !== "Action" && this.props.element.element !== "FieldGroups"
-               && this.props.element.element !== "RadioButtons"
-               && this.props.element.element !== "Checkboxes"
-               && this.props.element.element !== "Signature"
-               && (
-              <div className="form-group">
-                <div className="row">
-                  <div className="col-sm-12">
-                    <label className="control-label" htmlFor="elementWidth">Default Value</label>
-                    <textarea
-                    ref={ref=>this.fooRef=ref} onClick={()=>{ReactTooltip.hide(this.fooRef)}} data-place="right" data-type="info"
-                     data-tip="Default value of the control, if user not put any value this value will be use"
-                    rows="3"
-                      className="form-control"
-                      defaultValue={this.props.element.DefaultValue}
-                      onBlur={this.updateElement.bind(this)}
-                      onChange={this.editElementProp.bind(
-                        this,
-                        "DefaultValue",
-                        "value"
-                      )}
-                    /><ReactTooltip/>
+          <div>
+            {this.props.element.element !== "Action" &&
+              this.props.element.element !== "FieldGroups" &&
+              this.props.element.element !== "RadioButtons" &&
+              this.props.element.element !== "Checkboxes" &&
+              this.props.element.element !== "Signature" &&
+              this.props.element.Name !== "StateFlow" && (
+                <div className="form-group">
+                  <div className="row">
+                    <div className="col-sm-12 tooltip">
+                      <label className="control-label" htmlFor="elementWidth">
+                        Default Value
+                      </label>
+                      <textarea
+                        rows="3"
+                        className="form-control"
+                        defaultValue={this.props.element.DefaultValue}
+                        onBlur={this.updateElement.bind(this)}
+                        onChange={this.editElementProp.bind(
+                          this,
+                          "DefaultValue",
+                          "value"
+                        )}
+                      />
+                      <span className="tooltiptext tooltiptext-bottom">The default value of the control, if user is not put any value this value will be used</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-               )}
-               
+              )}
+            {this.props.element.Name !== "StateFlow" && (
               <div className="form-group">
                 <div className="row">
-                  <div className="col-sm-4">
+                  <div className="col-sm-4 tooltip">
                     <label className="control-label">Max Width</label>
-                    <input data-tip="maximum width of the control"
-                     ref={ref=>this.fooRef=ref} onClick={()=>{ReactTooltip.hide(this.fooRef)}} data-place="right" data-type="info"
+                    <input
                       type="number"
                       className="form-control"
                       defaultValue={this.props.element.MaxWidth}
@@ -642,12 +650,12 @@ export default class FormElementsEdit extends React.Component {
                         "MaxWidth",
                         "value"
                       )}
-                    /><ReactTooltip/>
+                    />
+                      <span className="tooltiptext tooltiptext-bottom">Maximum width of the control</span>
                   </div>
-                  <div className="col-sm-4">
+                  <div className="col-sm-4 tooltip">
                     <label className="control-label">Min Width</label>
-                    <input data-tip="minimum width of the control"
-                     ref={ref=>this.fooRef=ref} onClick={()=>{ReactTooltip.hide(this.fooRef)}} data-place="right" data-type="info"
+                    <input          
                       type="number"
                       className="form-control"
                       defaultValue={this.props.element.MinWidth}
@@ -657,13 +665,13 @@ export default class FormElementsEdit extends React.Component {
                         "MinWidth",
                         "value"
                       )}
-                    /><ReactTooltip/>
+                    />
+                      <span className="tooltiptext tooltiptext-bottom">Minimum width of the control</span>
                   </div>
-                  <div className="col-sm-4">
+                  <div className="col-sm-4 tooltip">
                     <label className="control-label">Width Ratio</label>
-                    <input  data-tip="The ratio of horizontal width the component should take up. 1 for full  width or 0.5 for half, etc."
-                      ref={ref=>this.fooRef=ref} onClick={()=>{ReactTooltip.hide(this.fooRef)}} data-place="right" data-type="info"
-                     type="number"
+                    <input                
+                      type="number"
                       className="form-control"
                       defaultValue={this.props.element.ControlWidthRatio}
                       onBlur={this.updateElement.bind(this)}
@@ -672,12 +680,14 @@ export default class FormElementsEdit extends React.Component {
                         "ControlWidthRatio",
                         "value"
                       )}
-                    /><ReactTooltip/>
+                    />
+                      <span className="tooltiptext tooltiptext-bottom">The ratio of the horizontal width of the control. 1 for full width or 0.5 for half, etc.</span>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
+        }
         <br />
 
         {this.props.element.hasOwnProperty("Label") && (
@@ -774,16 +784,25 @@ export default class FormElementsEdit extends React.Component {
             key={this.props.element.TypeDetail.length}
           />
         )}
-        {this.props.element.hasOwnProperty("ConditionalFlow") && (
+        {this.props.element.hasOwnProperty("ConditionalFlow") &&
+          this.props.element.Name !== "StateFlow" && (
+            <>
+              <hr />
+              <CondtionalFlowList
+                conditionalFlowMode={true}
+                parent={this}
+                conditionalFlow={this.props.element.ConditionalFlow}
+                onConditionalFlowChange={this.editElementProp}
+              ></CondtionalFlowList>
+            </>
+          )}
+        {this.props.element.Name === "StateFlow" && (
           <>
-            <hr />
-            <CondtionalFlowList conditionalFlowMode={true} parent={this} conditionalFlow={this.props.element.ConditionalFlow} onConditionalFlowChange={this.editElementProp}></CondtionalFlowList>
-          </>
-        )}
-        {this.props.element.hasOwnProperty("StateFlow") && (
-          <>
-            <hr />
-            <CondtionalFlowList conditionalFlowMode={false} parent={this} conditionalFlow={this.props.element.ConditionalFlow}></CondtionalFlowList>
+            <CondtionalFlowList
+              conditionalFlowMode={false}
+              parent={this}
+              conditionalFlow={this.props.element.ConditionalFlow}
+            ></CondtionalFlowList>
           </>
         )}
       </div>

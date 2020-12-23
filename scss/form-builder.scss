@@ -405,11 +405,44 @@
 
 .form-place-holder {
   margin:10px; 
-  border:2px dashed #bbb;
+  //border:2px dashed #bbb;
   -moz-border-radius:5px;
   -webkit-border-radius:5px;
   border-radius:5px;
   padding:25px;
   text-align:center;
   font:20pt bold,"Vollkorn";color:#bbb
+}
+
+.tooltip {
+  position: relative;
+  display: block;
+  opacity: 1;
+  z-index: inherit;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: #fff0c7;
+  text-align: left;
+  border-radius: 2px;
+  padding: 3px;
+  border: 1px solid #bbbbbb;
+  position: absolute;
+  z-index: 9999;
+}
+
+.tooltip .tooltiptext-left {
+  top: -5px;
+  right: 103%;
+  width: 250px;
+}
+
+.tooltip .tooltiptext-bottom {
+  margin-top: 5px;
+  width: 85%;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }

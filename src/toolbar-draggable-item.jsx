@@ -6,7 +6,6 @@ import React from 'react';
 import { DragSource } from 'react-dnd';
 import ItemTypes from './ItemTypes';
 import ID from './UUID';
-import ReactTooltip from "react-tooltip";
 
 const cardSource = {
   beginDrag(props) {
@@ -27,9 +26,7 @@ class ToolbarItem extends React.Component {
     if (!connectDragSource) return null;
     return (
       connectDragSource(
-        <li onClick={onClick}
-        data-place="right"
-        data-tip={data.tip}><i className={data.icon}></i>{data.name} <ReactTooltip /> </li>,
+        <li onClick={onClick} className="tooltip"> <span className="tooltiptext tooltiptext-left">{data.tip}</span><i className={data.icon}></i>{data.name}</li>,
       )
     );
   }

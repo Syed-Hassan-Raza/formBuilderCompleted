@@ -57,6 +57,7 @@ class ReactFormBuilder extends React.Component {
     return (
       <DndProvider backend={HTML5Backend}>
        <div>
+       
          {/* <div>
            <p>
              It is easy to implement a sortable interface with React DnD. Just make

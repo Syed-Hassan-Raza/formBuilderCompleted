@@ -22,8 +22,9 @@ export default class Preview extends React.Component {
     this.editForm = React.createRef();
     this.state = {
       data: [],
-      answer_data: {}
+      answer_data: {},
     };
+    this.stateFlowData = {};
     this.seq = 0;
 
     const onUpdate = this._onChange.bind(this);
@@ -46,6 +47,8 @@ export default class Preview extends React.Component {
     const { data, url, saveUrl } = this.props;
     store.dispatch("load", { loadUrl: url, saveUrl, data: data || [] });
     document.addEventListener("mousedown", this.editModeOff);
+    this.stateFlowData.Name = "StateFlow";
+    //this.stateFlowData.ConditionalFlow={ "entries": [] };
   }
 
   componentWillUnmount() {
@@ -217,22 +220,38 @@ export default class Preview extends React.Component {
 
     return (
       <div className={classes}>
+        {
+          <button
+            type="button"
+            onClick={this.props.editModeOn.bind(
+              this.props.parent,
+              this.stateFlowData
+            )}
+            className="btn btn-outline-primary"
+          >
+            <span className="btn-label">
+              <i className="fa fa-cog"></i>
+            </span>{" "}
+            Settings
+          </button>
+        }
+
         <div className="edit-form" ref={this.editForm}>
           {this.props.editElement !== null && (
-            <FormElementsEdit
-              showCorrectColumn={this.props.showCorrectColumn}
-              files={this.props.files}
-              manualEditModeOff={this.manualEditModeOff}
-              preview={this}
-              element={this.props.editElement}
-              updateElement={this.updateElement}
-            />
+              <FormElementsEdit
+                showCorrectColumn={this.props.showCorrectColumn}
+                files={this.props.files}
+                manualEditModeOff={this.manualEditModeOff}
+                preview={this}
+                element={this.props.editElement}
+                updateElement={this.updateElement}
+              />
           )}
         </div>
         <div className="Sortable">{items}</div>
         <PlaceHolder
           id="form-place-holder"
-          show={items.length === 0}
+          show={true}
           index={items.length}
           moveCard={this.cardPlaceHolder}
           insertCard={this.insertCard}

@@ -149,7 +149,7 @@ const store = new Store({
       if (_onPost) {
         _onPost({ task_data: data });
       } else if (_saveUrl) {
-        post(_saveUrl, { task_data: data });
+        //post(_saveUrl, { task_data: data });
       }
     },
     moveElement(context, info) {
@@ -267,25 +267,7 @@ const store = new Store({
       context.state.pickLists = listItems.pickLists; 
     }
   },
-
-  getPicklists() {
-    // read all entities
-    return fetch("https://api-staging.workaware.com/api/v2/picklists", {
-      method: "GET",
-      headers: headers,
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        // this.setState({
-        //   friends: response
-        // })
-        return response;
-      })
-      .catch((err) => {
-        return err;
-      });
-  },
-
+  
   mutations: {
     setData(state, payload) {
       // eslint-disable-next-line no-param-reassign
