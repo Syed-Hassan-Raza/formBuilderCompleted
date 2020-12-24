@@ -308,9 +308,7 @@ export default class Toolbar extends React.Component {
         (elementOptions.ControlWidthRatio = null),
         (elementOptions.States = {}),
         (elementOptions.ExternalAutoFill = []),
-        (elementOptions.ConditionalFlow = '{ "entries": [] }'),
-        (elementOptions.StateFlow = '{ "entries": [] }'),
-        (elementOptions.StateFlowTemplate = null);
+        (elementOptions.ConditionalFlow = '{ "entries": [] }')
     }
 
     if (item.key === "FieldGroups") {

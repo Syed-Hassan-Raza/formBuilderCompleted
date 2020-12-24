@@ -260,7 +260,8 @@ const store = new Store({
     handleStateFlow(context, stateFlowData) {
       const { data } = context.state;
       data.StateFlowTemplate = stateFlowData.templateId;
-      data.StateFlow = stateFlowData.stateFlow;
+      data.StateFlow = JSON.parse(stateFlowData.stateFlow);
+      this.setData(context, data, true);
     },
     setListItems (context, listItems) {
       context.state.stateFlowTemplates = listItems.stateFlowTemplates;

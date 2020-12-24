@@ -22,7 +22,7 @@ export default class CondtionalFlowList extends React.Component {
       data = JSON.parse(this.props.conditionalFlow || '{ "entries": [] }');
     } else {
       templateId = store.state.data.StateFlowTemplate;
-      data = JSON.parse(store.state.data.StateFlow || '{ "entries": [] }');
+      data = store.state.data.StateFlow || { entries: [] };
     }
 
     this.state = {
@@ -187,7 +187,7 @@ export default class CondtionalFlowList extends React.Component {
   edit = (value) => {
     let item = this.state.data.find((i) => i.value == value);
     this.setState({
-      editState: item,
+      editState: { templateId: this.state.editState.templateId, ...item }
     });
   };
 
@@ -211,6 +211,9 @@ export default class CondtionalFlowList extends React.Component {
 
     this.setState({
       editState: this.state.editState,
+    }, () => {
+      if (p1 == "templateId")
+        this.liftStateUp();
     });
   };
 
