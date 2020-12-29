@@ -216,14 +216,15 @@ const store = new Store({
             let dragItem = data.splice(dragIndex, 1)[0];
             data.splice(hoverIndex, 0, dragItem);
             dragIndex = hoverIndex = undefined;
+            moved = true;
             return;
           }
         } 
         else {
           if (pItem.Fields) {
 
-            var dragIndex = undefined; 
-            var hoverIndex = undefined;
+            dragIndex = undefined; 
+            hoverIndex = undefined;
 
             pItem.Fields.forEach((cItem, cIndex, cObject) => {
               if (cItem.id == dragId) {

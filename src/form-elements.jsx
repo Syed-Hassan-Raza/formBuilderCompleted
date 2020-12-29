@@ -34,14 +34,6 @@ const myxss = new xss.FilterXSS({
   },
 });
 
-const FieldsWidth=(width)=>{
- let widthStyle={
-  float:"left",
-  width:width*100+"%",
- }
- return widthStyle;
-}
-
 const ComponentLabel = (props) => {
   const hasMandatoryLabel =
     props.data.hasOwnProperty("Mandatory") &&
@@ -103,7 +95,6 @@ const ComponentHeader = (props) => {
         static={props.data.static}
         Mandatory={props.data.Mandatory}
       />
-     <br/>
     </div>
   );
 };
@@ -127,7 +118,7 @@ class Header extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <h2
           className={classNames}
@@ -164,7 +155,7 @@ class FieldGroups extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} /> 
         {<FieldsGroup {...this.props} />}
       </div>
@@ -190,7 +181,7 @@ class Paragraph extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
         <p
           className={classNames}
@@ -221,7 +212,7 @@ class Label extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
         <label
           className={classNames}
@@ -252,7 +243,7 @@ class Calculated extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <label
           className={classNames}
@@ -283,7 +274,7 @@ class Counter extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <label
           className={classNames}
@@ -314,7 +305,7 @@ class Action extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)} >
+      <div className={baseClasses}  >
         <ComponentHeader {...this.props} />
         <label
           className={classNames}
@@ -335,7 +326,7 @@ class LineBreak extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <hr />
       </div>
@@ -379,7 +370,7 @@ class TextInput extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />  
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
@@ -421,7 +412,7 @@ class NumberInput extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
@@ -463,7 +454,7 @@ class DecimalInput extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
@@ -501,7 +492,7 @@ class StaticText extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
@@ -543,7 +534,7 @@ class TextArea extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
@@ -585,7 +576,7 @@ class TimePicker extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
@@ -626,7 +617,7 @@ class DatePicker extends React.Component {
       props.disabled = "disabled";
     }
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
@@ -666,7 +657,7 @@ class Dropdown extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
@@ -713,7 +704,7 @@ class Assignee extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
@@ -760,7 +751,7 @@ class Autocomplete extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
@@ -829,7 +820,7 @@ class Signature extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
@@ -893,7 +884,7 @@ class Tags extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
@@ -933,7 +924,7 @@ class Checkboxes extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         
         <div className="form-group">
@@ -959,7 +950,7 @@ class Checkboxes extends React.Component {
     // }
 
     // return (
-    //   <div className={baseClasses} style={FieldsWidth(props.width)}>
+    //   <div className={baseClasses} >
     //     <ComponentHeader {...this.props} />
     //     <div className="form-group">
     //       <ComponentLabel className="form-label" {...this.props} />
@@ -1032,7 +1023,7 @@ class RadioButtons extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
         <ComponentLabel {...this.props} />  <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>
@@ -1095,7 +1086,7 @@ class Image extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)} style={style}>
+      <div className={baseClasses}  style={style}>
         {!this.props.mutable && (
           <HeaderBar
             parent={this.props.parent}
@@ -1147,7 +1138,7 @@ class Rating extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
@@ -1166,7 +1157,7 @@ class HyperLink extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <a target="_blank" href={this.props.data.href}>
@@ -1186,7 +1177,7 @@ class Download extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <a
@@ -1253,7 +1244,7 @@ class Camera extends React.Component {
     }
     //console.log("sourceDataURL", sourceDataURL);
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
@@ -1378,7 +1369,7 @@ class Range extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
@@ -1425,7 +1416,7 @@ class Barcode extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} /> <span className="label-Mandatory badge badge-info">{this.props.data.element}</span>

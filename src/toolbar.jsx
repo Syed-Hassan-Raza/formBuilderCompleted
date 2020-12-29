@@ -90,7 +90,7 @@ export default class Toolbar extends React.Component {
         key: "FieldGroups",
         name: "Fields Group",
         icon: "fa fa-object-group",
-        label: "Placeholder Label",
+        label: "Label",
         static: true,
         Type: 22,
         Fields: [],
@@ -102,7 +102,7 @@ export default class Toolbar extends React.Component {
       {
         key: "TextInput",
         name: "Text Box",
-        label: "Placeholder Label",
+        label: "Label",
         icon: "fas fa-font",
         field_name: "text_input_",
         Type: 1,
@@ -113,7 +113,7 @@ export default class Toolbar extends React.Component {
         key: "NumberInput",
         canHaveAnswer: true,
         name: "Number Entry",
-        label: "Placeholder Label",
+        label: "Label",
         icon: "fas fa-plus",
         field_name: "number_input_",
         Type: 2,
@@ -123,7 +123,7 @@ export default class Toolbar extends React.Component {
       {
         key: "DecimalInput",
         name: "Decimal Entry",
-        label: "Placeholder Label",
+        label: "Label",
         icon: "fas fa-circle",
         field_name: "decimal_",
         Type: 3,
@@ -135,7 +135,7 @@ export default class Toolbar extends React.Component {
         key: "TextArea",
         canHaveAnswer: true,
         name: "Multi-line Input",
-        label: "Placeholder Label",
+        label: "Label",
         icon: "fas fa-text-height",
         field_name: "text_area_",
         Type: 9,
@@ -148,7 +148,7 @@ export default class Toolbar extends React.Component {
         canHaveAnswer: true,
         name: "Select List",
         icon: "far fa-caret-square-down",
-        label: "Placeholder Label",
+        label: "Label",
         field_name: "dropdown_",
         TypeDetail: [],
         Type: 5,
@@ -159,7 +159,7 @@ export default class Toolbar extends React.Component {
         canHaveAnswer: true,
         name: "Checkboxes",
         icon: "far fa-check-square",
-        label: "Placeholder Label",
+        label: "Label",
         field_name: "checkboxes_",
         Type: 6,
         tip:
@@ -170,7 +170,7 @@ export default class Toolbar extends React.Component {
         canHaveAnswer: true,
         name: "Multiple Choice",
         icon: "far fa-dot-circle",
-        label: "Placeholder Label",
+        label: "Label",
         field_name: "radiobuttons_",
         TypeDetail: [],
         canHaveTypeDetail: true,
@@ -183,7 +183,7 @@ export default class Toolbar extends React.Component {
         key: "DatePicker",
         name: "Date",
         icon: "far fa-calendar-alt",
-        label: "Placeholder Label",
+        label: "Label",
         field_name: "date_picker_",
         TypeDetail: "yyyy/MM/dd",
         Type: 4,
@@ -193,7 +193,7 @@ export default class Toolbar extends React.Component {
       {
         key: "TimePicker",
         name: "Time",
-        label: "Placeholder Label",
+        label: "Label",
         icon: "fas fa-clock",
         field_name: "time_",
         TypeDetail: "hh:mm:ss",
@@ -215,7 +215,7 @@ export default class Toolbar extends React.Component {
         key: "Barcode",
         canHaveAnswer: true,
         name: "Barcode",
-        label: "Placeholder Label",
+        label: "Label",
         icon: "fas fa-barcode",
         field_name: "barcode_",
         Type: 16,
@@ -227,7 +227,7 @@ export default class Toolbar extends React.Component {
         key: "Assignee",
         name: "Assignee",
         canHaveAnswer: true,
-        label: "Placeholder Label",
+        label: "Label",
         icon: "fas fa-plus-square",
         field_name: "assignee_",
         Type: 13,
@@ -238,7 +238,7 @@ export default class Toolbar extends React.Component {
       {
         key: "Autocomplete",
         name: "Autocomplete",
-        label: "Placeholder Label",
+        label: "Label",
         icon: "fas fa-list-alt",
         field_name: "autocomplete_",
         TypeDetail: [],
@@ -249,7 +249,7 @@ export default class Toolbar extends React.Component {
       {
         key: "Action",
         name: "Action",
-        label: "Placeholder Label",
+        label: "Label",
         icon: "fa fa-bolt",
         field_name: "action_",
         Type: 8,
@@ -258,7 +258,7 @@ export default class Toolbar extends React.Component {
       {
         key: "StaticText",
         name: "Static text",
-        label: "Placeholder Label",
+        label: "Label",
         icon: "fas fa-font",
         field_name: "static_text_",
         Type: 30,
@@ -267,7 +267,7 @@ export default class Toolbar extends React.Component {
       {
         key: "Calculated",
         name: "Calculated",
-        label: "Placeholder Label",
+        label: "Label",
         icon: "fas fa-plus",
         field_name: "calculated_",
         Type: 10,
@@ -276,7 +276,7 @@ export default class Toolbar extends React.Component {
       {
         key: "Counter",
         name: "Counter",
-        label: "Placeholder Label",
+        label: "Label",
         icon: "fa fa-calculator",
         field_name: "counter_",
         Type: 11,
@@ -375,9 +375,8 @@ export default class Toolbar extends React.Component {
 
   render() {
     return (
-      <div className="react-form-builder-toolbar float-right">
-        <h4>Toolbox</h4>
-        {/* <button type="button" class="btn btn-link"  onClick={() => this.sortBy('key')}> {this.state.sortBy? <i className="fas fa-sort-alpha-down-alt"></i>: <i className="fas fa-sort-alpha-up"></i>}</button>  */}
+      <div className="react-form-builder-toolbar" style={{position: 'sticky', top: '0', height: '30px', justifySelf: 'flex-start'}}>
+        {/* <h4>Toolbox</h4> */}
         <ul>
           {this.state.items.map((item) => (
             <ToolbarItem

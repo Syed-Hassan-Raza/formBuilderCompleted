@@ -217,9 +217,9 @@ export default class Preview extends React.Component {
     });
     const data = [].concat(fields, fieldGroups);
     const items = data.map((item, index) => this.getElement(item, index));
-
+    
     return (
-      <div className={classes}>
+      <div className={classes} style={{flexGrow: '5', flexShrink: '5'}}>
         {
           <button
             type="button"
@@ -248,7 +248,7 @@ export default class Preview extends React.Component {
               />
           )}
         </div>
-        <div className="Sortable">{items}</div>
+        <div className="Sortable" style={{display: 'flex', flexWrap: 'wrap'}}>{items}</div>
         <PlaceHolder
           id="form-place-holder"
           show={true}
@@ -265,5 +265,5 @@ Preview.defaultProps = {
   files: [],
   editMode: false,
   editElement: null,
-  className: "react-form-builder-preview float-left",
+  className: "react-form-builder-preview",
 };
