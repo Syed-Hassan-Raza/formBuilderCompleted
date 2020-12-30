@@ -150,7 +150,7 @@ export default class Toolbar extends React.Component {
         icon: "far fa-caret-square-down",
         label: "Label",
         field_name: "dropdown_",
-        TypeDetail: [],
+        TypeDetail: "1",
         Type: 5,
         tip: "A dropdown list that consists of multiple options ",
       },

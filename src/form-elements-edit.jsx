@@ -524,10 +524,11 @@ export default class FormElementsEdit extends React.Component {
             <div className="row">
               <div className="col-sm-12 tooltip">
                 <label className="control-label" htmlFor="defaultValue">
-                  Pick List
+                  Pick List {" "} <span className="badge badge-danger">Required</span>
                 </label>
                 <select
                   id="defaultValue"
+                  value={this.props.element.TypeDetail}
                   className="form-control"
                   onBlur={this.updateElement.bind(this)}
                   onChange={this.editElementProp.bind(
@@ -536,7 +537,6 @@ export default class FormElementsEdit extends React.Component {
                     "value"
                   )}
                 >
-                  <option></option>
                   {store.state.pickLists &&
                     Object.keys(store.state.pickLists).map((obj, i) => {
                       return (
