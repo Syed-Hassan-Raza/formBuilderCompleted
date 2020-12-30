@@ -155,7 +155,7 @@ export default function (ComposedComponent) {
       const opacity = isDragging ? 0 : 1;
 
       return connectDragSource(
-        connectDropTarget(<div><ComposedComponent {...this.props} style={{ ...style, opacity }}></ComposedComponent></div>),
+        connectDropTarget(<div style={{width: (this.props.id == 'form-place-holder' ? 1 : this.props.data.ControlWidthRatio || 1) * 100 + "%", margin: '10px 0px'}}><ComposedComponent {...this.props} style={{ ...style, opacity }}></ComposedComponent></div>),
       );
     }
   }

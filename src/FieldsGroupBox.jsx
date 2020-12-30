@@ -181,13 +181,13 @@ class FieldsGroup extends React.Component {
     const { isOver, canDrop, connectDropTarget, components , item } = this.props;
     return connectDropTarget(
       <div>
-        <div className="card">
+        <div className="card" style={{height: '100%', display: 'block'}}>
           <div className="card-header">{this.props.data.Label}</div>
-          <div className="card-body" style={isOver ? style : null}>
+          <div className="card-body" style={{display: 'flex', flexWrap: 'wrap'}}>
             {this.state.components.map((item, index) =>
               this.getElement(item, index)
             )}
-            {item && item.toolbarItem ? <label>You can drop new item here</label> : null}
+            {item && item.toolbarItem ? <label style={{border: '2px dashed #0eb923', display: 'block', marginTop: '10px', padding: '10px 0px', width: '100%', textAlign: 'center'}}>You can drop new item here</label> : null}
           </div>
         </div>
       </div>

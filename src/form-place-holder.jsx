@@ -7,9 +7,7 @@ export default class PlaceHolder extends React.Component {
   render() {
     return (
       this.props.show && (
-        <div className={PLACE_HOLDER} style={{height:"auto"}}>
-          <div>{this.props.text}</div>
-        </div>
+        <label style={{border: '2px dashed #0eb923', display: 'block', marginTop: '10px', padding: '10px 0px', width: '100%', textAlign: 'center'}}>{this.props.text}</label>
       )
     );
   }
@@ -21,6 +19,6 @@ PlaceHolder.propTypes = {
 };
 
 PlaceHolder.defaultProps = {
-  text: "Drop a control here or click on control....",
+  text: "You can drop new item here",
   show: false,
 };

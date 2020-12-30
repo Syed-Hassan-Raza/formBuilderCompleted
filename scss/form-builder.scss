@@ -188,7 +188,7 @@
           }
           .toolbar-header-buttons {
             position: absolute;
-            right: 20px;
+            right: 0px;
           }
         }
         &:hover {
@@ -223,8 +223,6 @@
   .react-form-builder-toolbar {
     width: 250px;
     background: #fff;
-    margin-top: -30px;
-
     h4 {
       margin-top: 0;
       text-align: center;

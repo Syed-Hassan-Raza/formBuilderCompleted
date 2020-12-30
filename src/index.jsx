@@ -58,7 +58,7 @@ class ReactFormBuilder extends React.Component {
       <DndProvider backend={HTML5Backend}>
        <div>
          <div className="react-form-builder clearfix">
-           <div>
+           <div style={{display: 'flex', flexDirection: 'row'}}>
              <Preview files={this.props.files}
                  manualEditModeOff={this.manualEditModeOff.bind(this)}
                  showCorrectColumn={this.props.showCorrectColumn}
