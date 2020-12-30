@@ -1,10 +1,12 @@
 import React from "react";
+import { mdToDraftjs, draftjsToMd } from 'draftjs-md-converter';
 import TextAreaAutosize from "react-textarea-autosize";
 import {
   ContentState,
   EditorState,
   convertFromHTML,
   convertToRaw,
+  convertFromRaw,
 } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 import { Editor } from "react-draft-wysiwyg";
@@ -16,13 +18,12 @@ import ID from "./UUID";
 import store from "./stores/store";
 import { parseJSON } from "date-fns";
 import CondtionalFlowList from "./CondtionalFlowList";
-
 const toolbar = {
-  options: [],
+  options: ["inline", "list", "link", "textAlign", "fontSize", "history"],
   inline: {
     inDropdown: false,
     className: undefined,
-    options: [],
+    options: ["bold", "italic", "underline", "superscript", "subscript"],
   },
 };
 
@@ -33,9 +34,13 @@ export default class FormElementsEdit extends React.Component {
       element: this.props.element,
       data: this.props.data,
       dirty: false,
+      editorState:undefined,
+      isEditor: true,
     };
   }
-  componentDidMount() {}
+  componentDidMount() {
+    this.setState({ editorState: this.loadEditState() ||EditorState.createWithContent(ContentState.createFromText(''))});
+  }
 
   formats = ["html", "html64", "md", "md64"];
   fieldsName = [
@@ -111,14 +116,21 @@ export default class FormElementsEdit extends React.Component {
       dirty: true,
     });
   }
-  editElementDefaultValue(e) {
+  editElementForFormat(elemProperty, targProperty, e) {
     const this_element = this.state.element;
-    this_element.DefaultValue = e.target.checked;
-    this.setState({
-      element: this_element,
-      dirty: true,
-    });
-    this.updateElement();
+    this_element[elemProperty] = e.target.value;
+    let val = e.target.value;
+     let content =this.state.editorState||EditorState.createWithContent(ContentState.createFromText(''));
+
+    let code = this.convertToCode(content, val);
+    this_element["DefaultValue"] = code;
+
+    this.setState(
+      {
+        element: this_element,
+        dirty: true,
+      }
+    );
   }
   getTypeDetails(e) {
     let obj = this.fieldsName;
@@ -129,10 +141,9 @@ export default class FormElementsEdit extends React.Component {
     }
   }
   editElementProp(elemProperty, targProperty, e) {
-    // elemProperty could be content or label
-    // targProperty could be value or checked
     const this_element = this.state.element;
     this_element[elemProperty] = e.target[targProperty];
+
     this.setState(
       {
         element: this_element,
@@ -145,19 +156,27 @@ export default class FormElementsEdit extends React.Component {
       }
     );
   }
-
+  convertToCode(editorContent, TypeDetail) {
+    let isHtml =
+      TypeDetail === "html" || TypeDetail === "html64" ? true : false;
+    if (isHtml) {
+      return draftToHtml(convertToRaw(editorContent.getCurrentContent())).replace(/<p>/g, '<div>').replace(/<\/p>/g, '</div>');
+    } else if (!isHtml) {
+      let r= draftjsToMd(convertToRaw(editorContent.getCurrentContent()));
+      return r;
+    }
+    return null;
+  }
   onEditorStateChange(index, property, editorContent) {
+     let code = this.convertToCode(editorContent, this.props.element.TypeDetail);
     // const html = draftToHtml(convertToRaw(editorContent.getCurrentContent())).replace(/<p>/g, '<div>').replace(/<\/p>/g, '</div>');
-    const html = draftToHtml(convertToRaw(editorContent.getCurrentContent()))
-      .replace(/<p>/g, "")
-      .replace(/<\/p>/g, "")
-      .replace(/(?:\r\n|\r|\n)/g, " ");
-    const this_element = this.state.element;
-    this_element[property] = html;
+     const this_element = this.state.element;
+     this_element[property] = code;
 
     this.setState({
-      element: this_element,
+     element: this_element,
       dirty: true,
+      editorState: editorContent,
     });
   }
 
@@ -178,6 +197,33 @@ export default class FormElementsEdit extends React.Component {
     }
     const contentState = ContentState.createFromBlockArray(newContent);
     return EditorState.createWithContent(contentState);
+  }
+  loadEditState() {
+    let editorState;
+    if (
+      this.state.element.TypeDetail === "html" ||
+      this.state.element.TypeDetail === "html64"
+    ) {
+      if (this.state.element.DefaultValue)
+       return this.convertFromHTML(this.state.element.DefaultValue);
+    } else if (
+      this.state.element.TypeDetail === "md" ||
+      this.state.element.TypeDetail === "md64"
+    ) {
+      if (this.state.element.DefaultValue) {
+        const markdownString = this.state.element.DefaultValue;
+        const rawData = mdToDraftjs(markdownString);
+        const contentState = convertFromRaw(rawData);
+        const newEditorState = EditorState.createWithContent(contentState);
+        return newEditorState;
+      }
+    }
+    return null;
+  }
+  handleButtonChange(para, event) {
+    // var val = event.currentTarget.querySelector("input").value;
+    let val = para === "editor" ? true : false;
+    this.setState({ isEditor: val });
   }
 
   render() {
@@ -251,12 +297,35 @@ export default class FormElementsEdit extends React.Component {
       this_files.unshift({ id: "", file_name: "" });
     }
 
+    // let editorState =this.state.editorState;
+    //
+    // let isHtml=(this.props.element.TypeDetail==="html" || this.props.element.TypeDetail==="html64")?true:false;
+    // // const html = draftToHtml(convertToRaw(editorContent.getCurrentContent())).replace(/<p>/g, '<div>').replace(/<\/p>/g, '</div>');
+    // let md,html
+    // if(this.props.element.DefaultValue)
+    // {  if(!isHtml){     md =markdownToDraft(this.props.element.DefaultValue);
+    //   editorState=md;
+
+    // }
+    //    if(isHtml){
+    //     html=this.convertFromHTML(this.props.element.DefaultValue)
+    //     editorState=html;
+
+    //    }
+    // }
+
     let editorState;
-    if (this.props.element.hasOwnProperty("content")) {
-      editorState = this.convertFromHTML(this.props.element.content);
+    if (this.state.element.element === "StaticText") {
+      editorState = this.loadEditState();
     }
-    if (this.props.element.hasOwnProperty("label")) {
-      editorState = this.convertFromHTML(this.props.element.label);
+    let baseClassForEditor = "btn btn-primary";
+    if (this.state.isEditor) {
+      baseClassForEditor += " active";
+    }
+
+    let baseClassForCode = "btn btn-primary";
+    if (!this.state.isEditor) {
+      baseClassForCode += " active";
     }
 
     return (
@@ -284,8 +353,11 @@ export default class FormElementsEdit extends React.Component {
                   className="form-control"
                   onBlur={this.updateElement.bind(this)}
                   onChange={this.editElementName.bind(this)}
-                />                     
-                 <span className="tooltiptext tooltiptext-bottom">Control name, you can put your custom name or select from the list. used in form submission</span>
+                />
+                <span className="tooltiptext tooltiptext-bottom">
+                  Control name, you can put your custom name or select from the
+                  list. used in form submission
+                </span>
 
                 <datalist id="fileSelect">
                   {Object.keys(this.fieldsName).map((k, i) => {
@@ -298,29 +370,7 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         )}
-        {this.props.element.hasOwnProperty("content")
-           && (
-            <div className="form-group">
-              <div className="row">
-                <div className="col-md-12">
-                  <label className="control-label" htmlFor="elementWidth">
-                    Display To Text
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    defaultValue={this.props.element.label}
-                    onBlur={this.updateElement.bind(this)}
-                    onChange={this.editElementProp.bind(
-                      this,
-                      "content",
-                      "value"
-                    )}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+
         {this.props.element.hasOwnProperty("file_path") && (
           <div className="form-group">
             <label className="control-label" htmlFor="fileSelect">
@@ -419,26 +469,27 @@ export default class FormElementsEdit extends React.Component {
             </div>
           </div>
         )}
-        {this.props.element.hasOwnProperty("Label") &&
-           (
-            <div className="form-group">
-              <div className="row">
-                <div className="col-md-12 tooltip">
-                  <label className="control-label" htmlFor="elementWidth">
-                    Display Label
-                  </label>
-                  <input
-                   type="text"
-                    className="form-control"
-                    defaultValue={this.props.element.Label}
-                    onBlur={this.updateElement.bind(this)}
-                    onChange={this.editElementProp.bind(this, "Label", "value")}
-                  />
-                  <span className="tooltiptext tooltiptext-bottom">A static label text which displays along with your field</span>
-                </div>
+        {this.props.element.hasOwnProperty("Label") && (
+          <div className="form-group">
+            <div className="row">
+              <div className="col-md-12 tooltip">
+                <label className="control-label" htmlFor="elementWidth">
+                  Display Label
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  defaultValue={this.props.element.Label}
+                  onBlur={this.updateElement.bind(this)}
+                  onChange={this.editElementProp.bind(this, "Label", "value")}
+                />
+                <span className="tooltiptext tooltiptext-bottom">
+                  A static label text which displays along with your field
+                </span>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
         {(this.props.element.Type === 4 || this.props.element.Type === 7) && (
           <div className="form-group">
@@ -492,7 +543,7 @@ export default class FormElementsEdit extends React.Component {
         {this.props.element.Type === 30 && (
           <div className="form-group">
             <div className="row">
-              <div className="col-sm-12">
+              <div className="col-sm-6">
                 <label className="control-label" htmlFor="defaultValue">
                   Format
                 </label>
@@ -500,13 +551,13 @@ export default class FormElementsEdit extends React.Component {
                   id="defaultValue"
                   className="form-control"
                   onBlur={this.updateElement.bind(this)}
-                  onChange={this.editElementProp.bind(
+                  defaultValue={this.props.element.TypeDetail}
+                  onChange={this.editElementForFormat.bind(
                     this,
                     "TypeDetail",
                     "value"
                   )}
                 >
-                  <option></option>
                   {this.formats.map((k, i) => {
                     return (
                       <option value={k} key={i}>
@@ -515,6 +566,36 @@ export default class FormElementsEdit extends React.Component {
                     );
                   })}
                 </select>
+              </div>
+
+              <div className="col-sm-5">
+               
+                <div
+                  className="btn-group btn-group-toggle"
+                  data-toggle="buttons"
+                  style={{marginTop:28}}
+                >
+                  <label className={baseClassForEditor}>
+                    <input
+                      type="checkbox"
+                      name="options"
+                      checked={this.state.isEditor}
+                      value={false}
+                      onChange={this.handleButtonChange.bind(this, "editor")}
+                    />{" "}
+                    Editor
+                  </label>
+                  <label className={baseClassForCode}>
+                    <input
+                      type="checkbox"
+                      name="options"
+                      checked={!this.state.isEditor}
+                      value={false}
+                      onChange={this.handleButtonChange.bind(this, "code")}
+                    />{" "}
+                    Code
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -545,8 +626,11 @@ export default class FormElementsEdit extends React.Component {
                         </option>
                       );
                     })}
-                </select>                   
-               <span className="tooltiptext tooltiptext-bottom">An auto-populated list from the server. select list values will be filled according to the selected Pick List.</span>
+                </select>
+                <span className="tooltiptext tooltiptext-bottom">
+                  An auto-populated list from the server. select list values
+                  will be filled according to the selected Pick List.
+                </span>
               </div>
             </div>
           </div>
@@ -592,7 +676,7 @@ export default class FormElementsEdit extends React.Component {
               this.props.element.element !== "RadioButtons" &&
               this.props.element.element !== "Checkboxes" &&
               this.props.element.element !== "Signature" &&
-              this.props.element.Name !== "StateFlow" && (
+              this.props.element.element !== "StaticText" && (
                 <div className="form-group">
                   <div className="row">
                     <div className="col-sm-12 tooltip">
@@ -610,11 +694,56 @@ export default class FormElementsEdit extends React.Component {
                           "value"
                         )}
                       />
-                      <span className="tooltiptext tooltiptext-bottom">The default value of the control, if user is not put any value this value will be used</span>
+                      <span className="tooltiptext tooltiptext-bottom">
+                        The default value of the control, if user is not put any
+                        value this value will be used
+                      </span>
                     </div>
                   </div>
                 </div>
               )}
+
+            {this.props.element.element === "StaticText" && (
+              <div className="form-group">
+                <div className="row">
+                  <div className="col-sm-12 tooltip">
+                    <label>Default Value</label>
+                    {this.state.isEditor && (
+                      <Editor
+                        defaultEditorState={editorState}
+                        onBlur={this.updateElement.bind(this)}
+                        onEditorStateChange={this.onEditorStateChange.bind(
+                          this,
+                          0,
+                          "DefaultValue"
+                        )}
+                        stripPastedStyles={true}
+                      />
+                    )}
+                   {!this.state.isEditor && (<div>
+                    <label className="control-label" htmlFor="elementWidth">
+                      {this.state.element.TypeDetail} Output
+                    </label>
+                    <textarea
+                      rows="5"
+                      className="form-control"
+                      value={this.state.element.DefaultValue}
+                      onBlur={this.updateElement.bind(this)}
+                      onChange={this.editElementProp.bind(
+                        this,
+                        "DefaultValue",
+                        "value"
+                      )}
+                    />
+                    <span className="tooltiptext tooltiptext-bottom">
+                      The output code genrated.
+                    </span>
+                    </div>)}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {this.props.element.Name !== "StateFlow" && (
               <div className="form-group">
                 <div className="row">
@@ -631,11 +760,13 @@ export default class FormElementsEdit extends React.Component {
                         "value"
                       )}
                     />
-                      <span className="tooltiptext tooltiptext-bottom">Maximum width of the control</span>
+                    <span className="tooltiptext tooltiptext-bottom">
+                      Maximum width of the control
+                    </span>
                   </div>
                   <div className="col-sm-4 tooltip">
                     <label className="control-label">Min Width</label>
-                    <input          
+                    <input
                       type="number"
                       className="form-control"
                       defaultValue={this.props.element.MinWidth}
@@ -646,11 +777,13 @@ export default class FormElementsEdit extends React.Component {
                         "value"
                       )}
                     />
-                      <span className="tooltiptext tooltiptext-bottom">Minimum width of the control</span>
+                    <span className="tooltiptext tooltiptext-bottom">
+                      Minimum width of the control
+                    </span>
                   </div>
                   <div className="col-sm-4 tooltip">
                     <label className="control-label">Width Ratio</label>
-                    <input                
+                    <input
                       type="number"
                       className="form-control"
                       defaultValue={this.props.element.ControlWidthRatio}
@@ -661,7 +794,10 @@ export default class FormElementsEdit extends React.Component {
                         "value"
                       )}
                     />
-                      <span className="tooltiptext tooltiptext-bottom">The ratio of the horizontal width of the control. 1 for full width or 0.5 for half, etc.</span>
+                    <span className="tooltiptext tooltiptext-bottom">
+                      The ratio of the horizontal width of the control. 1 for
+                      full width or 0.5 for half, etc.
+                    </span>
                   </div>
                 </div>
               </div>

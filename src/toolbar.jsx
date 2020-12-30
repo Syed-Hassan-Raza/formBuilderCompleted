@@ -262,6 +262,7 @@ export default class Toolbar extends React.Component {
         icon: "fas fa-font",
         field_name: "static_text_",
         Type: 30,
+        TypeDetail:"html",
         tip: "Non-input static information presented to the user",
       },
       {
