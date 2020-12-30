@@ -2,17 +2,11 @@
 import React from "react";
 import Select from "react-select";
 import xss from "xss";
-import { format, parse } from "date-fns";
 // import moment from 'moment';
-import SignaturePad from "react-signature-canvas";
 import ReactBootstrapSlider from "react-bootstrap-slider";
-import ReactDatePicker from "react-datepicker";
 import StarRating from "./star-rating";
 import HeaderBar from "./header-bar";
-import { DndProvider } from "react-dnd";
-import HTML5Backend from "react-dnd-html5-backend";
 import FieldsGroup from "./FieldsGroupBox";
-import { DragDropContext } from "react-dnd";
 import { Editor } from "react-draft-wysiwyg";
 import {
   ContentState,
@@ -376,9 +370,6 @@ class TextInput extends React.Component {
   }
 
   render() {
-    //debugger
-
-    //console.log(this.state.width)
     const props = {};
     props.width = this.props.data.ControlWidthRatio || 1;
 
@@ -518,7 +509,6 @@ class DecimalInput extends React.Component {
 
 class StaticText extends React.Component {
   constructor(props) {
-    debugger;
     super(props);
     this.inputField = React.createRef();
     this.state = {
@@ -579,7 +569,7 @@ class StaticText extends React.Component {
     }
     let editorState = this.loadEditState();
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
