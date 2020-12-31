@@ -736,7 +736,7 @@ export default class FormElementsEdit extends React.Component {
                       )}
                     />
                     <span className="tooltiptext tooltiptext-bottom">
-                      The output code genrated.
+                      Generated code in {this.state.element.TypeDetail} format
                     </span>
                     </div>)}
                   </div>
