@@ -580,7 +580,6 @@ class StaticText extends React.Component {
             editorStyle={{ height: "auto" }}
             editorState={editorState}
             toolbarHidden={true}
-            stripPastedStyles={true}
           />{" "}
         </div>
       </div>

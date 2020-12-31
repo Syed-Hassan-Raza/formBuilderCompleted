@@ -18,6 +18,8 @@ import ID from "./UUID";
 import store from "./stores/store";
 import { parseJSON } from "date-fns";
 import CondtionalFlowList from "./CondtionalFlowList";
+
+
 const toolbar = {
   options: ["inline", "list", "link", "textAlign", "fontSize", "history"],
   inline: {
@@ -160,10 +162,9 @@ export default class FormElementsEdit extends React.Component {
     let isHtml =
       TypeDetail === "html" || TypeDetail === "html64" ? true : false;
     if (isHtml) {
-      return draftToHtml(convertToRaw(editorContent.getCurrentContent())).replace(/<p>/g, '<div>').replace(/<\/p>/g, '</div>');
+      return draftToHtml(convertToRaw(editorContent.getCurrentContent()));
     } else if (!isHtml) {
-      let r= draftjsToMd(convertToRaw(editorContent.getCurrentContent()));
-      return r;
+      return draftjsToMd(convertToRaw(editorContent.getCurrentContent()));
     }
     return null;
   }
@@ -199,7 +200,6 @@ export default class FormElementsEdit extends React.Component {
     return EditorState.createWithContent(contentState);
   }
   loadEditState() {
-    let editorState;
     if (
       this.state.element.TypeDetail === "html" ||
       this.state.element.TypeDetail === "html64"
@@ -718,7 +718,6 @@ export default class FormElementsEdit extends React.Component {
                           0,
                           "DefaultValue"
                         )}
-                        stripPastedStyles={true}
                       />
                     )}
                    {!this.state.isEditor && (<div>
