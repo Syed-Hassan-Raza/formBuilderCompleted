@@ -104,7 +104,6 @@ const ComponentHeader = (props) => {
         static={props.data.static}
         Mandatory={props.data.Mandatory}
       />
-      <br />
     </div>
   );
 };
