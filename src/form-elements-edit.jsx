@@ -676,7 +676,8 @@ export default class FormElementsEdit extends React.Component {
               this.props.element.element !== "RadioButtons" &&
               this.props.element.element !== "Checkboxes" &&
               this.props.element.element !== "Signature" &&
-              this.props.element.element !== "StaticText" && (
+              this.props.element.element !== "StaticText" &&
+              this.props.element.Name !== "StateFlow" && (
                 <div className="form-group">
                   <div className="row">
                     <div className="col-sm-12 tooltip">
@@ -808,24 +809,25 @@ export default class FormElementsEdit extends React.Component {
 
         {this.props.element.hasOwnProperty("Label") && (
           <div className="form-group">
+            {this.state.element.element  !== "StaticText" &&(
             <div className="custom-control custom-checkbox">
-              <input
-                id="is-required"
-                className="custom-control-input"
-                type="checkbox"
-                checked={this_Mandatory}
-                value={false}
-                onChange={this.editElementProp.bind(
-                  this,
-                  "Mandatory",
-                  "checked"
-                )}
-              />
-              <label className="custom-control-label" htmlFor="is-required">
-                Mandatory
-              </label>
-            </div>
-
+            <input
+              id="is-required"
+              className="custom-control-input"
+              type="checkbox"
+              checked={this_Mandatory}
+              value={false}
+              onChange={this.editElementProp.bind(
+                this,
+                "Mandatory",
+                "checked"
+              )}
+            />
+            <label className="custom-control-label" htmlFor="is-required">
+              Mandatory
+            </label>
+          </div>
+            )}
             <div className="custom-control custom-checkbox">
               <input
                 id="is-Visible"
