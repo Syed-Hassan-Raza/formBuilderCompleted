@@ -185,7 +185,7 @@ export default class Toolbar extends React.Component {
         icon: "far fa-calendar-alt",
         label: "Label",
         field_name: "date_picker_",
-        TypeDetail: "yyyy/MM/dd",
+        TypeDetail: "",
         Type: 4,
         tip:
           "A date picker control, if you want to put date-time values you can use it.",
@@ -196,7 +196,7 @@ export default class Toolbar extends React.Component {
         label: "Label",
         icon: "fas fa-clock",
         field_name: "time_",
-        TypeDetail: "hh:mm:ss",
+        TypeDetail: "",
         Type: 7,
         tip:
           "A time picker control, if you want to put only time values you can use it.",
@@ -297,7 +297,7 @@ export default class Toolbar extends React.Component {
       //Fields: item.Fields,
       //FieldGroups: item.FieldGroups
     };
-
+     elementOptions.Name = item.key + "_";
     if (item.key !== "FieldGroups") {
       (elementOptions.TypeDetail = ""),
         // elementOptions.DefaultValue='',

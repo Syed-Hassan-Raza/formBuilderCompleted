@@ -8,7 +8,7 @@ import store from "./stores/store";
 import FormElementsEdit from "./form-elements-edit";
 import SortableFormElements from "./sortable-form-elements";
 import getElementName from "./element-mapper";
-
+import { findElementName } from "./constants";
 const { PlaceHolder } = SortableFormElements;
 
 export default class Preview extends React.Component {
@@ -23,6 +23,7 @@ export default class Preview extends React.Component {
     this.state = {
       data: [],
       answer_data: {},
+     // redioDefaultValue:{},
     };
     this.stateFlowData = {};
     this.seq = 0;
@@ -66,7 +67,13 @@ export default class Preview extends React.Component {
     const { editElement } = this.props;
 
     if (editElement == null) return;
-
+    let found=findElementName(this.state.data,editElement);
+    if(found){editElement.Name="";
+    alert("This name is already exists.")
+    this.updateElement(this_element);
+    return
+  }
+    
     if (editElement.Name || editElement.element === "FieldGroups") {
       if (editElement && editElement.dirty) {
         editElement.dirty = false;
@@ -75,6 +82,29 @@ export default class Preview extends React.Component {
       this.props.manualEditModeOff();
     } else {
       alert("Field Name is missing.");
+      return;
+    }
+    if((editElement.Type===4 || editElement.Type===7) && !editElement.TypeDetail){
+      editElement.TypeDetail=editElement.Type===4?"yyyy/MM/dd":"hh:mm:ss";
+      this.updateElement(editElement);
+    }
+    if(editElement.Type===12){
+      const this_element = editElement;
+      let _typeDetail =[];
+      let obj = {};
+      Object.assign(_typeDetail, JSON.parse(editElement.TypeDetail));
+      this_element.TypeDetail = null;
+
+      Object.keys(_typeDetail).map((option, index) => {
+        let val = _typeDetail[option];
+        if (val) {
+          obj[val] = val;
+        } 
+      });
+
+      this_element.TypeDetail = JSON.stringify(obj);
+       //this.setState({redioDefaultValue:this_element.TypeDetail})
+       this.updateElement(this_element);
     }
   };
 
@@ -244,6 +274,7 @@ export default class Preview extends React.Component {
                 manualEditModeOff={this.manualEditModeOff}
                 preview={this}
                 element={this.props.editElement}
+                //redioDefaultValue={this.state.redioDefaultValue}
                 updateElement={this.updateElement}
               />
           )}

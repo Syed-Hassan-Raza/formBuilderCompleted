@@ -6,6 +6,7 @@ import "react-bootstrap-typeahead/css/Typeahead.css";
 
 export default class CondtionalFlowList extends React.Component {
   constructor(props) {
+    debugger
     super(props);
     this.thenShowRef = React.createRef();
     this.thenHideRef = React.createRef();
@@ -27,6 +28,7 @@ export default class CondtionalFlowList extends React.Component {
 
     this.state = {
       data: data.entries,
+      element:this.props.parent.state.element,
       errorLabel: "",
       editState: {
         value: "",
@@ -285,7 +287,17 @@ export default class CondtionalFlowList extends React.Component {
       </div>
     );
   }
+  handleParentState(){
+    debugger
+    let this_element=this.props.parent.props.element;
+   this.setState({element:this_element});
+  }
+
   render() {
+    let RedioTypeDetails;
+    if (this.state.element.element === "RadioButtons") {
+      RedioTypeDetails = JSON.parse(this.state.element.TypeDetail || {});
+    }
     return (
       <div>
         <fieldset>
@@ -337,14 +349,50 @@ export default class CondtionalFlowList extends React.Component {
                     When {this.props.conditionalFlowMode ? "Value" : "State"}{" "}
                     <span className="badge badge-danger">Required</span>
                   </label>
-                  {this.props.conditionalFlowMode ? (
+
+                  {this.state.element.element==="RadioButtons" && (
+                                <select
+                                value={this.state.editState.value || ""}
+                                id="defaultValue"
+                                className="form-control"
+                                onClick={this.handleParentState.bind(this)}
+                                onChange={(e) => this.onChange(e, "value")}
+                              >
+                                <option></option>
+                                {Object.keys(RedioTypeDetails).map((k, i) => {
+                                  if (RedioTypeDetails[k])
+                                    return (
+                                      <option value={RedioTypeDetails[k]} key={i}>
+                                        {RedioTypeDetails[k]}
+                                      </option>
+                                    );
+                                })}
+                              </select>
+                  )}
+                           {this.state.element.element==="Checkboxes" && (
+                                <select
+                                value={this.state.editState.value || ""}
+                                id="defaultValue"
+                                className="form-control"
+                                onChange={(e) => this.onChange(e, "value")}
+                              >
+                                <option></option>
+                                <option value={true}>Checked</option>
+                                <option value={false}>Unchecked</option>
+
+                                    );
+                              </select>
+                  )}
+
+                  {(this.props.conditionalFlowMode && this.state.element.element!=="Checkboxes" && this.state.element.element!=="RadioButtons") && (
+                    
                     <input
                       type="text"
                       className="form-control"
                       value={this.state.editState.value || ""}
                       onChange={(e) => this.onChange(e, "value")}
                     />
-                  ) : (
+                  )} {(!this.props.conditionalFlowMode && this.state.element.element!=="Checkboxes" && this.state.element.element!=="RadioButtons") && (
                     <select
                       className="form-control"
                       value={this.state.editState.value || ""}

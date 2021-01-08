@@ -1,5 +1,5 @@
 import React from "react";
-import { mdToDraftjs, draftjsToMd } from 'draftjs-md-converter';
+import { mdToDraftjs, draftjsToMd } from "draftjs-md-converter";
 import TextAreaAutosize from "react-textarea-autosize";
 import {
   ContentState,
@@ -18,7 +18,14 @@ import ID from "./UUID";
 import store from "./stores/store";
 import { parseJSON } from "date-fns";
 import CondtionalFlowList from "./CondtionalFlowList";
-
+import {
+  mdDictonery,
+  fieldNames,
+  editorFormats,
+  dateFormats,
+  timeFormats,
+  findElementName
+} from "./constants";
 
 const toolbar = {
   options: ["inline", "list", "link", "textAlign", "fontSize", "history"],
@@ -36,74 +43,19 @@ export default class FormElementsEdit extends React.Component {
       element: this.props.element,
       data: this.props.data,
       dirty: false,
-      editorState:undefined,
+      editorState: undefined,
       isEditor: true,
+      isReadOnly: false,
     };
   }
   componentDidMount() {
-    this.setState({ editorState: this.loadEditState() ||EditorState.createWithContent(ContentState.createFromText(''))});
+    this.setState({
+      editorState:
+        this.loadEditState() ||
+        EditorState.createWithContent(ContentState.createFromText("")),
+    });
   }
 
-  formats = ["html", "html64", "md", "md64"];
-  fieldsName = [
-    { name: null, typeDetail: "" },
-    { name: "sm_asset_category", typeDetail: "" },
-    { name: "sm_asset_child_site", typeDetail: "" },
-    { name: "sm_asset_child_site", typeDetail: "" },
-    { name: "sm_asset_location", typeDetail: "" },
-    { name: "sm_asset_machinehours", typeDetail: "" },
-    { name: "sm_asset_make", typeDetail: "" },
-    { name: "sm_asset_model", typeDetail: "" },
-    { name: "sm_asset_name", typeDetail: "" },
-    { name: "sm_asset_odometer", typeDetail: "" },
-    { name: "sm_asset_odometerunit", typeDetail: 9 },
-    { name: "sm_asset_operator", typeDetail: "" },
-    { name: "sm_asset_operator_out", typeDetail: "" },
-    { name: "sm_asset_serialnumber", typeDetail: "" },
-    { name: "sm_asset_site_location", typeDetail: "" },
-    { name: "sm_populate_best_cell_phone", typeDetail: "" },
-    { name: "sm_populate_best_email", typeDetail: "" },
-    { name: "sm_populate_client", typeDetail: 6 },
-    { name: "sm_populate_date", typeDetail: "" },
-    { name: "sm_populate_datetime", typeDetail: "" },
-    { name: "sm_populate_department", typeDetail: 2 },
-    { name: "sm_populate_division", typeDetail: 3 },
-    { name: "sm_populate_job_classification", typeDetail: 1 },
-    { name: "sm_populate_location", typeDetail: 4 },
-    { name: "sm_populate_name", typeDetail: "" },
-    { name: "sm_populate_personal_cell_phone", typeDetail: "" },
-    { name: "sm_populate_personal_email", typeDetail: "" },
-    { name: "sm_populate_priority", typeDetail: "" },
-    { name: "sm_populate_subcontractor", typeDetail: 19 },
-    { name: "sm_populate_time", typeDetail: "" },
-    { name: "sm_populate_title", typeDetail: "" },
-    { name: "sm_populate_update_date", typeDetail: "" },
-    { name: "sm_populate_update_name", typeDetail: "" },
-    { name: "sm_populate_work_cell_phone", typeDetail: "" },
-    { name: "sm_populate_work_email", typeDetail: "" },
-    { name: "sm_populate_latitude", typeDetail: "" },
-    { name: "sm_populate_longitude", typeDetail: "" },
-    { name: "sm_shapefile_hectare", typeDetail: "" },
-    { name: "sm_shapefile_line", typeDetail: "" },
-    { name: "sm_shapefile_name", typeDetail: "" },
-    { name: "sm_shapefile_pline_id", typeDetail: "" },
-    { name: "sm_shapefile_<name>", typeDetail: "" },
-    { name: "sm_tag_identifier", typeDetail: 2 },
-    { name: "sm_usershape_segment_end_lat", typeDetail: "" },
-    { name: "sm_usershape_segment_end_lng", typeDetail: "" },
-    { name: "sm_usershape_segment_start_lat", typeDetail: "" },
-    { name: "sm_usershape_segment_start_lng", typeDetail: "" },
-    { name: "sm_usershape_segmentlength", typeDetail: "" },
-    { name: "sm_usershape_shapearea", typeDetail: "" },
-    { name: "sm_usershape_shapelength", typeDetail: "" },
-    { name: "sm_auto_formid", typeDetail: "" },
-    { name: "sm_populate_subject", typeDetail: "" },
-    { name: "sm_populate_assignee", typeDetail: 13 },
-    { name: "sm_populate_attendee", typeDetail: "" },
-  ];
-  toggleRequired() {
-    // const this_element = this.state.element;
-  }
   editElementName(e) {
     const this_element = this.state.element;
     this_element.Name = e.target.value;
@@ -112,30 +64,49 @@ export default class FormElementsEdit extends React.Component {
     if (_typeDetail) {
       this_element.TypeDetail = _typeDetail;
     }
+    this.setState({
+      element: this_element,
+      dirty: true,
+    });
+  }
+
+  updateElementName() {
+    const this_element = this.state.element;
+    // to prevent ajax calls with no change
+    let data = this.props.preview.state.data;
+    let found = findElementName(data, this_element);
+    if (found) {
+      alert("This name is already exists.")
+      this_element.Name="";
+      this.setState({
+        element: this_element,
+        dirty: true,
+      });
+    } else {
+      if (this.state.dirty) {
+        this.props.updateElement.call(this.props.preview, this_element);
+        this.setState({ dirty: false });
+      }
+    }
+  }
+  editElementForFormat(elemProperty, targProperty, e) {
+    const this_element = this.state.element;
+    this_element[elemProperty] = e.target.value;
+    let val = e.target.value;
+    let content =
+      this.state.editorState ||
+      EditorState.createWithContent(ContentState.createFromText(""));
+
+    let code = this.convertToCode(content, val);
+    this_element["DefaultValue"] = code;
 
     this.setState({
       element: this_element,
       dirty: true,
     });
   }
-  editElementForFormat(elemProperty, targProperty, e) {
-    const this_element = this.state.element;
-    this_element[elemProperty] = e.target.value;
-    let val = e.target.value;
-     let content =this.state.editorState||EditorState.createWithContent(ContentState.createFromText(''));
-
-    let code = this.convertToCode(content, val);
-    this_element["DefaultValue"] = code;
-
-    this.setState(
-      {
-        element: this_element,
-        dirty: true,
-      }
-    );
-  }
   getTypeDetails(e) {
-    let obj = this.fieldsName;
+    let obj = fieldNames;
     for (var i = 0; i < obj.length; i++) {
       if (obj[i].name == e.target.value) {
         return obj[i].typeDetail;
@@ -164,18 +135,21 @@ export default class FormElementsEdit extends React.Component {
     if (isHtml) {
       return draftToHtml(convertToRaw(editorContent.getCurrentContent()));
     } else if (!isHtml) {
-      return draftjsToMd(convertToRaw(editorContent.getCurrentContent()));
+      return draftjsToMd(
+        convertToRaw(editorContent.getCurrentContent()),
+        mdDictonery
+      );
     }
     return null;
   }
   onEditorStateChange(index, property, editorContent) {
-     let code = this.convertToCode(editorContent, this.props.element.TypeDetail);
+    let code = this.convertToCode(editorContent, this.props.element.TypeDetail);
     // const html = draftToHtml(convertToRaw(editorContent.getCurrentContent())).replace(/<p>/g, '<div>').replace(/<\/p>/g, '</div>');
-     const this_element = this.state.element;
-     this_element[property] = code;
+    const this_element = this.state.element;
+    this_element[property] = code;
 
     this.setState({
-     element: this_element,
+      element: this_element,
       dirty: true,
       editorState: editorContent,
     });
@@ -205,7 +179,7 @@ export default class FormElementsEdit extends React.Component {
       this.state.element.TypeDetail === "html64"
     ) {
       if (this.state.element.DefaultValue)
-       return this.convertFromHTML(this.state.element.DefaultValue);
+        return this.convertFromHTML(this.state.element.DefaultValue);
     } else if (
       this.state.element.TypeDetail === "md" ||
       this.state.element.TypeDetail === "md64"
@@ -220,10 +194,16 @@ export default class FormElementsEdit extends React.Component {
     }
     return null;
   }
+
+
   handleButtonChange(para, event) {
     // var val = event.currentTarget.querySelector("input").value;
     let val = para === "editor" ? true : false;
     this.setState({ isEditor: val });
+  }
+
+  handleRadioDefaultValue() {
+    this.setState({ element: this.props.element });
   }
 
   render() {
@@ -297,6 +277,14 @@ export default class FormElementsEdit extends React.Component {
       this_files.unshift({ id: "", file_name: "" });
     }
 
+    let dateTimeFormats;
+    if (this.props.element.Type === 4) {
+      dateTimeFormats = dateFormats;
+    }
+    if (this.props.element.Type === 7) {
+      dateTimeFormats = timeFormats;
+    }
+
     // let editorState =this.state.editorState;
     //
     // let isHtml=(this.props.element.TypeDetail==="html" || this.props.element.TypeDetail==="html64")?true:false;
@@ -327,6 +315,10 @@ export default class FormElementsEdit extends React.Component {
     if (!this.state.isEditor) {
       baseClassForCode += " active";
     }
+    let RedioTypeDetails;
+    if (this.state.element.element === "RadioButtons") {
+      RedioTypeDetails = JSON.parse(this.state.element.TypeDetail || {});
+    }
 
     return (
       <div>
@@ -348,10 +340,10 @@ export default class FormElementsEdit extends React.Component {
                 </label>
                 <input
                   list="fileSelect"
-                  id="fieldsName"
+                  id="fieldNames"
                   value={this.props.element.Name}
                   className="form-control"
-                  onBlur={this.updateElement.bind(this)}
+                  onBlur={this.updateElementName.bind(this)}
                   onChange={this.editElementName.bind(this)}
                 />
                 <span className="tooltiptext tooltiptext-bottom">
@@ -360,10 +352,8 @@ export default class FormElementsEdit extends React.Component {
                 </span>
 
                 <datalist id="fileSelect">
-                  {Object.keys(this.fieldsName).map((k, i) => {
-                    return (
-                      <option value={this.fieldsName[k].name} key={i}></option>
-                    );
+                  {Object.keys(fieldNames).map((k, i) => {
+                    return <option value={fieldNames[k].name} key={i}></option>;
                   })}
                 </datalist>
               </div>
@@ -495,25 +485,32 @@ export default class FormElementsEdit extends React.Component {
           <div className="form-group">
             <div className="row">
               <div className="col-sm-6">
-                <label className="control-label" htmlFor="elementWidth">
+                <label className="control-label" htmlFor="Format">
                   Format
                 </label>
+
                 <input
-                  type="text"
+                  list="formatsList"
+                  id="Format"
                   className="form-control"
-                  placeholder={
-                    this.props.element.Type === 4
-                      ? "e.g. dd/MM/yyyy"
-                      : "e.g. hh:mm:ss"
-                  }
-                  defaultValue={this.props.element.TypeDetail}
                   onBlur={this.updateElement.bind(this)}
+                  defaultValue={this.state.element.TypeDetail || undefined}
                   onChange={this.editElementProp.bind(
                     this,
                     "TypeDetail",
                     "value"
                   )}
                 />
+                <datalist id="formatsList">
+                  <option></option>
+                  {dateTimeFormats.map((k, i) => {
+                    return (
+                      <option value={k} key={i}>
+                        {k}
+                      </option>
+                    );
+                  })}
+                </datalist>
               </div>
             </div>
           </div>
@@ -526,7 +523,7 @@ export default class FormElementsEdit extends React.Component {
                 id="is-defaultvalue"
                 className="custom-control-input"
                 type="checkbox"
-                checked={this_DefaultValue}
+                checked={this_DefaultValue || false}
                 onChange={this.editElementProp.bind(
                   this,
                   "DefaultValue",
@@ -558,7 +555,7 @@ export default class FormElementsEdit extends React.Component {
                     "value"
                   )}
                 >
-                  {this.formats.map((k, i) => {
+                  {editorFormats.map((k, i) => {
                     return (
                       <option value={k} key={i}>
                         {k}
@@ -569,11 +566,10 @@ export default class FormElementsEdit extends React.Component {
               </div>
 
               <div className="col-sm-5">
-               
                 <div
                   className="btn-group btn-group-toggle"
                   data-toggle="buttons"
-                  style={{marginTop:28}}
+                  style={{ marginTop: 28 }}
                 >
                   <label className={baseClassForEditor}>
                     <input
@@ -605,7 +601,7 @@ export default class FormElementsEdit extends React.Component {
             <div className="row">
               <div className="col-sm-12 tooltip">
                 <label className="control-label" htmlFor="defaultValue">
-                  Pick List {" "} <span className="badge badge-danger">Required</span>
+                  Pick List <span className="badge badge-danger">Required</span>
                 </label>
                 <select
                   id="defaultValue"
@@ -644,9 +640,10 @@ export default class FormElementsEdit extends React.Component {
                   Default Value
                 </label>
                 <select
-                  value={this.props.element.DefaultValue}
+                  value={this.state.element.DefaultValue}
                   id="defaultValue"
                   className="form-control"
+                  onClick={this.handleRadioDefaultValue.bind(this)}
                   onBlur={this.updateElement.bind(this)}
                   onChange={this.editElementProp.bind(
                     this,
@@ -655,15 +652,14 @@ export default class FormElementsEdit extends React.Component {
                   )}
                 >
                   <option></option>
-                  {Object.keys(JSON.parse(this.props.element.TypeDetail)).map(
-                    (k, i) => {
+                  {Object.keys(RedioTypeDetails).map((k, i) => {
+                    if (RedioTypeDetails[k])
                       return (
-                        <option value={k} key={i}>
-                          {k}
+                        <option value={RedioTypeDetails[k]} key={i}>
+                          {RedioTypeDetails[k]}
                         </option>
                       );
-                    }
-                  )}
+                  })}
                 </select>
               </div>
             </div>
@@ -687,7 +683,7 @@ export default class FormElementsEdit extends React.Component {
                       <textarea
                         rows="3"
                         className="form-control"
-                        defaultValue={this.props.element.DefaultValue}
+                        value={this.state.element.DefaultValue || ""}
                         onBlur={this.updateElement.bind(this)}
                         onChange={this.editElementProp.bind(
                           this,
@@ -720,25 +716,28 @@ export default class FormElementsEdit extends React.Component {
                         )}
                       />
                     )}
-                   {!this.state.isEditor && (<div>
-                    <label className="control-label" htmlFor="elementWidth">
-                      {this.state.element.TypeDetail} Output
-                    </label>
-                    <textarea
-                      rows="5"
-                      className="form-control"
-                      value={this.state.element.DefaultValue}
-                      onBlur={this.updateElement.bind(this)}
-                      onChange={this.editElementProp.bind(
-                        this,
-                        "DefaultValue",
-                        "value"
-                      )}
-                    />
-                    <span className="tooltiptext tooltiptext-bottom">
-                      Generated code in {this.state.element.TypeDetail} format
-                    </span>
-                    </div>)}
+                    {!this.state.isEditor && (
+                      <div>
+                        <label className="control-label" htmlFor="elementWidth">
+                          {this.state.element.TypeDetail} Output
+                        </label>
+                        <textarea
+                          rows="5"
+                          className="form-control"
+                          value={this.state.element.DefaultValue}
+                          onBlur={this.updateElement.bind(this)}
+                          onChange={this.editElementProp.bind(
+                            this,
+                            "DefaultValue",
+                            "value"
+                          )}
+                        />
+                        <span className="tooltiptext tooltiptext-bottom">
+                          Generated code in {this.state.element.TypeDetail}{" "}
+                          format
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -785,6 +784,8 @@ export default class FormElementsEdit extends React.Component {
                     <label className="control-label">Width Ratio</label>
                     <input
                       type="number"
+                      max={1}
+                      min={0}
                       className="form-control"
                       defaultValue={this.props.element.ControlWidthRatio}
                       onBlur={this.updateElement.bind(this)}
@@ -808,24 +809,24 @@ export default class FormElementsEdit extends React.Component {
 
         {this.props.element.hasOwnProperty("Label") && (
           <div className="form-group">
-            {this.state.element.element  !== "StaticText" &&(
-            <div className="custom-control custom-checkbox">
-            <input
-              id="is-required"
-              className="custom-control-input"
-              type="checkbox"
-              checked={this_Mandatory}
-              value={false}
-              onChange={this.editElementProp.bind(
-                this,
-                "Mandatory",
-                "checked"
-              )}
-            />
-            <label className="custom-control-label" htmlFor="is-required">
-              Mandatory
-            </label>
-          </div>
+            {this.state.element.element !== "StaticText" && (
+              <div className="custom-control custom-checkbox">
+                <input
+                  id="is-required"
+                  className="custom-control-input"
+                  type="checkbox"
+                  checked={this_Mandatory}
+                  disabled={this_read_only}
+                  onChange={this.editElementProp.bind(
+                    this,
+                    "Mandatory",
+                    "checked"
+                  )}
+                />
+                <label className="custom-control-label" htmlFor="is-required">
+                  Mandatory
+                </label>
+              </div>
             )}
             <div className="custom-control custom-checkbox">
               <input
@@ -847,7 +848,7 @@ export default class FormElementsEdit extends React.Component {
                 className="custom-control-input"
                 type="checkbox"
                 checked={this_read_only}
-                value={false}
+                disabled={this_Mandatory}
                 onChange={this.editElementProp.bind(
                   this,
                   "ReadOnly",
@@ -879,10 +880,9 @@ export default class FormElementsEdit extends React.Component {
 
         {this.props.element.Type === 12 && (
           <DynamicOptionList
-            showCorrectColumn={this.props.showCorrectColumn}
+            handleRadioDefaultValue={this.handleRadioDefaultValue.bind(this)}
             canHaveOptionCorrect={canHaveOptionCorrect}
             canHaveOptionValue={canHaveOptionValue}
-            data={this.props.preview.state.data}
             updateElement={this.props.updateElement}
             preview={this.props.preview}
             element={this.props.element}
