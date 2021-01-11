@@ -70,7 +70,7 @@ export default class Preview extends React.Component {
     let found=findElementName(this.state.data,editElement);
     if(found){editElement.Name="";
     alert("This name is already exists.")
-    this.updateElement(this_element);
+    this.updateElement(editElement);
     return
   }
     

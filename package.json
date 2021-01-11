@@ -1,6 +1,6 @@
 {
   "name": "react-form-builder2-workaware",
-  "version": "0.0.55",
+  "version": "0.0.56",
   "description": "A complete form builder for react.",
   "main": "lib/index.js",
   "license": "MIT",

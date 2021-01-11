@@ -213,10 +213,10 @@ export default class FormElementsEdit extends React.Component {
     const this_Mandatory = this.props.element.hasOwnProperty("Mandatory")
       ? this.props.element.Mandatory
       : false;
-    const this_DefaultValue =
-      this.props.element.hasOwnProperty("DefaultValue") === ""
-        ? false
-        : this.props.element.DefaultValue;
+     let this_DefaultValue;
+     if(this.props.element.element==="Checkboxes")
+     this_DefaultValue =JSON.parse(this.props.element.DefaultValue ? this.props.element.DefaultValue.toString().toLowerCase() : 'false');
+
 
     const this_read_only = this.props.element.hasOwnProperty("ReadOnly")
       ? this.props.element.ReadOnly

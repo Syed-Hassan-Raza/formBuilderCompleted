@@ -6,7 +6,7 @@ import "react-bootstrap-typeahead/css/Typeahead.css";
 
 export default class CondtionalFlowList extends React.Component {
   constructor(props) {
-    debugger
+    
     super(props);
     this.thenShowRef = React.createRef();
     this.thenHideRef = React.createRef();
@@ -288,7 +288,7 @@ export default class CondtionalFlowList extends React.Component {
     );
   }
   handleParentState(){
-    debugger
+    
     let this_element=this.props.parent.props.element;
    this.setState({element:this_element});
   }

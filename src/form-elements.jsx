@@ -1046,8 +1046,8 @@ class Checkboxes extends React.Component {
             <label className="checkbox-inline">
               <input
                 type="checkbox"
-                value={this.props.data.DefaultValue||false}
-                checked={this.props.data.DefaultValue||false}
+                value={JSON.parse(this.props.data.DefaultValue ? this.props.data.DefaultValue.toString().toLowerCase() : 'false')}
+                checked={JSON.parse(this.props.data.DefaultValue ? this.props.data.DefaultValue.toString().toLowerCase() : 'false')}
                 onChange={this.handleValueChange.bind(this)}
               />{" "}
               <ComponentLabel {...this.props} />
