@@ -15,6 +15,8 @@ import {
   convertToRaw,
   convertFromRaw,
 } from "draft-js";
+import htmlToDraft from "html-to-draftjs";
+
 import { mdToDraftjs, draftjsToMd } from 'draftjs-md-converter';
 
 const FormElements = {};
@@ -521,7 +523,12 @@ class StaticText extends React.Component {
       // to prevent crash when no contents in editor
       return EditorState.createEmpty();
     }
-    const contentState = ContentState.createFromBlockArray(newContent);
+    const blocksFromHtml = htmlToDraft(content);
+    const { contentBlocks, entityMap } = blocksFromHtml;
+    const contentState = ContentState.createFromBlockArray(
+      contentBlocks,
+      entityMap
+    );
     return EditorState.createWithContent(contentState);
   }
   loadEditState() {
@@ -602,6 +609,7 @@ class TextArea extends React.Component {
     props.className = "form-control";
     props.name = this.props.data.field_name;
 
+    const textRowCount = this.props.data.DefaultValue ? this.props.data.DefaultValue.split("\n").length : 3
     if (this.props.ReadOnly) {
       props.disabled = "disabled";
     }
@@ -615,7 +623,12 @@ class TextArea extends React.Component {
     if (this.props.data.pageBreakBefore) {
       baseClasses += " alwaysbreak";
     }
-
+    const style = {
+      minHeight: "38px",
+      padding: "9px",
+      boxSizing: "border-box",
+      fontSize: "15px"
+    }
     return (
       <div className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
@@ -628,7 +641,8 @@ class TextArea extends React.Component {
             {...props}
             defaultValue={this.props.data.DefaultValue || undefined}
             onChange={this.handleValueChange}
-            rows="3"
+            rows={textRowCount}
+            style={style}
           />
         </div>
       </div>
