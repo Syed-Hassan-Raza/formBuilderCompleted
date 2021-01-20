@@ -54,7 +54,6 @@ export default class DynamicOptionList extends React.Component {
   }
 
   found(obj, val) {
-    debugger;
     let found = false;
     const propertyNames = Object.keys(obj);
 

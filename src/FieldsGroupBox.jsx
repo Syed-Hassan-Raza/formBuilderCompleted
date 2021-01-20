@@ -8,9 +8,7 @@ import { findDOMNode } from "react-dom";
 import store from "./stores/store";
 import getElementName from "./element-mapper";
 
-const style = {
-
-};
+const style = {};
 const fieldsGroupTarget = {
   canDrop(props, monitor) {
     const item = monitor.getItem();
@@ -20,6 +18,11 @@ const fieldsGroupTarget = {
   },
 
   hover(props, monitor, component) {
+    const item = monitor.getItem();
+     const dragIndex = item.index
+     if (dragIndex === -1) {
+    $( "hr" ).css("display", "none");
+     }
     const clientOffset = monitor.getClientOffset();
     const componentRect = findDOMNode(component).getBoundingClientRect();
     const isOnlyThisOne = monitor.isOver({ shallow: true });
@@ -30,8 +33,11 @@ const fieldsGroupTarget = {
     if (monitor.didDrop()) {
       return;
     }
-
     let item = monitor.getItem();
+
+    const dragIndex = item.index;
+    const hoverIndex = props.index;
+
     store.dispatch("create", {
       parentId: component.state.id,
       item: item.onCreate(item.data),
@@ -47,7 +53,7 @@ function collect(connect, monitor) {
     isOverCurrent: monitor.isOver({ shallow: true }),
     canDrop: monitor.canDrop(),
     itemType: monitor.getItemType(),
-    item: monitor.getItem()
+    item: monitor.getItem(),
   };
 }
 
@@ -178,19 +184,35 @@ class FieldsGroup extends React.Component {
 
   render() {
     const { position } = this.props;
-    const { isOver, canDrop, connectDropTarget, components , item } = this.props;
+    const { isOver, canDrop, connectDropTarget, components, item } = this.props;
     return connectDropTarget(
-      <div>
-        <div className="card" style={{height: '100%', display: 'block'}}>
-          <div className="card-header">{this.props.data.Label}</div>
-          <div className="card-body" style={{display: 'flex', flexWrap: 'wrap'}}>
-            {this.state.components.map((item, index) =>
-              this.getElement(item, index)
-            )}
-            {item && item.toolbarItem ? <label style={{border: '2px dashed #0eb923', display: 'block', marginTop: '10px', padding: '10px 0px', width: '100%', textAlign: 'center'}}>You can drop new item here</label> : null}
-          </div>
+        <div>
+
+          <fieldset className="border p-3" style={{height: '100%', display: 'block'}}>
+            <legend className="w-auto px-2">{this.props.data.Label}</legend>
+            <div
+              style={{ display: "flex", flexWrap: "wrap" }}
+            >
+              {this.state.components.map((item, index) => this.getElement(item, index))}
+
+            </div>
+            {item && item.toolbarItem ? (
+          <label
+            style={{
+              border: "2px dashed #0eb923",
+              display: "block",
+              marginTop: "10px",
+              padding: "10px 0px",
+              width: "100%",
+              textAlign: "center",
+            }}
+          >
+            Drop Zone of {this.props.data.Label}
+          </label>
+        ) : null}
+          </fieldset>
         </div>
-      </div>
+
     );
   }
 }
@@ -199,4 +221,4 @@ export default DropTarget(
   ItemTypes.CARD,
   fieldsGroupTarget,
   collect
-)(FieldsGroup);
+)( FieldsGroup);

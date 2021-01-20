@@ -19,6 +19,6 @@ PlaceHolder.propTypes = {
 };
 
 PlaceHolder.defaultProps = {
-  text: "You can drop new item here",
-  show: false,
+  text: "Drag 'n' drop new item here or click on item",
+  show: true,
 };

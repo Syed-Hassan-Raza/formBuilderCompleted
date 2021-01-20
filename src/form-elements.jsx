@@ -7,7 +7,7 @@ import ReactBootstrapSlider from "react-bootstrap-slider";
 import StarRating from "./star-rating";
 import HeaderBar from "./header-bar";
 import FieldsGroup from "./FieldsGroupBox";
-import { Editor } from "react-draft-wysiwyg";
+import Editor  from "./CommonMethods/Editor";
 import {
   ContentState,
   EditorState,
@@ -129,7 +129,7 @@ class Header extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <h2
           className={classNames}
@@ -166,7 +166,7 @@ class FieldGroups extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         {<FieldsGroup {...this.props} />}
       </div>
@@ -192,7 +192,7 @@ class Paragraph extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />{" "}
         <span className="label-Mandatory badge badge-info">
           {this.props.data.element}
@@ -226,7 +226,7 @@ class Label extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />{" "}
         <span className="label-Mandatory badge badge-info">
           {this.props.data.element}
@@ -260,7 +260,7 @@ class Calculated extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <label
           className={classNames}
@@ -294,7 +294,7 @@ class Counter extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <label
           className={classNames}
@@ -328,7 +328,7 @@ class Action extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <label
           className={classNames}
@@ -352,7 +352,7 @@ class LineBreak extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <hr />
       </div>
@@ -392,7 +392,7 @@ class TextInput extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -401,8 +401,7 @@ class TextInput extends React.Component {
           </span>
           <input
             {...props}
-            value={this.state.value || undefined}
-            onChange={this.handleValueChange}
+            defaultValue={this.props.data.DefaultValue || undefined}
           />
         </div>
       </div>
@@ -441,7 +440,7 @@ class NumberInput extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -450,8 +449,7 @@ class NumberInput extends React.Component {
           </span>
           <input
             {...props}
-            value={this.state.value || undefined}
-            onChange={this.handleValueChange}
+            defaultValue={this.props.data.DefaultValue || undefined}
           />
         </div>
       </div>
@@ -490,7 +488,7 @@ class DecimalInput extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -499,8 +497,7 @@ class DecimalInput extends React.Component {
           </span>
           <input
             {...props}
-            value={this.state.value || undefined}
-            onChange={this.handleValueChange}
+            defaultValue={this.props.data.DefaultValue || undefined}
           />
         </div>
       </div>
@@ -515,43 +512,6 @@ class StaticText extends React.Component {
     this.state = {
       element: this.props.data,
     };
-  }
-
-  convertFromHTML(content) {
-    const newContent = convertFromHTML(content);
-    if (!newContent.contentBlocks || !newContent.contentBlocks.length) {
-      // to prevent crash when no contents in editor
-      return EditorState.createEmpty();
-    }
-    const blocksFromHtml = htmlToDraft(content);
-    const { contentBlocks, entityMap } = blocksFromHtml;
-    const contentState = ContentState.createFromBlockArray(
-      contentBlocks,
-      entityMap
-    );
-    return EditorState.createWithContent(contentState);
-  }
-  loadEditState() {
-    let editorState;
-    if (
-      this.state.element.TypeDetail === "html" ||
-      this.state.element.TypeDetail === "html64"
-    ) {
-      if (this.state.element.DefaultValue)
-       return this.convertFromHTML(this.state.element.DefaultValue);
-    } else if (
-      this.state.element.TypeDetail === "md" ||
-      this.state.element.TypeDetail === "md64"
-    ) {
-      if (this.state.element.DefaultValue) {
-        const markdownString = this.state.element.DefaultValue;
-        const rawData = mdToDraftjs(markdownString);
-        const contentState = convertFromRaw(rawData);
-        const newEditorState = EditorState.createWithContent(contentState);
-        return newEditorState;
-      }
-    }
-    return null;
   }
 
   render() {
@@ -573,9 +533,8 @@ class StaticText extends React.Component {
     if (this.props.data.pageBreakBefore) {
       baseClasses += " alwaysbreak";
     }
-    let editorState = this.loadEditState();
     return (
-      <div className={baseClasses} >
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -583,15 +542,17 @@ class StaticText extends React.Component {
             {this.props.data.element}
           </span>
           <Editor
-            editorStyle={{ height: "auto" }}
-            editorState={editorState}
-            toolbarHidden={true}
-          />{" "}
+            style={{ height: "auto" }}
+            isReadOnly={true}
+            element={this.props.data}
+          />
         </div>
       </div>
     );
   }
 }
+
+import TextAreaAutosize from "react-textarea-autosize";
 
 class TextArea extends React.Component {
   constructor(props) {
@@ -609,7 +570,6 @@ class TextArea extends React.Component {
     props.className = "form-control";
     props.name = this.props.data.field_name;
 
-    const textRowCount = this.props.data.DefaultValue ? this.props.data.DefaultValue.split("\n").length : 3
     if (this.props.ReadOnly) {
       props.disabled = "disabled";
     }
@@ -623,26 +583,20 @@ class TextArea extends React.Component {
     if (this.props.data.pageBreakBefore) {
       baseClasses += " alwaysbreak";
     }
-    const style = {
-      minHeight: "38px",
-      padding: "9px",
-      boxSizing: "border-box",
-      fontSize: "15px"
-    }
+
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
           <span className="label-Mandatory badge badge-info">
             {this.props.data.element}
           </span>
-          <textarea
+          <TextAreaAutosize
             {...props}
             defaultValue={this.props.data.DefaultValue || undefined}
             onChange={this.handleValueChange}
-            rows={textRowCount}
-            style={style}
+            minRows={3}
           />
         </div>
       </div>
@@ -680,7 +634,7 @@ class TimePicker extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -689,8 +643,7 @@ class TimePicker extends React.Component {
           </span>
           <input
             {...props}
-            value={this.props.data.TypeDetail}
-            onChange={this.handleValueChange}
+            defaultValue={this.props.data.TypeDetail}
           />
         </div>
       </div>
@@ -727,7 +680,7 @@ class DatePicker extends React.Component {
       props.disabled = "disabled";
     }
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -737,8 +690,7 @@ class DatePicker extends React.Component {
           <div>
             <input
               {...props}
-              value={this.state.value || undefined}
-              onChange={this.handleValueChange}
+              defaultValue={this.props.data.TypeDetail || undefined}
             />
           </div>
         </div>
@@ -774,7 +726,7 @@ class Dropdown extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -824,7 +776,7 @@ class Assignee extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -874,7 +826,7 @@ class Autocomplete extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -946,7 +898,7 @@ class Signature extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -1002,7 +954,7 @@ class Tags extends React.Component {
     } // to show a sample of what tags looks like
     if (this.props.mutable) {
       props.isDisabled = this.props.ReadOnly;
-      props.value = this.state.value;
+      props.value = this.props.data.DefaultValue;
       props.ref = this.inputField;
     }
 
@@ -1012,7 +964,7 @@ class Tags extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
@@ -1052,7 +1004,7 @@ class Checkboxes extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
 
         <div className="form-group">
@@ -1060,7 +1012,7 @@ class Checkboxes extends React.Component {
             <label className="checkbox-inline">
               <input
                 type="checkbox"
-                value={JSON.parse(this.props.data.DefaultValue ? this.props.data.DefaultValue.toString().toLowerCase() : 'false')}
+                defaultValue={JSON.parse(this.props.data.DefaultValue ? this.props.data.DefaultValue.toString().toLowerCase() : 'false')}
                 checked={JSON.parse(this.props.data.DefaultValue ? this.props.data.DefaultValue.toString().toLowerCase() : 'false')}
                 onChange={this.handleValueChange.bind(this)}
               />{" "}
@@ -1142,7 +1094,6 @@ class RadioButtons extends React.Component {
     const self = this;
     const props = {};
     props.width = this.props.data.ControlWidthRatio || 1;
-
     let obj = JSON.parse(this.props.data.TypeDetail);
     let classNames = "custom-control custom-radio";
     if (this.props.data.inline) {
@@ -1155,7 +1106,7 @@ class RadioButtons extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -1279,7 +1230,7 @@ class Rating extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
@@ -1298,7 +1249,7 @@ class HyperLink extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <a target="_blank" href={this.props.data.href}>
@@ -1318,7 +1269,7 @@ class Download extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <a
@@ -1385,7 +1336,7 @@ class Camera extends React.Component {
     }
     //console.log("sourceDataURL", sourceDataURL);
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
@@ -1468,7 +1419,7 @@ class Range extends React.Component {
     props.max = this.props.data.max_value;
     props.step = this.props.data.step;
 
-    props.value = this.state.value;
+    props.value = this.props.data.DefaultValue;
     props.change = this.changeValue;
 
     if (this.props.mutable) {
@@ -1510,7 +1461,7 @@ class Range extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />
@@ -1522,7 +1473,7 @@ class Range extends React.Component {
             <ReactBootstrapSlider {...props} />
           </div>
           <div className="visible_marks">{visible_marks}</div>
-          <input name={name} value={this.state.value} type="hidden" />
+          <input name={name} value={this.props.data.DefaultValue} type="hidden" />
           <datalist id={props.list}>{_datalist}</datalist>
         </div>
       </div>
@@ -1557,7 +1508,7 @@ class Barcode extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}

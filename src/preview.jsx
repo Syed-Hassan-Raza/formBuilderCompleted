@@ -8,7 +8,7 @@ import store from "./stores/store";
 import FormElementsEdit from "./form-elements-edit";
 import SortableFormElements from "./sortable-form-elements";
 import getElementName from "./element-mapper";
-import { findElementName } from "./constants";
+import { findElementName,hasWhiteSpace,createTypeDetails } from "./constants";
 const { PlaceHolder } = SortableFormElements;
 
 export default class Preview extends React.Component {
@@ -23,7 +23,7 @@ export default class Preview extends React.Component {
     this.state = {
       data: [],
       answer_data: {},
-     // redioDefaultValue:{},
+      // redioDefaultValue:{},
     };
     this.stateFlowData = {};
     this.seq = 0;
@@ -65,32 +65,50 @@ export default class Preview extends React.Component {
 
   manualEditModeOff = () => {
     const { editElement } = this.props;
-
     if (editElement == null) return;
-    let found=findElementName(this.state.data,editElement);
-    if(found){editElement.Name="";
-    alert("This name is already exists.")
-    this.updateElement(editElement);
-    return
-  }
-    
-    if (editElement.Name || editElement.element === "FieldGroups") {
-      if (editElement && editElement.dirty) {
-        editElement.dirty = false;
-        this.updateElement(editElement);
+
+    if (editElement.Name !== "StateFlow") {
+      //***  Retrun if conditions not matched ***///
+      if (!editElement.Name) {
+        alert("Field Name is missing.");
+        return;
       }
-      this.props.manualEditModeOff();
-    } else {
-      alert("Field Name is missing.");
-      return;
-    }
-    if((editElement.Type===4 || editElement.Type===7) && !editElement.TypeDetail){
-      editElement.TypeDetail=editElement.Type===4?"yyyy/MM/dd":"hh:mm:ss";
+
+      if(hasWhiteSpace(editElement.Name)){editElement.Name = editElement.Name.replace(/\s/g, '_');};
+
+      let found = findElementName(this.state.data, editElement);
+      if (found) {
+        alert("This name is already exists.");
+        return;
+      }
+
+      //*** set default values *** ///
+      this.setRadioButtonsValues(editElement);
+      this.setAutocompleteValues(editElement);
+
+      this.setDefaultDateTime(editElement);
+
       this.updateElement(editElement);
     }
-    if(editElement.Type===12){
+
+    this.props.manualEditModeOff();
+    return;
+  };
+
+  setDefaultDateTime(editElement) {
+    if (
+      (editElement.Type === 4 || editElement.Type === 7) &&
+      !editElement.TypeDetail
+    ) {
+      editElement.TypeDetail =
+        editElement.Type === 4 ? "yyyy/MM/dd" : "hh:mm:ss";
+    }
+    return editElement;
+  }
+  setRadioButtonsValues(editElement) {
+    if (editElement.Type === 12) {
       const this_element = editElement;
-      let _typeDetail =[];
+      let _typeDetail = [];
       let obj = {};
       Object.assign(_typeDetail, JSON.parse(editElement.TypeDetail));
       this_element.TypeDetail = null;
@@ -99,15 +117,27 @@ export default class Preview extends React.Component {
         let val = _typeDetail[option];
         if (val) {
           obj[val] = val;
-        } 
+        }
       });
 
       this_element.TypeDetail = JSON.stringify(obj);
-       //this.setState({redioDefaultValue:this_element.TypeDetail})
-       this.updateElement(this_element);
+      return this_element;
     }
-  };
+  }
+  setAutocompleteValues(editElement){
 
+    if (editElement.Type === 15) {
+      let _typeDetail= JSON.parse(editElement.TypeDetail)
+      let props = {data:[]}
+
+      _typeDetail.data.filter(function (el) {
+        if(el){
+          props.data.push(el) ;
+        }
+        });
+        editElement.TypeDetail=JSON.stringify(props);  
+    }
+  }
   _setValue(text) {
     return text.replace(/[^A-Z0-9]+/gi, "_").toLowerCase();
   }
@@ -172,11 +202,16 @@ export default class Preview extends React.Component {
   }
 
   insertCard(item, hoverIndex) {
-    //const { data } = this.state;
-    //const { data } = store.state;
-    //data.splice(hoverIndex, 0, item);
-    //this.saveData(item, hoverIndex, hoverIndex);
-    store.dispatch("create", item);
+    if(item.element==="FieldGroups"){
+      store.dispatch("create", item);
+      return;
+    }
+     const { data } = store.state;
+     createTypeDetails(item);
+
+     data.Fields.splice(hoverIndex, 0, item);
+     this.setState(data);
+     store.dispatch("updateOrder", data);
   }
 
   moveCard(dragIndex, hoverIndex) {
@@ -189,6 +224,7 @@ export default class Preview extends React.Component {
   cardPlaceHolder(dragIndex, hoverIndex) {
     // Dummy
   }
+
 
   saveData(dragCard, dragIndex, hoverIndex) {
     const newData = update(this.state, {
@@ -247,9 +283,9 @@ export default class Preview extends React.Component {
     });
     const data = [].concat(fields, fieldGroups);
     const items = data.map((item, index) => this.getElement(item, index));
-    
+
     return (
-      <div className={classes} style={{flexGrow: '5', flexShrink: '5'}}>
+      <div className={classes} style={{ flexGrow: "5", flexShrink: "5" }}>
         {
           <button
             type="button"
@@ -265,21 +301,22 @@ export default class Preview extends React.Component {
             Settings
           </button>
         }
-
         <div className="edit-form" ref={this.editForm}>
           {this.props.editElement !== null && (
-              <FormElementsEdit
-                showCorrectColumn={this.props.showCorrectColumn}
-                files={this.props.files}
-                manualEditModeOff={this.manualEditModeOff}
-                preview={this}
-                element={this.props.editElement}
-                //redioDefaultValue={this.state.redioDefaultValue}
-                updateElement={this.updateElement}
-              />
+            <FormElementsEdit
+              showCorrectColumn={this.props.showCorrectColumn}
+              files={this.props.files}
+              manualEditModeOff={this.manualEditModeOff}
+              preview={this}
+              element={this.props.editElement}
+              //redioDefaultValue={this.state.redioDefaultValue}
+              updateElement={this.updateElement}
+            />
           )}
         </div>
-        <div className="Sortable" style={{display: 'flex', flexWrap: 'wrap'}}>{items}</div>
+        <div className="Sortable" style={{ display: "flex", flexWrap: "wrap" }}>
+          {items}
+        </div>
         <PlaceHolder
           id="form-place-holder"
           show={true}

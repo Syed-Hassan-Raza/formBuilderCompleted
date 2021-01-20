@@ -1,3 +1,66 @@
+.select-editable {
+  position:relative;
+  width:650px;
+  height:18px;
+  font-size:16px;
+   margin-bottom: 20px;
+}
+.select-editable select {
+  position:absolute;
+  top:0px;
+  left:0px;background-color: #ced6d8;
+  font-size:16px;
+  width:650px;
+  margin:0;
+}
+.select-editable input {
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:610px;
+  padding:1px;
+  font-size:16px;
+  border-right: none;
+}
+.select-editable select:focus, .select-editable input:focus {
+  outline:none;
+}
+
+
+.blink-text{
+ 
+  animation: blinkingText 2s infinite;
+}
+@keyframes blinkingText{
+  0%		{ background-color: #f16451;}
+}
+@keyframes blinkingTexts{
+  0%		{ background-color: #04a1d5;}
+  25%		{ background-color: #1056c0;}
+  50%		{ background-color: #ef0a1a;}
+  75%		{ background-color: #254878;}
+  100%	{ background-color: #04a1d5;}
+}
+fieldset.collapse {
+  div, .row, .columns, label {
+    display: inline;
+    width: auto;
+    float: left;
+    padding: 0;
+  }
+  .row:after {
+    clear: none;    
+  }
+  label {
+    margin-left: 10px;
+  }
+  input, .collapsable {
+    display: none;
+  }
+  .inline * {
+    float: none;
+  }
+}
 input[type="date"]:before {
   content: attr(placeholder);
   color: #aaa;

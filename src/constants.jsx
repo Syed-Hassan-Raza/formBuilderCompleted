@@ -1,4 +1,13 @@
-export { mdDictonery, fieldNames,editorFormats,dateFormats,timeFormats,findElementName };
+import { draftjsToMd } from "draftjs-md-converter";
+
+import {
+  convertToRaw,
+} from "draft-js";
+
+
+import draftToHtml from "draftjs-to-html";
+
+export { mdDictonery, fieldNames,editorFormats,dateFormats,timeFormats,findElementName,hasWhiteSpace,convertToCode,createTypeDetails };
 
 const mdDictonery = {
   BOLD: "**",
@@ -125,4 +134,30 @@ const removeItem=(data, element)=> {
   });
   if (removed) return true;
   else return false;
+}
+///draftjs to code
+const convertToCode=(editorContent, TypeDetail)=> {
+  let isHtml =
+    TypeDetail === "html" || TypeDetail === "html64" ? true : false;
+  if (isHtml) {
+    return draftToHtml(convertToRaw(editorContent.getCurrentContent()));
+  } else if (!isHtml) {
+    return draftjsToMd(
+      convertToRaw(editorContent.getCurrentContent()),
+      mdDictonery
+    );
+  }
+  return null;
+}
+
+const hasWhiteSpace=(str)=> {
+  return /\s/g.test(str);
+}
+
+const createTypeDetails=(element)=> {
+  if (element.Type === 15) {
+    element.TypeDetail = JSON.stringify({ data: element.TypeDetail });
+  } else if (element.Type === 12) {
+    element.TypeDetail = JSON.stringify(element.TypeDetail);
+  }
 }
