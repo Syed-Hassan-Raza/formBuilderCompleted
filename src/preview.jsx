@@ -8,7 +8,7 @@ import store from "./stores/store";
 import FormElementsEdit from "./form-elements-edit";
 import SortableFormElements from "./sortable-form-elements";
 import getElementName from "./element-mapper";
-import { findElementName,hasWhiteSpace,createTypeDetails } from "./constants";
+import { findElementName, hasWhiteSpace, createTypeDetails } from "./constants";
 const { PlaceHolder } = SortableFormElements;
 
 export default class Preview extends React.Component {
@@ -50,6 +50,34 @@ export default class Preview extends React.Component {
     document.addEventListener("mousedown", this.editModeOff);
     this.stateFlowData.Name = "StateFlow";
     //this.stateFlowData.ConditionalFlow={ "entries": [] };
+     $("a[href='#top']").hide();
+
+    $(window).scroll(function (event) {
+      let scroll = $(window).scrollTop();
+
+      if (scroll > 100) {
+        $("a[href='#top']").show().fadeIn();
+        $("#scrollIcon").removeClass("fa fa-arrow-down");
+        $("#scrollIcon").addClass("fa fa-arrow-up");
+      } else {
+        //$("a[href='#top']").fadeOut().hide();
+         $("#scrollIcon").removeClass("fa fa-arrow-up");
+         $("#scrollIcon").addClass("fa fa-arrow-down");
+      }
+      // Do something
+    });
+
+    $("a[href='#top']").click(function () {
+      if (
+        document.body.scrollTop > 100 ||
+        document.documentElement.scrollTop > 100
+      ) {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+      } else {
+        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+      }
+      return false;
+    });
   }
 
   componentWillUnmount() {
@@ -74,7 +102,9 @@ export default class Preview extends React.Component {
         return;
       }
 
-      if(hasWhiteSpace(editElement.Name)){editElement.Name = editElement.Name.replace(/\s/g, '_');};
+      if (hasWhiteSpace(editElement.Name)) {
+        editElement.Name = editElement.Name.replace(/\s/g, "_");
+      }
 
       let found = findElementName(this.state.data, editElement);
       if (found) {
@@ -124,18 +154,17 @@ export default class Preview extends React.Component {
       return this_element;
     }
   }
-  setAutocompleteValues(editElement){
-
+  setAutocompleteValues(editElement) {
     if (editElement.Type === 15) {
-      let _typeDetail= JSON.parse(editElement.TypeDetail)
-      let props = {data:[]}
+      let _typeDetail = JSON.parse(editElement.TypeDetail);
+      let props = { data: [] };
 
       _typeDetail.data.filter(function (el) {
-        if(el){
-          props.data.push(el) ;
+        if (el) {
+          props.data.push(el);
         }
-        });
-        editElement.TypeDetail=JSON.stringify(props);  
+      });
+      editElement.TypeDetail = JSON.stringify(props);
     }
   }
   _setValue(text) {
@@ -202,16 +231,16 @@ export default class Preview extends React.Component {
   }
 
   insertCard(item, hoverIndex) {
-    if(item.element==="FieldGroups"){
+    if (item.element === "FieldGroups") {
       store.dispatch("create", item);
       return;
     }
-     const { data } = store.state;
-     createTypeDetails(item);
+    const { data } = store.state;
+    createTypeDetails(item);
 
-     data.Fields.splice(hoverIndex, 0, item);
-     this.setState(data);
-     store.dispatch("updateOrder", data);
+    data.Fields.splice(hoverIndex, 0, item);
+    this.setState(data);
+    store.dispatch("updateOrder", data);
   }
 
   moveCard(dragIndex, hoverIndex) {
@@ -224,7 +253,6 @@ export default class Preview extends React.Component {
   cardPlaceHolder(dragIndex, hoverIndex) {
     // Dummy
   }
-
 
   saveData(dragCard, dragIndex, hoverIndex) {
     const newData = update(this.state, {
@@ -282,6 +310,7 @@ export default class Preview extends React.Component {
       item.Type = "FieldGroups";
     });
     const data = [].concat(fields, fieldGroups);
+
     const items = data.map((item, index) => this.getElement(item, index));
 
     return (
@@ -317,6 +346,10 @@ export default class Preview extends React.Component {
         <div className="Sortable" style={{ display: "flex", flexWrap: "wrap" }}>
           {items}
         </div>
+        <a id="myBtn" href="#top">
+          <i id="scrollIcon" className="fa fa-arrow-up"></i>
+        </a>
+
         <PlaceHolder
           id="form-place-holder"
           show={true}

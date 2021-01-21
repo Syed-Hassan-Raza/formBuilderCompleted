@@ -8,6 +8,7 @@ import ID from "./UUID";
 import store from "./stores/store";
 import { add } from "date-fns";
 import { element } from "prop-types";
+import {getFieldNames} from "./constants"
 
 export default class Toolbar extends React.Component {
   isMounted = false;
@@ -274,8 +275,12 @@ export default class Toolbar extends React.Component {
       //Fields: item.Fields,
       //FieldGroups: item.FieldGroups
     };
-    this.count=this.count+1;
-     elementOptions.Name = item.key + "_"+this.count;
+
+    this.fieldNames = [];
+    getFieldNames(store.state.data, this.fieldNames);
+     let count=this.fieldNames.length+1;
+     elementOptions.Name = item.key + "_"+count;
+
     if (item.key !== "FieldGroups") {
       (elementOptions.TypeDetail = ""),
         // elementOptions.DefaultValue='',

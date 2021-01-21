@@ -7,7 +7,7 @@ import {
 
 import draftToHtml from "draftjs-to-html";
 
-export { mdDictonery, fieldNames,editorFormats,dateFormats,timeFormats,findElementName,hasWhiteSpace,convertToCode,createTypeDetails };
+export { mdDictonery, fieldNames,editorFormats,dateFormats,timeFormats,findElementName,hasWhiteSpace,convertToCode,createTypeDetails,getFieldNames };
 
 const mdDictonery = {
   BOLD: "**",
@@ -161,3 +161,17 @@ const createTypeDetails=(element)=> {
     element.TypeDetail = JSON.stringify(element.TypeDetail);
   }
 }
+
+const getFieldNames = (data, addToList) => {
+  data.Fields.forEach((item) => {
+    if (item.Name) addToList.push(item.Name);
+  });
+
+  if (data.FieldGroups && data.FieldGroups.length > 0) {
+    data.FieldGroups.forEach((item) => {
+      if (item.Name) addToList.push(item.Name);
+
+      getFieldNames(item, addToList);
+    });
+  }
+};
