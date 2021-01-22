@@ -379,7 +379,7 @@ export default class CondtionalFlowList extends React.Component {
                   (
                     
                     <input
-                      type={this.state.element.element==="DatePicker"?"date":"text"}
+                      type="text"
                       className="form-control"
                       value={this.state.editState.value || ""}
                       onChange={(e) => this.onChange(e, "value")}
