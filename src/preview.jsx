@@ -52,8 +52,8 @@ export default class Preview extends React.Component {
     //this.stateFlowData.ConditionalFlow={ "entries": [] };
      $("a[href='#top']").hide();
 
-    $(window).scroll(function (event) {
-      let scroll = $(window).scrollTop();
+    $(document).scroll(function (event) {
+      let scroll = $(document).scrollTop();
 
       if (scroll > 100) {
         $("a[href='#top']").show().fadeIn();

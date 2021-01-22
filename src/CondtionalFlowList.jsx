@@ -372,10 +372,14 @@ export default class CondtionalFlowList extends React.Component {
                               </select>
                   )}
 
-                  {(this.props.conditionalFlowMode && this.state.element.element!=="Checkboxes" && this.state.element.element!=="RadioButtons") && (
+                  {(this.props.conditionalFlowMode && 
+                  this.state.element.element!=="Checkboxes" && 
+                  this.state.element.element!=="RadioButtons") &&
+                  
+                  (
                     
                     <input
-                      type="text"
+                      type={this.state.element.element==="DatePicker"?"date":"text"}
                       className="form-control"
                       value={this.state.editState.value || ""}
                       onChange={(e) => this.onChange(e, "value")}

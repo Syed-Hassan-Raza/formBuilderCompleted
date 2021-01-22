@@ -58,6 +58,24 @@ export default class FormElementsEdit extends React.Component {
     };
   }
 
+  componentDidMount(){
+  $("a[href='#tabs-1']").click(function () {
+    $("#tabs-2").hide();
+    $("a[href='#tabs-2']").removeClass("active");
+    $("a[href='#tabs-1']").addClass("active");
+    $("#tabs-1").show().fadeIn();
+    return false;
+  });
+  $("a[href='#tabs-2']").click(function () {
+
+    $("#tabs-1").hide();
+    $("a[href='#tabs-1']").removeClass("active");
+    $("a[href='#tabs-2']").addClass("active");
+    $("#tabs-2").show().fadeIn();
+    return false;
+  });
+}
+
   editElementName(e) {
     const this_element = this.state.element;
     this_element.Name = e.target.value;
@@ -132,6 +150,23 @@ export default class FormElementsEdit extends React.Component {
     );
   }
 
+  editElementForCheckBox(elemProperty, targProperty, e) {
+    
+    const this_element = this.state.element;
+    this_element[elemProperty] = JSON.stringify(e.target[targProperty]);
+
+    this.setState(
+      {
+        element: this_element,
+        dirty: true,
+      },
+      () => {
+        if (targProperty === "checked") {
+          this.updateElement();
+        }
+      }
+    );
+  }
 
   updateElement() {
     const this_element = this.state.element;
@@ -338,16 +373,19 @@ export default class FormElementsEdit extends React.Component {
                         Properties
                       </a>
                     </li>
+                    { this.props.element.element !== "FieldGroups" &&(
                     <li className="nav-item">
-                      <a
-                        className="nav-link"
-                        data-toggle="tab"
-                        href="#tabs-2"
-                        role="tab"
-                      >
-                        Conditional Flow
-                      </a>
-                    </li>
+                    <a
+                      className="nav-link"
+                      href="#tabs-2"
+                      role="tab"
+                    >
+                      Conditional Flow
+                    </a>
+                  </li>
+                    )
+                    }
+
                   </ul>
                 </div>
               )}
@@ -451,11 +489,11 @@ export default class FormElementsEdit extends React.Component {
                             "TypeDetail",
                             "value"
                           )}>
+                            <option></option>
                           {dateTimeFormats.map((k, i) => {
                             return (
                               <option
                               value={k} key={i}
-                                key={i}
                               >{k}</option>
                             );
                           })}
@@ -464,8 +502,8 @@ export default class FormElementsEdit extends React.Component {
                           id="Format"
                           className="form-control"
                           onBlur={this.updateElement.bind(this)}
-                          defaultValue={
-                            this.state.element.TypeDetail || undefined
+                          value={
+                            this.state.element.TypeDetail || ""
                           }
                           onChange={this.editElementProp.bind(
                             this,
@@ -475,17 +513,6 @@ export default class FormElementsEdit extends React.Component {
                         />
                         
                         </div>
-
-                        <datalist id="formatsList">
-                          <option></option>
-                          {dateTimeFormats.map((k, i) => {
-                            return (
-                              <option value={k} key={i}>
-                                {k}
-                              </option>
-                            );
-                          })}
-                        </datalist>
                       </div>
                     </div>
                   </div>
@@ -499,7 +526,7 @@ export default class FormElementsEdit extends React.Component {
                         className="custom-control-input"
                         type="checkbox"
                         checked={this_DefaultValue || false}
-                        onChange={this.editElementProp.bind(
+                        onChange={this.editElementForCheckBox.bind(
                           this,
                           "DefaultValue",
                           "checked"

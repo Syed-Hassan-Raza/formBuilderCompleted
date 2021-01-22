@@ -590,7 +590,7 @@ class TextArea extends React.Component {
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
           <span className="label-Mandatory badge badge-info">
-            {this.props.data.element}
+            {"Multi-line Input"}
           </span>
           <TextAreaAutosize
             {...props}

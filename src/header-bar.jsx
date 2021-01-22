@@ -9,7 +9,7 @@ export default class HeaderBar extends React.Component {
   deleteConfirm(e){
     if (confirm('Are you sure you want to delete this?')) {
       $("#"+this.props.data.id).addClass("blink-text");
-      setTimeout(() => this.props.onDestroy(this.props.data),300);
+      setTimeout(() => this.props.onDestroy(this.props.data),200);
     }
   }
 
