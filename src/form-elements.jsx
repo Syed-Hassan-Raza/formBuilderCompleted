@@ -579,13 +579,13 @@ class TextArea extends React.Component {
       props.ref = this.inputField;
     }
 
-    let baseClasses = "SortableItem rfb-item";
+    let baseClasses = "rfb-item";
     if (this.props.data.pageBreakBefore) {
       baseClasses += " alwaysbreak";
     }
 
     return (
-      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width),{cursor:"move"}}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -597,6 +597,8 @@ class TextArea extends React.Component {
             defaultValue={this.props.data.DefaultValue || undefined}
             onChange={this.handleValueChange}
             minRows={3}
+            disabled
+            style={{cursor:"move"}}
           />
         </div>
       </div>

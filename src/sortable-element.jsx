@@ -4,6 +4,7 @@ import { findDOMNode } from 'react-dom';
 import { DragSource, DropTarget,useDrag } from 'react-dnd';
 import ItemTypes from './ItemTypes';
 import store from "./stores/store";
+import ID from "./UUID";
 
 const style = {
   padding: '0.5rem 1rem',
@@ -16,6 +17,7 @@ const cardSource = {
   beginDrag(props) {
     return {
       id: props.id,
+      item:props.data,
       index: props.index
     };
   },
@@ -81,17 +83,15 @@ const cardTarget = {
   },
   
   drop(props, monitor, component) {
-
     if (monitor.didDrop()) {
       return
     }
-
     const item = monitor.getItem();
     const dragIndex = item.index;
     const hoverIndex = props.index;
     //Don't replace items with themselves
     if (dragIndex === hoverIndex) {
-      return;
+     // return;
     } 
     else if (dragIndex === -1) {
       item.index = hoverIndex;
@@ -99,13 +99,24 @@ const cardTarget = {
       return;
     }
 
-    if(!props.data){return}
+    if(!props.data){props={data:{id:props.id}}}
 
+    const clonedData = { ...item.item };
+    //item.item.id=ID.uuid();
+
+    //store.dispatch("delete",cloneFood);
+   // store.dispatch("create",props.data);
     store.dispatch("moveElement", {
       dragId: item.id, 
       hoverId: props.data.id, 
-      elementType: props.data.element
+      elementType: props.data.element,
+      dragingItem:item.item,
+      houredItem:props.data,
+      dragIndex:dragIndex,
+      hoverIndex:hoverIndex,
+      clonedData:clonedData
     });
+    //store.dispatch("delete",clonedData);
     // Note: we're mutating the monitor item here!
     // Generally it's better to avoid mutations,
     // but it's good here for the sake of performance
@@ -119,6 +130,7 @@ export default function (ComposedComponent) {
   const hrStyle= {  
     border: 0,
     borderBottom: '2px dashed #ddd',
+    //margin:'5px',
     background: 'blue'
   }
 
@@ -154,14 +166,16 @@ export default function (ComposedComponent) {
       } = this.props;
       const opacity = isDragging ? 0.4 : 1;
       let hrShow=isOver && canDrop;
-
+      let isFieldGroup =this.props.data? this.props.data.element==="FieldGroups":false;
      // let blink=hrShow?"blink-text":"";
-
       return connectDragSource(
         connectDropTarget(
         
         <div style={{width: (this.props.id == 'form-place-holder' ? 1 : this.props.data.ControlWidthRatio || 1) * 100 + "%", margin: '10px 0px',}}>
-         {hrShow && (<hr id="hrSeprater"  style={hrStyle}/>)}
+                   {hrShow && (<><hr id="hrSeprater"  style={hrStyle}/>
+                   {isFieldGroup && (<span className="text-primary" style={{color:"red"}}>{"Draging inside "}{this.props.data?this.props.data.Label:"main container"}</span>)}
+                   </>)}
+
           <ComposedComponent   {...this.props} style={{ ...style,opacity }}></ComposedComponent>
           </div>),
       );

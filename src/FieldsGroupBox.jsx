@@ -7,6 +7,7 @@ import { DropTarget } from "react-dnd";
 import { findDOMNode } from "react-dom";
 import store from "./stores/store";
 import getElementName from "./element-mapper";
+import {createTypeDetails} from "./constants";
 
 const style = {};
 const fieldsGroupTarget = {
@@ -21,7 +22,7 @@ const fieldsGroupTarget = {
     const item = monitor.getItem();
      const dragIndex = item.index
      if (dragIndex === -1) {
-    $( "hr" ).css("display", "none");
+    //$( "hr" ).css("display", "none");
      }
     const clientOffset = monitor.getClientOffset();
     const componentRect = findDOMNode(component).getBoundingClientRect();
@@ -37,7 +38,6 @@ const fieldsGroupTarget = {
 
     const dragIndex = item.index;
     const hoverIndex = props.index;
-
     store.dispatch("create", {
       parentId: component.state.id,
       item: item.onCreate(item.data),
@@ -64,9 +64,10 @@ class FieldsGroup extends React.Component {
     super(props);
     this.state = {
       id: this.props.id,
+      hoverIndex:null,
       components: [],
     };
-
+    this.insertCard = this.insertCard.bind(this);
     store.subscribe((state) => {
       let data = this.findData(state.data.FieldGroups, this.props.id);
       if (data && (data.Fields || data.FieldGroups)) {
@@ -168,7 +169,11 @@ class FieldsGroup extends React.Component {
   }
 
   insertCard(item, hoverIndex) {
-    // const { data } = this.state;
+    store.dispatch("insertFieldsGroup", {
+      item:item,
+      parentId:this.props.id,
+      hoverIndex:hoverIndex});
+        // const { data } = this.state;
     // data.splice(hoverIndex, 0, item);
     // this.saveData(item, hoverIndex, hoverIndex);
     // debugger

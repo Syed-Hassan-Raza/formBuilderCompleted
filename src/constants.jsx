@@ -74,7 +74,6 @@ const dateFormats = [
 "yyyy-mm-dd",
 "yyyy-MM-dd",
 "dd-MMM-yy",
-"YYYY-MM-DD",
 
 "M/d/yyyy",
 "M/d/yy",

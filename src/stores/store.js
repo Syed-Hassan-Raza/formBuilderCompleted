@@ -11,7 +11,7 @@ const store = new Store({
     setData(context, data, saveData) {
       context.commit("setData", data);
       if (saveData) this.save(data);
-     //console.log(data);
+     console.log(data);
     },
 
     load(context, { loadUrl, saveUrl, data }) {
@@ -48,6 +48,7 @@ const store = new Store({
     },
 
     create(context, element) {
+      //debugger
       const { data } = context.state;
       if (element.parentId) {
         this.createTypeDetails(element.item);
@@ -80,7 +81,6 @@ const store = new Store({
       this.setData(context, data, true);
       this.saveTemplateOptions(context, element.item);
     },
-
     addChild(data, element) {
       data.forEach((item, index, object) => {
         if (item.id === element.parentId) {
@@ -100,6 +100,37 @@ const store = new Store({
         }
       });
     },
+
+    fieldsGroup_Insert_InCenter(data, element) {
+      data.forEach((item, index, object) => {
+        if (item.id === element.parentId) {
+          if (!item.Fields) item.Fields = [];
+  
+          if (!item.FieldGroups) item.FieldGroups = [];
+  
+          if (element.item.element == "FieldGroups"){
+            item.FieldGroups.splice(element.hoverIndex,0,element.item);
+          }
+           
+          else {item.Fields.splice(element.hoverIndex,0,element.item);}
+  
+          return;
+        }
+  
+        if (item.FieldGroups) {
+          this.fieldsGroup_Insert_InCenter(item.FieldGroups, element);
+        }
+      });
+    },
+
+
+    insertFieldsGroup(context, info){
+      const { data } = context.state;
+      this.fieldsGroup_Insert_InCenter(data.FieldGroups,info);
+      this.createTypeDetails(info.item);
+      this.setData(context, data, true);
+    },
+
 
     delete(context, element) {
       const { data } = context.state;
@@ -153,52 +184,152 @@ const store = new Store({
         //post(_saveUrl, { task_data: data });
       }
     },
+
+    dragInsideFields(data,dragingItem,dragIndex,hoverIndex){
+     // var dragIndex = undefined;
+    data.splice(dragIndex, 1)[0];
+    data.splice(hoverIndex,0,dragingItem);
+    return data;
+  },
+
+  sort(context,data, element,hourId,hoverIndex) {
+
+    let moved = false;
+    if(element.id===hourId){return}
+
+    let clone = Object.assign({},element);
+    clone.id=ID.uuid();
+
+    if(hourId==="form-place-holder"){
+      if (clone.element === "FieldGroups") {data.FieldGroups.splice(hoverIndex, 0,clone);}
+      if (clone.element !== "FieldGroups") { data.Fields.splice(hoverIndex, 0,clone);}
+     
+      moved =true;
+      this.delete(context,element);
+      return;
+    }
+
+   
+    data.Fields.every((item, index, object) => {
+      if (item.id === hourId) {
+        if (clone.element === "FieldGroups"){data.FieldGroups.splice(index, 0,clone);}
+        if (clone.element !== "FieldGroups"){data.Fields.splice(index, 0,clone);}
+        
+        moved = true;
+        this.delete(context,element);
+        return false;
+      }
+      return true
+    });
+
+    if (moved===false) this.sortChaild(context,data.FieldGroups,clone,element,hourId);
+
+  },
+
+  sortChaild(context,data,clone,element,hourId) {
+
+    let moved = false;
+    data.every((pItem, pIndex, pObject) => {
+
+      if (clone.element === "FieldGroups") {
+        if (pItem.id == hourId) {
+          pItem.FieldGroups.splice(pIndex, 0,clone);
+          moved = true;
+          this.delete(context,element);
+          return false;
+        }
+      }
+      if (clone.element !== "FieldGroups") {
+        if (pItem.id == hourId) {
+          pItem.Fields.splice(pIndex, 0,clone);
+          moved = true;
+          this.delete(context,element);
+          return false;
+        }
+      }
+        if (pItem.Fields && clone.element !== "FieldGroups") {
+          pItem.Fields.every((cItem, cIndex, cObject) => {
+            if (cItem.id === hourId) {
+              pItem.Fields.splice(cIndex, 0,clone);
+              moved = true;
+              this.delete(context,element);
+              return false;
+            }
+            return true;
+          });
+        }
+
+        if (pItem.Fields && clone.element === "FieldGroups") {
+          pItem.Fields.every((cItem, cIndex, cObject) => {
+            if (cItem.id === hourId) {
+              pItem.FieldGroups.splice(cIndex, 0,clone);
+              moved = true;
+              this.delete(context,element);
+              return false;
+            }
+            return true;
+          });
+        }
+
+      if (!moved && pItem.FieldGroups && pItem.FieldGroups.length > 0)
+        this.sortChaild(context,pItem.FieldGroups,clone, element,hourId);
+        return true;
+    });
+  },
+
     moveElement(context, info) {
+
       const { data } = context.state;
       var dragIndex = undefined;
       var hoverIndex = undefined;
       let moved = false;
+      this.sort(context,data,info.dragingItem,info.hoverId,info.hoverIndex);
 
-      if (info.elementType == "FieldGroups") {
-        data.FieldGroups.forEach((item, index, object) => {
-          if (item.id == info.dragId) {
-            dragIndex = index;
-          }
-          else if (item.id == info.hoverId) {
-            hoverIndex = index;
-          }
+      // if (info.elementType == "FieldGroups") {
+      //  this.dragInsideFields(data.FieldGroups,info.dragingItem,info.dragIndex,info.hoverIndex);
+      //  moved= true;
+      //   // data.FieldGroups.forEach((item, index, object) => {
+      //   //   if (item.id == info.dragId) {
+      //   //     dragIndex = index;
+      //   //   }
+      //   //   else if (item.id == info.hoverId) {
+      //   //     hoverIndex = index;
+      //   //   }
   
-          if (dragIndex != undefined && hoverIndex != undefined) {
-            let dragItem = data.FieldGroups.splice(dragIndex, 1)[0];
-            data.FieldGroups.splice(hoverIndex, 0, dragItem);
-            dragIndex = hoverIndex = undefined;
-            moved = true;
-            return;
-          }
-        });
-      }
-      else {
-        data.Fields.forEach((item, index, object) => {
-          if (item.id == info.dragId) {
-            dragIndex = index;
-          }
-          else if (item.id == info.hoverId) {
-            hoverIndex = index;
-          }
+      //   //   if (dragIndex != undefined && hoverIndex != undefined) {
+      //   //     let dragItem = data.FieldGroups.splice(dragIndex, 1)[0];
+      //   //     data.FieldGroups.splice(hoverIndex, 0, dragItem);
+      //   //     dragIndex = hoverIndex = undefined;
+      //   //     moved = true;
+      //   //     return;
+      //   //   }
+      //   // });
+      // }
+      // else {
+      //   this.dragInsideFields(data.Fields,info.dragingItem,info.dragIndex,info.hoverIndex);
+      //   moved= true;
+      //   // data.Fields.forEach((item, index, object) => {
+      //   //   if (item.id == info.dragId) {
+      //   //     dragIndex = index;
+      //   //   }
+      //   //   else if (item.id == info.hoverId) {
+      //   //     hoverIndex = index;
+      //   //   }
   
-          if (dragIndex != undefined && hoverIndex != undefined) {
-            let dragItem = data.Fields.splice(dragIndex, 1)[0];
-            data.Fields.splice(hoverIndex, 0, dragItem);
-            dragIndex = hoverIndex = undefined;
-            moved = true;
-            return;
-          }
-        });
-      }
+      //   //   if (dragIndex != undefined && hoverIndex != undefined) {
+      //   //     let dragItem = data.Fields.splice(dragIndex, 1)[0];
+      //   //     data.Fields.splice(hoverIndex, 0, dragItem);
+      //   //     dragIndex = hoverIndex = undefined;
+      //   //     moved = true;
+      //   //     return;
+      //   //   }
+      //   // });
+      // }
 
-      if (!moved) this.moveChildElement(data.FieldGroups, info.dragId, info.hoverId, info.elementType);
+      //if (!moved) this.moveChildElement(data.FieldGroups, info.dragId, info.hoverId, info.elementType);
 
       this.setData(context, data, true);
+
     },
     moveChildElement(data, dragId, hoverId, elementType) {
       let moved = false;

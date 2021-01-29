@@ -272,6 +272,7 @@ export default class Preview extends React.Component {
     item.element = elementName;
     const SortableFormElement = SortableFormElements[elementName];
     if (SortableFormElement) {
+
       return (
         <SortableFormElement
           id={item.id}
