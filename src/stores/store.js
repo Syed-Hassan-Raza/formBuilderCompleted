@@ -11,7 +11,7 @@ const store = new Store({
     setData(context, data, saveData) {
       context.commit("setData", data);
       if (saveData) this.save(data);
-     console.log(data);
+     //console.log(data);
     },
 
     load(context, { loadUrl, saveUrl, data }) {
@@ -102,7 +102,7 @@ const store = new Store({
     },
 
     fieldsGroup_Insert_InCenter(data, element) {
-      data.forEach((item, index, object) => {
+      data.every((item, index, object) => {
         if (item.id === element.parentId) {
           if (!item.Fields) item.Fields = [];
   
@@ -114,12 +114,13 @@ const store = new Store({
            
           else {item.Fields.splice(element.hoverIndex,0,element.item);}
   
-          return;
+          return false;
         }
-  
         if (item.FieldGroups) {
           this.fieldsGroup_Insert_InCenter(item.FieldGroups, element);
         }
+        return true
+
       });
     },
 
@@ -278,59 +279,13 @@ const store = new Store({
   },
 
     moveElement(context, info) {
-
       const { data } = context.state;
-      var dragIndex = undefined;
-      var hoverIndex = undefined;
-      let moved = false;
+
       this.sort(context,data,info.dragingItem,info.hoverId,info.hoverIndex);
 
-      // if (info.elementType == "FieldGroups") {
-      //  this.dragInsideFields(data.FieldGroups,info.dragingItem,info.dragIndex,info.hoverIndex);
-      //  moved= true;
-      //   // data.FieldGroups.forEach((item, index, object) => {
-      //   //   if (item.id == info.dragId) {
-      //   //     dragIndex = index;
-      //   //   }
-      //   //   else if (item.id == info.hoverId) {
-      //   //     hoverIndex = index;
-      //   //   }
-  
-      //   //   if (dragIndex != undefined && hoverIndex != undefined) {
-      //   //     let dragItem = data.FieldGroups.splice(dragIndex, 1)[0];
-      //   //     data.FieldGroups.splice(hoverIndex, 0, dragItem);
-      //   //     dragIndex = hoverIndex = undefined;
-      //   //     moved = true;
-      //   //     return;
-      //   //   }
-      //   // });
-      // }
-      // else {
-      //   this.dragInsideFields(data.Fields,info.dragingItem,info.dragIndex,info.hoverIndex);
-      //   moved= true;
-      //   // data.Fields.forEach((item, index, object) => {
-      //   //   if (item.id == info.dragId) {
-      //   //     dragIndex = index;
-      //   //   }
-      //   //   else if (item.id == info.hoverId) {
-      //   //     hoverIndex = index;
-      //   //   }
-  
-      //   //   if (dragIndex != undefined && hoverIndex != undefined) {
-      //   //     let dragItem = data.Fields.splice(dragIndex, 1)[0];
-      //   //     data.Fields.splice(hoverIndex, 0, dragItem);
-      //   //     dragIndex = hoverIndex = undefined;
-      //   //     moved = true;
-      //   //     return;
-      //   //   }
-      //   // });
-      // }
-
-      //if (!moved) this.moveChildElement(data.FieldGroups, info.dragId, info.hoverId, info.elementType);
-
       this.setData(context, data, true);
-
     },
+
     moveChildElement(data, dragId, hoverId, elementType) {
       let moved = false;
       var dragIndex = undefined; 

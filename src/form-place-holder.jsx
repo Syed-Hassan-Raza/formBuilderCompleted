@@ -2,14 +2,20 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const PLACE_HOLDER = "form-place-holder";
-
+const style = {
+  border: "2px dashed #0eb923",
+  display: "block",
+  marginTop: "20px",
+  padding: "20px",
+  width: "100%",
+  height: "70px",
+  textAlign: "center",
+};
 export default class PlaceHolder extends React.Component {
   render() {
-    return (
-      this.props.show && (
-        <label style={{border: '2px dashed #0eb923', display: 'block', marginTop: '10px', padding: '10px 0px', width: '100%', textAlign: 'center'}}>{this.props.text}</label>
-      )
-    );
+    return this.props.show && <div style={style}>
+      <label >{this.props.text}</label>;
+    </div>
   }
 }
 

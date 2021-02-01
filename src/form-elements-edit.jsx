@@ -710,7 +710,7 @@ export default class FormElementsEdit extends React.Component {
                             <div className="col-sm-12 tooltip">
                               <label>Default Value</label>
                               {this.state.isEditor && (
-                                <Editor style={{ height: "auto",minHeight:"200",cursor:"text" }}
+                                <Editor style={{ height: "auto",minHeight:"200px",cursor:"text",border:"1px solid #e9ecee" }}
                                 element={this.state.element}
                                 isReadOnly={false}
                                 updateElement={this.props.updateElement}

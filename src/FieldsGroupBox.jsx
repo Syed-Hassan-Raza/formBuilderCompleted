@@ -193,7 +193,7 @@ class FieldsGroup extends React.Component {
     return connectDropTarget(
         <div>
 
-          <fieldset className="border p-3" style={{height: '100%', display: 'block'}}>
+          <fieldset className="border p-3">
             <legend className="w-auto px-2">{this.props.data.Label}</legend>
             <div
               style={{ display: "flex", flexWrap: "wrap" }}
