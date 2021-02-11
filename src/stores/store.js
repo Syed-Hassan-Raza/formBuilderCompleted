@@ -11,7 +11,7 @@ const store = new Store({
     setData(context, data, saveData) {
       context.commit("setData", data);
       if (saveData) this.save(data);
-     //console.log(data);
+     console.log(data);
     },
 
     load(context, { loadUrl, saveUrl, data }) {

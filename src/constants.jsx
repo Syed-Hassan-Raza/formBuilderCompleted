@@ -7,7 +7,7 @@ import {
 
 import draftToHtml from "draftjs-to-html";
 
-export { mdDictonery, fieldNames,editorFormats,dateFormats,timeFormats,findElementName,hasWhiteSpace,convertToCode,createTypeDetails,getFieldNames };
+export { mdDictonery, fieldNames,editorFormats,dateFormats,timeFormats,findElementName,hasWhiteSpace,convertToCode,createTypeDetails,getFieldNames,encryptToBase64,decryptFromBase64 };
 
 const mdDictonery = {
   BOLD: "**",
@@ -139,12 +139,15 @@ const convertToCode=(editorContent, TypeDetail)=> {
   let isHtml =
     TypeDetail === "html" || TypeDetail === "html64" ? true : false;
   if (isHtml) {
+    if(TypeDetail==="html64")
+    return encryptToBase64(draftToHtml(convertToRaw(editorContent.getCurrentContent())));
+    else
     return draftToHtml(convertToRaw(editorContent.getCurrentContent()));
   } else if (!isHtml) {
-    return draftjsToMd(
-      convertToRaw(editorContent.getCurrentContent()),
-      mdDictonery
-    );
+    if(TypeDetail==="md64")
+    return encryptToBase64(draftjsToMd(convertToRaw(editorContent.getCurrentContent()), mdDictonery));
+    else
+    return draftjsToMd(convertToRaw(editorContent.getCurrentContent()), mdDictonery);
   }
   return null;
 }
@@ -174,3 +177,14 @@ const getFieldNames = (data, addToList) => {
     });
   }
 };
+
+const encryptToBase64=(data)=>{
+  // Encode the String
+  let encodedString = btoa(unescape(encodeURIComponent(data)));
+  return encodedString;
+}
+const decryptFromBase64=(data)=>{  
+  // Decode the String
+  let decodedString= atob(data);
+  return decodedString;
+}

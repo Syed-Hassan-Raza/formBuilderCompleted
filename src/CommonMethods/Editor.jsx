@@ -10,40 +10,42 @@ import {
   convertFromRaw,
   Modifier,
 } from "draft-js";
-import {
-    convertToCode
-  } from "./../constants";
+import { convertToCode,encryptToBase64,decryptFromBase64 } from "./../constants";
 
 import { Editor } from "react-draft-wysiwyg";
 
 export default class MyEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state={ 
-     editorState: undefined,
-     isReadOnly:props.isReadOnly,
-     style:props.style,
-     element: this.props.element,
-    }
+    this.state = {
+      editorState: undefined,
+      isReadOnly: props.isReadOnly,
+      style: props.style,
+      element: this.props.element,
+    };
   }
-componentDidMount(){
+  componentDidMount() {
     this.setState({
-        editorState: this.loadEditState() || EditorState.createWithContent(ContentState.createFromText("")),
-      }); 
-      if(!this.state.isReadOnly)
-      this.props.state.editorState =this.loadEditState() || EditorState.createWithContent(ContentState.createFromText(""));;
-}
+      editorState:
+        this.loadEditState() ||
+        EditorState.createWithContent(ContentState.createFromText("")),
+    });
+    if (!this.state.isReadOnly)
+      this.props.state.editorState =
+        this.loadEditState() ||
+        EditorState.createWithContent(ContentState.createFromText(""));
+  }
   onEditorStateChange(index, property, editorContent) {
     let code = convertToCode(editorContent, this.props.element.TypeDetail);
     // const html = draftToHtml(convertToRaw(editorContent.getCurrentContent())).replace(/<p>/g, '<div>').replace(/<\/p>/g, '</div>');
     const this_element = this.state.element;
     this_element[property] = code;
-    this.props.state.editorState=editorContent,
-    this.setState({
-      element: this_element,
-      dirty: true,
-      editorState: editorContent,
-    });
+    (this.props.state.editorState = editorContent),
+      this.setState({
+        element: this_element,
+        dirty: true,
+        editorState: editorContent,
+      });
   }
 
   updateElement() {
@@ -71,19 +73,15 @@ componentDidMount(){
   }
   loadEditState() {
     let editorState;
-    let element =this.state.element;
-    if (
-      element.TypeDetail === "html" ||
-      element.TypeDetail === "html64"
-    ) {
-      if (element.DefaultValue)
-       return this.convertFromHTML(element.DefaultValue);
-    } else if (
-      element.TypeDetail === "md" ||
-      element.TypeDetail === "md64"
-    ) {
+    let element = this.state.element;
+    if (element.TypeDetail === "html" || element.TypeDetail === "html64") {
+      if (element.DefaultValue){
+        let dataString=element.TypeDetail === "html"?element.DefaultValue:decryptFromBase64(element.DefaultValue);
+        return this.convertFromHTML(dataString);
+      }
+    } else if (element.TypeDetail === "md" || element.TypeDetail === "md64") {
       if (element.DefaultValue) {
-        const markdownString = element.DefaultValue;
+        const markdownString = element.TypeDetail === "md"?element.DefaultValue:decryptFromBase64(element.DefaultValue);
         const rawData = mdToDraftjs(markdownString);
         const contentState = convertFromRaw(rawData);
         const newEditorState = EditorState.createWithContent(contentState);
@@ -92,43 +90,45 @@ componentDidMount(){
     }
     return null;
   }
+
   handlePastedText = (text, html) => {
     // if they try to paste something they shouldn't let's handle it
-    if (text.indexOf('text that should not be pasted') != -1) {
-
+    if (text.indexOf("text that should not be pasted") != -1) {
       // we'll add a message for the offending user to the editor state
       const newContent = Modifier.insertText(
         this.state.editorState.getCurrentContent(),
         this.state.editorState.getSelection(),
-        'nice try, chump!'
+        "nice try, chump!"
       );
 
       // update our state with the new editor content
-      this.onChange(EditorState.push(
-        this.state.editorState,
-        newContent,
-        'insert-characters'
-      ));
+      this.onChange(
+        EditorState.push(
+          this.state.editorState,
+          newContent,
+          "insert-characters"
+        )
+      );
       return true;
     } else {
       return false;
     }
-  }
+  };
 
   render() {
-      let editorState= this.loadEditState();
-      let isReadOnly=this.state.isReadOnly;
+    let editorState = this.loadEditState();
+    let isReadOnly = this.state.isReadOnly;
     return (
-        <>
+      <>
         {isReadOnly && (
-             <Editor
-             editorStyle={this.state.style}
-             editorState={editorState}
-             toolbarHidden={true}
-           />
+          <Editor
+            editorStyle={this.state.style}
+            editorState={editorState}
+            toolbarHidden={true}
+          />
         )}
         {!isReadOnly && (
-            <Editor
+          <Editor
             editorStyle={this.state.style}
             defaultEditorState={editorState}
             handlePastedText={this.handlePastedText}

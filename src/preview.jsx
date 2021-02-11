@@ -42,7 +42,6 @@ export default class Preview extends React.Component {
       store.dispatch("updateOrder", nextProps.data);
     }
   }
-
   componentDidMount() {
     this.isMounted = true;
     const { data, url, saveUrl } = this.props;

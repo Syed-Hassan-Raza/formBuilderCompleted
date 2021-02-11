@@ -1,6 +1,6 @@
 {
   "name": "react-form-builder2-workaware",
-  "version": "0.0.63",
+  "version": "0.0.67",
   "description": "A complete form builder for react.",
   "main": "lib/index.js",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "drag",
     "drop"
   ],
-  "author": "Kiho Chang",
+  "author": "Hassan and Adnan",
   "dependencies": {
     "beedle": "^0.8.1",
     "classnames": "^2.2.6",

@@ -364,7 +364,8 @@ class TextInput extends React.Component {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
-    this.state = { value: props.data.DefaultValue||undefined, width: props.ControlWidthRatio || 1 };
+    this.state = { value: ''};
+    this.handleValueChange = this.handleValueChange.bind(this);
   }
   handleValueChange(e) {
     this.setState({ value: e.target.value });
@@ -377,6 +378,9 @@ class TextInput extends React.Component {
     props.type = "text";
     props.className = "form-control";
     props.name = this.props.data.field_name;
+    let node = this.inputField.current;
+    if(node){ node.value=this.props.data.DefaultValue?this.props.data.DefaultValue:null}
+   
     if (this.props.mutable) {
       props.defaultValue = this.props.defaultValue;
       props.ref = this.inputField;
@@ -400,8 +404,7 @@ class TextInput extends React.Component {
             {this.props.data.element}
           </span>
           <input
-            {...props}
-            defaultValue={this.props.data.DefaultValue || undefined}
+            {...props} ref={this.inputField} defaultValue={this.props.data.DefaultValue}
           />
         </div>
       </div>
@@ -419,12 +422,14 @@ class NumberInput extends React.Component {
     this.setState({ value: e.target.value });
   }
   render() {
+    console.log("changed ")
     const props = {};
     props.width = this.props.data.ControlWidthRatio || 1;
     props.type = "number";
     props.className = "form-control";
     props.name = this.props.data.field_name;
-
+    let node = this.inputField.current;
+    if(node){ node.value=this.props.data.DefaultValue?this.props.data.DefaultValue:null}
     if (this.props.mutable) {
       props.defaultValue = this.props.defaultValue;
       props.ref = this.inputField;
@@ -440,7 +445,7 @@ class NumberInput extends React.Component {
     }
 
     return (
-      <div id={this.props.data.id} className={baseClasses} >
+      <div id={this.props.data.id} key={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -449,7 +454,7 @@ class NumberInput extends React.Component {
           </span>
           <input
             {...props}
-            defaultValue={this.props.data.DefaultValue || undefined}
+            ref={this.inputField} defaultValue={this.props.data.DefaultValue}
           />
         </div>
       </div>
@@ -473,6 +478,8 @@ class DecimalInput extends React.Component {
     props.type = "text";
     props.className = "form-control";
     props.name = this.props.data.field_name;
+    let node = this.inputField.current;
+    if(node){ node.value=this.props.data.DefaultValue?this.props.data.DefaultValue:null}
     if (this.props.mutable) {
       props.defaultValue = this.props.defaultValue;
       props.ref = this.inputField;
@@ -497,7 +504,7 @@ class DecimalInput extends React.Component {
           </span>
           <input
             {...props}
-            defaultValue={this.props.data.DefaultValue || undefined}
+            ref={this.inputField} defaultValue={this.props.data.DefaultValue}
           />
         </div>
       </div>
@@ -569,7 +576,8 @@ class TextArea extends React.Component {
     props.width = this.props.data.ControlWidthRatio || 1;
     props.className = "form-control";
     props.name = this.props.data.field_name;
-
+    let node = this.inputField.current;
+    if(node){ node.value=this.props.data.DefaultValue?this.props.data.DefaultValue:null}
     if (this.props.ReadOnly) {
       props.disabled = "disabled";
     }
@@ -592,13 +600,12 @@ class TextArea extends React.Component {
           <span className="label-Mandatory badge badge-info">
             {"Multi-line Input"}
           </span>
-          <TextAreaAutosize
+          <textarea
             {...props}
-            defaultValue={this.props.data.DefaultValue || undefined}
-            onChange={this.handleValueChange}
-            minRows={3}
+            ref={this.inputField} defaultValue={this.props.data.DefaultValue}
+            minRows={2}
             disabled
-            style={{cursor:"move"}}
+            style={{cursor:"move",backgroundColor:"white"}}
           />
         </div>
       </div>
@@ -621,6 +628,9 @@ class TimePicker extends React.Component {
     props.type = "text";
     props.className = "form-control";
     props.name = this.props.data.field_name;
+    let node = this.inputField.current;
+    if(node){ node.value=this.props.data.TypeDetail?this.props.data.TypeDetail:null}
+
     if (this.props.mutable) {
       props.defaultValue = this.props.defaultValue;
       props.ref = this.inputField;
@@ -645,7 +655,7 @@ class TimePicker extends React.Component {
           </span>
           <input
             {...props}
-            defaultValue={this.props.data.TypeDetail}
+            ref={this.inputField} defaultValue={this.props.data.DefaultValue}
           />
         </div>
       </div>
@@ -658,17 +668,18 @@ class DatePicker extends React.Component {
     this.inputField = React.createRef();
     this.state = { value: this.props.data.TypeDetail };
   }
-  handleValueChange(e) {
-    this.setState({ value: e.target.value });
+  handleChange(value) {
+    this.setState({value:value});
   }
-
   render() {
     const props = {};
     props.width = this.props.data.ControlWidthRatio || 1;
     props.type = "text";
     props.className = "form-control";
     props.name = this.props.data.field_name;
-
+    debugger
+    let node = this.inputField.current;
+    if(node){ node.value=this.props.data.TypeDetail?this.props.data.TypeDetail:null}
     if (this.props.mutable) {
       props.defaultValue = this.props.defaultValue;
       props.ref = this.inputField;
@@ -692,7 +703,7 @@ class DatePicker extends React.Component {
           <div>
             <input
               {...props}
-              defaultValue={this.props.data.TypeDetail || undefined}
+              ref={this.inputField} defaultValue={this.props.data.DefaultValue} 
             />
           </div>
         </div>
@@ -914,68 +925,6 @@ class Signature extends React.Component {
   }
 }
 
-class Tags extends React.Component {
-  constructor(props) {
-    super(props);
-    this.inputField = React.createRef();
-    const { defaultValue, data } = props;
-    this.state = { value: this.getDefaultValue(defaultValue, data.options) };
-  }
-
-  getDefaultValue(defaultValue, options) {
-    if (defaultValue) {
-      if (typeof defaultValue === "string") {
-        const vals = defaultValue.split(",").map((x) => x.trim());
-        return options.filter((x) => vals.indexOf(x.value) > -1);
-      }
-      return options.filter((x) => defaultValue.indexOf(x.value) > -1);
-    }
-    return [];
-  }
-
-  // state = { value: this.props.defaultValue !== undefined ? this.props.defaultValue.split(',') : [] };
-
-  handleChange = (e) => {
-    this.setState({ value: e });
-  };
-
-  render() {
-    const options = this.props.data.options.map((option) => {
-      option.label = option.text;
-      return option;
-    });
-    const props = {};
-    props.width = this.props.data.ControlWidthRatio || 1;
-    props.isMulti = true;
-    props.name = this.props.data.field_name;
-    props.onChange = this.handleChange;
-
-    props.options = options;
-    if (!this.props.mutable) {
-      props.value = options[0].text;
-    } // to show a sample of what tags looks like
-    if (this.props.mutable) {
-      props.isDisabled = this.props.ReadOnly;
-      props.value = this.props.data.DefaultValue;
-      props.ref = this.inputField;
-    }
-
-    let baseClasses = "SortableItem rfb-item";
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-
-    return (
-      <div id={this.props.data.id} className={baseClasses} >
-        <ComponentHeader {...this.props} />
-        <div className="form-group">
-          <ComponentLabel {...this.props} />
-          <Select {...props} />
-        </div>
-      </div>
-    );
-  }
-}
 
 class Checkboxes extends React.Component {
   constructor(props) {
@@ -1166,322 +1115,6 @@ class RadioButtons extends React.Component {
   }
 }
 
-class Image extends React.Component {
-  render() {
-    const style = this.props.data.center ? { textAlign: "center" } : null;
-
-    let baseClasses = "SortableItem rfb-item";
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-
-    return (
-      <div
-        className={baseClasses}
-        
-        style={style}
-      >
-        {!this.props.mutable && (
-          <HeaderBar
-            parent={this.props.parent}
-            editModeOn={this.props.editModeOn}
-            data={this.props.data}
-            onDestroy={this.props._onDestroy}
-            onEdit={this.props.onEdit}
-            Mandatory={this.props.data.Mandatory}
-          />
-        )}
-        {this.props.data.src && (
-          <img
-            src={this.props.data.src}
-            width={this.props.data.width}
-            height={this.props.data.height}
-          />
-        )}
-        {!this.props.data.src && <div className="no-image">No Image</div>}
-      </div>
-    );
-  }
-}
-
-class Rating extends React.Component {
-  constructor(props) {
-    super(props);
-    this.inputField = React.createRef();
-  }
-
-  render() {
-    const props = {};
-    props.width = this.props.data.ControlWidthRatio || 1;
-    props.name = this.props.data.field_name;
-    props.ratingAmount = 5;
-
-    if (this.props.mutable) {
-      props.rating =
-        this.props.defaultValue !== undefined
-          ? parseFloat(this.props.defaultValue, 10)
-          : 0;
-      props.editing = true;
-      props.disabled = this.props.ReadOnly;
-      props.ref = this.inputField;
-    }
-
-    let baseClasses = "SortableItem rfb-item";
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-
-    return (
-      <div id={this.props.data.id} className={baseClasses} >
-        <ComponentHeader {...this.props} />
-        <div className="form-group">
-          <ComponentLabel {...this.props} />
-          <StarRating {...props} />
-        </div>
-      </div>
-    );
-  }
-}
-
-class HyperLink extends React.Component {
-  render() {
-    let baseClasses = "SortableItem rfb-item";
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-
-    return (
-      <div id={this.props.data.id} className={baseClasses} >
-        <ComponentHeader {...this.props} />
-        <div className="form-group">
-          <a target="_blank" href={this.props.data.href}>
-            {this.props.data.Label}
-          </a>
-        </div>
-      </div>
-    );
-  }
-}
-
-class Download extends React.Component {
-  render() {
-    let baseClasses = "SortableItem rfb-item";
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-
-    return (
-      <div id={this.props.data.id} className={baseClasses} >
-        <ComponentHeader {...this.props} />
-        <div className="form-group">
-          <a
-            href={`${this.props.download_path}?id=${this.props.data.file_path}`}
-          >
-            {this.props.data.Label}
-          </a>
-        </div>
-      </div>
-    );
-  }
-}
-
-class Camera extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { img: null };
-  }
-
-  displayImage = (e) => {
-    const self = this;
-    const target = e.target;
-    let file;
-    let reader;
-
-    if (target.files && target.files.length) {
-      file = target.files[0];
-      // eslint-disable-next-line no-undef
-      reader = new FileReader();
-      reader.readAsDataURL(file);
-
-      reader.onloadend = () => {
-        self.setState({
-          img: reader.result,
-        });
-      };
-    }
-  };
-
-  clearImage = () => {
-    this.setState({
-      img: null,
-    });
-  };
-
-  render() {
-    let baseClasses = "SortableItem rfb-item";
-    const name = this.props.data.field_name;
-    const fileInputStyle = this.state.img ? { display: "none" } : null;
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-    let sourceDataURL;
-    if (
-      this.props.ReadOnly === true &&
-      this.props.defaultValue &&
-      this.props.defaultValue.length > 0
-    ) {
-      if (this.props.defaultValue.indexOf(name > -1)) {
-        sourceDataURL = this.props.defaultValue;
-      } else {
-        sourceDataURL = `data:image/png;base64,${this.props.defaultValue}`;
-      }
-    }
-    //console.log("sourceDataURL", sourceDataURL);
-    return (
-      <div id={this.props.data.id} className={baseClasses} >
-        <ComponentHeader {...this.props} />
-        <div className="form-group">
-          <ComponentLabel {...this.props} />
-          {this.props.ReadOnly === true &&
-          this.props.defaultValue &&
-          this.props.defaultValue.length > 0 ? (
-            <div>
-              <img src={sourceDataURL} />
-            </div>
-          ) : (
-            <div className="image-upload-container">
-              <div style={fileInputStyle}>
-                <input
-                  name={name}
-                  type="file"
-                  accept="image/*"
-                  capture="camera"
-                  className="image-upload"
-                  onChange={this.displayImage}
-                />
-                <div className="image-upload-control">
-                  <div className="btn btn-default btn-school">
-                    <i className="fas fa-camera"></i> Upload Photo
-                  </div>
-                  <p>Select an image from your computer or device.</p>
-                </div>
-              </div>
-
-              {this.state.img && (
-                <div>
-                  <img
-                    src={this.state.img}
-                    height="100"
-                    className="image-upload-preview"
-                  />
-                  <br />
-                  <div
-                    className="btn btn-school btn-image-clear"
-                    onClick={this.clearImage}
-                  >
-                    <i className="fas fa-times"></i> Clear Photo
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-}
-
-class Range extends React.Component {
-  constructor(props) {
-    super(props);
-    this.inputField = React.createRef();
-    this.state = {
-      value:
-        props.defaultValue !== undefined
-          ? parseInt(props.defaultValue, 10)
-          : parseInt(props.data.default_value, 10),
-    };
-  }
-
-  changeValue = (e) => {
-    const { target } = e;
-    this.setState({
-      value: target.value,
-    });
-  };
-
-  render() {
-    const props = {};
-    props.width = this.props.data.ControlWidthRatio || 1;
-    const name = this.props.data.field_name;
-
-    props.type = "range";
-    props.list = `tickmarks_${name}`;
-    props.min = this.props.data.min_value;
-    props.max = this.props.data.max_value;
-    props.step = this.props.data.step;
-
-    props.value = this.props.data.DefaultValue;
-    props.change = this.changeValue;
-
-    if (this.props.mutable) {
-      props.ref = this.inputField;
-    }
-
-    const datalist = [];
-    for (
-      let i = parseInt(props.min_value, 10);
-      i <= parseInt(props.max_value, 10);
-      i += parseInt(props.step, 10)
-    ) {
-      datalist.push(i);
-    }
-
-    const oneBig = 100 / (datalist.length - 1);
-
-    const _datalist = datalist.map((d, idx) => (
-      <option key={`${props.list}_${idx}`}>{d}</option>
-    ));
-
-    const visible_marks = datalist.map((d, idx) => {
-      const option_props = {};
-      let w = oneBig;
-      if (idx === 0 || idx === datalist.length - 1) {
-        w = oneBig / 2;
-      }
-      option_props.key = `${props.list}_label_${idx}`;
-      option_props.style = { width: `${w}%` };
-      if (idx === datalist.length - 1) {
-        option_props.style = { width: `${w}%`, textAlign: "right" };
-      }
-      return <label {...option_props}>{d}</label>;
-    });
-
-    let baseClasses = "SortableItem rfb-item";
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-
-    return (
-      <div id={this.props.data.id} className={baseClasses} >
-        <ComponentHeader {...this.props} />
-        <div className="form-group">
-          <ComponentLabel {...this.props} />
-          <div className="range">
-            <div className="clearfix">
-              <span className="float-left">{this.props.data.min_label}</span>
-              <span className="float-right">{this.props.data.max_label}</span>
-            </div>
-            <ReactBootstrapSlider {...props} />
-          </div>
-          <div className="visible_marks">{visible_marks}</div>
-          <input name={name} value={this.props.data.DefaultValue} type="hidden" />
-          <datalist id={props.list}>{_datalist}</datalist>
-        </div>
-      </div>
-    );
-  }
-}
 
 class Barcode extends React.Component {
   constructor(props) {
@@ -1537,11 +1170,6 @@ FormElements.Checkboxes = Checkboxes;
 FormElements.DatePicker = DatePicker;
 FormElements.RadioButtons = RadioButtons;
 FormElements.Image = Image;
-FormElements.Rating = Rating;
-FormElements.Tags = Tags;
-FormElements.HyperLink = HyperLink;
-FormElements.Download = Download;
-FormElements.Camera = Camera;
 FormElements.Range = Range;
 FormElements.Barcode = Barcode;
 FormElements.DecimalInput = DecimalInput;
