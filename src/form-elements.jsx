@@ -7,7 +7,7 @@ import ReactBootstrapSlider from "react-bootstrap-slider";
 import StarRating from "./star-rating";
 import HeaderBar from "./header-bar";
 import FieldsGroup from "./FieldsGroupBox";
-import { Editor } from "react-draft-wysiwyg";
+import Editor  from "./CommonMethods/Editor";
 import {
   ContentState,
   EditorState,
@@ -15,6 +15,8 @@ import {
   convertToRaw,
   convertFromRaw,
 } from "draft-js";
+import htmlToDraft from "html-to-draftjs";
+
 import { mdToDraftjs, draftjsToMd } from 'draftjs-md-converter';
 
 const FormElements = {};
@@ -127,7 +129,7 @@ class Header extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <h2
           className={classNames}
@@ -158,13 +160,13 @@ class FieldGroups extends React.Component {
   render() {
     const props = {};
     props.width = this.props.data.ControlWidthRatio || 1;
-    let baseClasses = "SortableItem rfb-item fields-group";
+    let baseClasses = "SortableItem rfb-FieldsGroup fields-group";
     if (this.props.data.pageBreakBefore) {
       baseClasses += " alwaysbreak";
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         {<FieldsGroup {...this.props} />}
       </div>
@@ -190,7 +192,7 @@ class Paragraph extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />{" "}
         <span className="label-Mandatory badge badge-info">
           {this.props.data.element}
@@ -224,7 +226,7 @@ class Label extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />{" "}
         <span className="label-Mandatory badge badge-info">
           {this.props.data.element}
@@ -258,7 +260,7 @@ class Calculated extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <label
           className={classNames}
@@ -292,7 +294,7 @@ class Counter extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <label
           className={classNames}
@@ -326,7 +328,7 @@ class Action extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <label
           className={classNames}
@@ -350,7 +352,7 @@ class LineBreak extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <hr />
       </div>
@@ -362,7 +364,8 @@ class TextInput extends React.Component {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
-    this.state = { value: props.data.DefaultValue||undefined, width: props.ControlWidthRatio || 1 };
+    this.state = { value: ''};
+    this.handleValueChange = this.handleValueChange.bind(this);
   }
   handleValueChange(e) {
     this.setState({ value: e.target.value });
@@ -375,6 +378,9 @@ class TextInput extends React.Component {
     props.type = "text";
     props.className = "form-control";
     props.name = this.props.data.field_name;
+    let node = this.inputField.current;
+    if(node){ node.value=this.props.data.DefaultValue?this.props.data.DefaultValue:null}
+   
     if (this.props.mutable) {
       props.defaultValue = this.props.defaultValue;
       props.ref = this.inputField;
@@ -390,7 +396,7 @@ class TextInput extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -398,9 +404,7 @@ class TextInput extends React.Component {
             {this.props.data.element}
           </span>
           <input
-            {...props}
-            value={this.state.value || undefined}
-            onChange={this.handleValueChange}
+            {...props} ref={this.inputField} defaultValue={this.props.data.DefaultValue}
           />
         </div>
       </div>
@@ -418,12 +422,14 @@ class NumberInput extends React.Component {
     this.setState({ value: e.target.value });
   }
   render() {
+    console.log("changed ")
     const props = {};
     props.width = this.props.data.ControlWidthRatio || 1;
     props.type = "number";
     props.className = "form-control";
     props.name = this.props.data.field_name;
-
+    let node = this.inputField.current;
+    if(node){ node.value=this.props.data.DefaultValue?this.props.data.DefaultValue:null}
     if (this.props.mutable) {
       props.defaultValue = this.props.defaultValue;
       props.ref = this.inputField;
@@ -439,7 +445,7 @@ class NumberInput extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} key={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -448,8 +454,7 @@ class NumberInput extends React.Component {
           </span>
           <input
             {...props}
-            value={this.state.value || undefined}
-            onChange={this.handleValueChange}
+            ref={this.inputField} defaultValue={this.props.data.DefaultValue}
           />
         </div>
       </div>
@@ -473,6 +478,8 @@ class DecimalInput extends React.Component {
     props.type = "text";
     props.className = "form-control";
     props.name = this.props.data.field_name;
+    let node = this.inputField.current;
+    if(node){ node.value=this.props.data.DefaultValue?this.props.data.DefaultValue:null}
     if (this.props.mutable) {
       props.defaultValue = this.props.defaultValue;
       props.ref = this.inputField;
@@ -488,7 +495,7 @@ class DecimalInput extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -497,8 +504,7 @@ class DecimalInput extends React.Component {
           </span>
           <input
             {...props}
-            value={this.state.value || undefined}
-            onChange={this.handleValueChange}
+            ref={this.inputField} defaultValue={this.props.data.DefaultValue}
           />
         </div>
       </div>
@@ -513,38 +519,6 @@ class StaticText extends React.Component {
     this.state = {
       element: this.props.data,
     };
-  }
-
-  convertFromHTML(content) {
-    const newContent = convertFromHTML(content);
-    if (!newContent.contentBlocks || !newContent.contentBlocks.length) {
-      // to prevent crash when no contents in editor
-      return EditorState.createEmpty();
-    }
-    const contentState = ContentState.createFromBlockArray(newContent);
-    return EditorState.createWithContent(contentState);
-  }
-  loadEditState() {
-    let editorState;
-    if (
-      this.state.element.TypeDetail === "html" ||
-      this.state.element.TypeDetail === "html64"
-    ) {
-      if (this.state.element.DefaultValue)
-       return this.convertFromHTML(this.state.element.DefaultValue);
-    } else if (
-      this.state.element.TypeDetail === "md" ||
-      this.state.element.TypeDetail === "md64"
-    ) {
-      if (this.state.element.DefaultValue) {
-        const markdownString = this.state.element.DefaultValue;
-        const rawData = mdToDraftjs(markdownString);
-        const contentState = convertFromRaw(rawData);
-        const newEditorState = EditorState.createWithContent(contentState);
-        return newEditorState;
-      }
-    }
-    return null;
   }
 
   render() {
@@ -566,9 +540,8 @@ class StaticText extends React.Component {
     if (this.props.data.pageBreakBefore) {
       baseClasses += " alwaysbreak";
     }
-    let editorState = this.loadEditState();
     return (
-      <div className={baseClasses} >
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -576,15 +549,17 @@ class StaticText extends React.Component {
             {this.props.data.element}
           </span>
           <Editor
-            editorStyle={{ height: "auto" }}
-            editorState={editorState}
-            toolbarHidden={true}
-          />{" "}
+            style={{ height: "auto",border:"1px solid #e9ecee" }}
+            isReadOnly={true}
+            element={this.props.data}
+          />
         </div>
       </div>
     );
   }
 }
+
+import TextAreaAutosize from "react-textarea-autosize";
 
 class TextArea extends React.Component {
   constructor(props) {
@@ -601,7 +576,8 @@ class TextArea extends React.Component {
     props.width = this.props.data.ControlWidthRatio || 1;
     props.className = "form-control";
     props.name = this.props.data.field_name;
-
+    let node = this.inputField.current;
+    if(node){ node.value=this.props.data.DefaultValue?this.props.data.DefaultValue:null}
     if (this.props.ReadOnly) {
       props.disabled = "disabled";
     }
@@ -611,24 +587,25 @@ class TextArea extends React.Component {
       props.ref = this.inputField;
     }
 
-    let baseClasses = "SortableItem rfb-item";
+    let baseClasses = "rfb-item";
     if (this.props.data.pageBreakBefore) {
       baseClasses += " alwaysbreak";
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} style={FieldsWidth(props.width),{cursor:"move"}}>
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
           <span className="label-Mandatory badge badge-info">
-            {this.props.data.element}
+            {"Multi-line Input"}
           </span>
           <textarea
             {...props}
-            defaultValue={this.props.data.DefaultValue || undefined}
-            onChange={this.handleValueChange}
-            rows="3"
+            ref={this.inputField} defaultValue={this.props.data.DefaultValue}
+            minRows={2}
+            disabled
+            style={{cursor:"move",backgroundColor:"white"}}
           />
         </div>
       </div>
@@ -651,6 +628,9 @@ class TimePicker extends React.Component {
     props.type = "text";
     props.className = "form-control";
     props.name = this.props.data.field_name;
+    let node = this.inputField.current;
+    if(node){ node.value=this.props.data.TypeDetail?this.props.data.TypeDetail:null}
+
     if (this.props.mutable) {
       props.defaultValue = this.props.defaultValue;
       props.ref = this.inputField;
@@ -666,7 +646,7 @@ class TimePicker extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -675,8 +655,7 @@ class TimePicker extends React.Component {
           </span>
           <input
             {...props}
-            value={this.props.data.TypeDetail}
-            onChange={this.handleValueChange}
+            ref={this.inputField} defaultValue={this.props.data.DefaultValue}
           />
         </div>
       </div>
@@ -689,17 +668,18 @@ class DatePicker extends React.Component {
     this.inputField = React.createRef();
     this.state = { value: this.props.data.TypeDetail };
   }
-  handleValueChange(e) {
-    this.setState({ value: e.target.value });
+  handleChange(value) {
+    this.setState({value:value});
   }
-
   render() {
     const props = {};
     props.width = this.props.data.ControlWidthRatio || 1;
     props.type = "text";
     props.className = "form-control";
     props.name = this.props.data.field_name;
-
+    debugger
+    let node = this.inputField.current;
+    if(node){ node.value=this.props.data.TypeDetail?this.props.data.TypeDetail:null}
     if (this.props.mutable) {
       props.defaultValue = this.props.defaultValue;
       props.ref = this.inputField;
@@ -713,7 +693,7 @@ class DatePicker extends React.Component {
       props.disabled = "disabled";
     }
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -723,8 +703,7 @@ class DatePicker extends React.Component {
           <div>
             <input
               {...props}
-              value={this.state.value || undefined}
-              onChange={this.handleValueChange}
+              ref={this.inputField} defaultValue={this.props.data.DefaultValue} 
             />
           </div>
         </div>
@@ -760,7 +739,7 @@ class Dropdown extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -810,7 +789,7 @@ class Assignee extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -860,7 +839,7 @@ class Autocomplete extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -932,7 +911,7 @@ class Signature extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -946,68 +925,6 @@ class Signature extends React.Component {
   }
 }
 
-class Tags extends React.Component {
-  constructor(props) {
-    super(props);
-    this.inputField = React.createRef();
-    const { defaultValue, data } = props;
-    this.state = { value: this.getDefaultValue(defaultValue, data.options) };
-  }
-
-  getDefaultValue(defaultValue, options) {
-    if (defaultValue) {
-      if (typeof defaultValue === "string") {
-        const vals = defaultValue.split(",").map((x) => x.trim());
-        return options.filter((x) => vals.indexOf(x.value) > -1);
-      }
-      return options.filter((x) => defaultValue.indexOf(x.value) > -1);
-    }
-    return [];
-  }
-
-  // state = { value: this.props.defaultValue !== undefined ? this.props.defaultValue.split(',') : [] };
-
-  handleChange = (e) => {
-    this.setState({ value: e });
-  };
-
-  render() {
-    const options = this.props.data.options.map((option) => {
-      option.label = option.text;
-      return option;
-    });
-    const props = {};
-    props.width = this.props.data.ControlWidthRatio || 1;
-    props.isMulti = true;
-    props.name = this.props.data.field_name;
-    props.onChange = this.handleChange;
-
-    props.options = options;
-    if (!this.props.mutable) {
-      props.value = options[0].text;
-    } // to show a sample of what tags looks like
-    if (this.props.mutable) {
-      props.isDisabled = this.props.ReadOnly;
-      props.value = this.state.value;
-      props.ref = this.inputField;
-    }
-
-    let baseClasses = "SortableItem rfb-item";
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-
-    return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
-        <ComponentHeader {...this.props} />
-        <div className="form-group">
-          <ComponentLabel {...this.props} />
-          <Select {...props} />
-        </div>
-      </div>
-    );
-  }
-}
 
 class Checkboxes extends React.Component {
   constructor(props) {
@@ -1038,7 +955,7 @@ class Checkboxes extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
 
         <div className="form-group">
@@ -1046,7 +963,7 @@ class Checkboxes extends React.Component {
             <label className="checkbox-inline">
               <input
                 type="checkbox"
-                value={JSON.parse(this.props.data.DefaultValue ? this.props.data.DefaultValue.toString().toLowerCase() : 'false')}
+                defaultValue={JSON.parse(this.props.data.DefaultValue ? this.props.data.DefaultValue.toString().toLowerCase() : 'false')}
                 checked={JSON.parse(this.props.data.DefaultValue ? this.props.data.DefaultValue.toString().toLowerCase() : 'false')}
                 onChange={this.handleValueChange.bind(this)}
               />{" "}
@@ -1068,7 +985,7 @@ class Checkboxes extends React.Component {
     // }
 
     // return (
-    //   <div className={baseClasses} style={FieldsWidth(props.width)}>
+    //   <div className={baseClasses} >
     //     <ComponentHeader {...this.props} />
     //     <div className="form-group">
     //       <ComponentLabel className="form-label" {...this.props} />
@@ -1128,7 +1045,6 @@ class RadioButtons extends React.Component {
     const self = this;
     const props = {};
     props.width = this.props.data.ControlWidthRatio || 1;
-
     let obj = JSON.parse(this.props.data.TypeDetail);
     let classNames = "custom-control custom-radio";
     if (this.props.data.inline) {
@@ -1141,7 +1057,7 @@ class RadioButtons extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -1199,322 +1115,6 @@ class RadioButtons extends React.Component {
   }
 }
 
-class Image extends React.Component {
-  render() {
-    const style = this.props.data.center ? { textAlign: "center" } : null;
-
-    let baseClasses = "SortableItem rfb-item";
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-
-    return (
-      <div
-        className={baseClasses}
-        style={FieldsWidth(props.width)}
-        style={style}
-      >
-        {!this.props.mutable && (
-          <HeaderBar
-            parent={this.props.parent}
-            editModeOn={this.props.editModeOn}
-            data={this.props.data}
-            onDestroy={this.props._onDestroy}
-            onEdit={this.props.onEdit}
-            Mandatory={this.props.data.Mandatory}
-          />
-        )}
-        {this.props.data.src && (
-          <img
-            src={this.props.data.src}
-            width={this.props.data.width}
-            height={this.props.data.height}
-          />
-        )}
-        {!this.props.data.src && <div className="no-image">No Image</div>}
-      </div>
-    );
-  }
-}
-
-class Rating extends React.Component {
-  constructor(props) {
-    super(props);
-    this.inputField = React.createRef();
-  }
-
-  render() {
-    const props = {};
-    props.width = this.props.data.ControlWidthRatio || 1;
-    props.name = this.props.data.field_name;
-    props.ratingAmount = 5;
-
-    if (this.props.mutable) {
-      props.rating =
-        this.props.defaultValue !== undefined
-          ? parseFloat(this.props.defaultValue, 10)
-          : 0;
-      props.editing = true;
-      props.disabled = this.props.ReadOnly;
-      props.ref = this.inputField;
-    }
-
-    let baseClasses = "SortableItem rfb-item";
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-
-    return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
-        <ComponentHeader {...this.props} />
-        <div className="form-group">
-          <ComponentLabel {...this.props} />
-          <StarRating {...props} />
-        </div>
-      </div>
-    );
-  }
-}
-
-class HyperLink extends React.Component {
-  render() {
-    let baseClasses = "SortableItem rfb-item";
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-
-    return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
-        <ComponentHeader {...this.props} />
-        <div className="form-group">
-          <a target="_blank" href={this.props.data.href}>
-            {this.props.data.Label}
-          </a>
-        </div>
-      </div>
-    );
-  }
-}
-
-class Download extends React.Component {
-  render() {
-    let baseClasses = "SortableItem rfb-item";
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-
-    return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
-        <ComponentHeader {...this.props} />
-        <div className="form-group">
-          <a
-            href={`${this.props.download_path}?id=${this.props.data.file_path}`}
-          >
-            {this.props.data.Label}
-          </a>
-        </div>
-      </div>
-    );
-  }
-}
-
-class Camera extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { img: null };
-  }
-
-  displayImage = (e) => {
-    const self = this;
-    const target = e.target;
-    let file;
-    let reader;
-
-    if (target.files && target.files.length) {
-      file = target.files[0];
-      // eslint-disable-next-line no-undef
-      reader = new FileReader();
-      reader.readAsDataURL(file);
-
-      reader.onloadend = () => {
-        self.setState({
-          img: reader.result,
-        });
-      };
-    }
-  };
-
-  clearImage = () => {
-    this.setState({
-      img: null,
-    });
-  };
-
-  render() {
-    let baseClasses = "SortableItem rfb-item";
-    const name = this.props.data.field_name;
-    const fileInputStyle = this.state.img ? { display: "none" } : null;
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-    let sourceDataURL;
-    if (
-      this.props.ReadOnly === true &&
-      this.props.defaultValue &&
-      this.props.defaultValue.length > 0
-    ) {
-      if (this.props.defaultValue.indexOf(name > -1)) {
-        sourceDataURL = this.props.defaultValue;
-      } else {
-        sourceDataURL = `data:image/png;base64,${this.props.defaultValue}`;
-      }
-    }
-    //console.log("sourceDataURL", sourceDataURL);
-    return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
-        <ComponentHeader {...this.props} />
-        <div className="form-group">
-          <ComponentLabel {...this.props} />
-          {this.props.ReadOnly === true &&
-          this.props.defaultValue &&
-          this.props.defaultValue.length > 0 ? (
-            <div>
-              <img src={sourceDataURL} />
-            </div>
-          ) : (
-            <div className="image-upload-container">
-              <div style={fileInputStyle}>
-                <input
-                  name={name}
-                  type="file"
-                  accept="image/*"
-                  capture="camera"
-                  className="image-upload"
-                  onChange={this.displayImage}
-                />
-                <div className="image-upload-control">
-                  <div className="btn btn-default btn-school">
-                    <i className="fas fa-camera"></i> Upload Photo
-                  </div>
-                  <p>Select an image from your computer or device.</p>
-                </div>
-              </div>
-
-              {this.state.img && (
-                <div>
-                  <img
-                    src={this.state.img}
-                    height="100"
-                    className="image-upload-preview"
-                  />
-                  <br />
-                  <div
-                    className="btn btn-school btn-image-clear"
-                    onClick={this.clearImage}
-                  >
-                    <i className="fas fa-times"></i> Clear Photo
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-}
-
-class Range extends React.Component {
-  constructor(props) {
-    super(props);
-    this.inputField = React.createRef();
-    this.state = {
-      value:
-        props.defaultValue !== undefined
-          ? parseInt(props.defaultValue, 10)
-          : parseInt(props.data.default_value, 10),
-    };
-  }
-
-  changeValue = (e) => {
-    const { target } = e;
-    this.setState({
-      value: target.value,
-    });
-  };
-
-  render() {
-    const props = {};
-    props.width = this.props.data.ControlWidthRatio || 1;
-    const name = this.props.data.field_name;
-
-    props.type = "range";
-    props.list = `tickmarks_${name}`;
-    props.min = this.props.data.min_value;
-    props.max = this.props.data.max_value;
-    props.step = this.props.data.step;
-
-    props.value = this.state.value;
-    props.change = this.changeValue;
-
-    if (this.props.mutable) {
-      props.ref = this.inputField;
-    }
-
-    const datalist = [];
-    for (
-      let i = parseInt(props.min_value, 10);
-      i <= parseInt(props.max_value, 10);
-      i += parseInt(props.step, 10)
-    ) {
-      datalist.push(i);
-    }
-
-    const oneBig = 100 / (datalist.length - 1);
-
-    const _datalist = datalist.map((d, idx) => (
-      <option key={`${props.list}_${idx}`}>{d}</option>
-    ));
-
-    const visible_marks = datalist.map((d, idx) => {
-      const option_props = {};
-      let w = oneBig;
-      if (idx === 0 || idx === datalist.length - 1) {
-        w = oneBig / 2;
-      }
-      option_props.key = `${props.list}_label_${idx}`;
-      option_props.style = { width: `${w}%` };
-      if (idx === datalist.length - 1) {
-        option_props.style = { width: `${w}%`, textAlign: "right" };
-      }
-      return <label {...option_props}>{d}</label>;
-    });
-
-    let baseClasses = "SortableItem rfb-item";
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-
-    return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
-        <ComponentHeader {...this.props} />
-        <div className="form-group">
-          <ComponentLabel {...this.props} />
-          <div className="range">
-            <div className="clearfix">
-              <span className="float-left">{this.props.data.min_label}</span>
-              <span className="float-right">{this.props.data.max_label}</span>
-            </div>
-            <ReactBootstrapSlider {...props} />
-          </div>
-          <div className="visible_marks">{visible_marks}</div>
-          <input name={name} value={this.state.value} type="hidden" />
-          <datalist id={props.list}>{_datalist}</datalist>
-        </div>
-      </div>
-    );
-  }
-}
 
 class Barcode extends React.Component {
   constructor(props) {
@@ -1543,7 +1143,7 @@ class Barcode extends React.Component {
     }
 
     return (
-      <div className={baseClasses} style={FieldsWidth(props.width)}>
+      <div id={this.props.data.id} className={baseClasses} >
         <ComponentHeader {...this.props} />
         <div className="form-group">
           <ComponentLabel {...this.props} />{" "}
@@ -1570,11 +1170,6 @@ FormElements.Checkboxes = Checkboxes;
 FormElements.DatePicker = DatePicker;
 FormElements.RadioButtons = RadioButtons;
 FormElements.Image = Image;
-FormElements.Rating = Rating;
-FormElements.Tags = Tags;
-FormElements.HyperLink = HyperLink;
-FormElements.Download = Download;
-FormElements.Camera = Camera;
 FormElements.Range = Range;
 FormElements.Barcode = Barcode;
 FormElements.DecimalInput = DecimalInput;

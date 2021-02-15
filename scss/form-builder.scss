@@ -1,4 +1,13 @@
 .react-form-builder {
+  .blink {
+    animation: blinker 0.6s linear infinite;
+  }
+  @keyframes blinker {
+    50% {
+      opacity: 0;
+    }
+  }
+
   .react-form-builder-preview {
     position: relative;
     width: 70%;
@@ -194,6 +203,73 @@
         &:hover {
           box-shadow: inset 0 0 5px #ddd;
           background: #fff;
+          select, input {
+            cursor: move;
+            pointer-events: none;
+          }
+          .toolbar-header {
+            opacity: 1;
+          }
+        }
+      }
+      .rfb-FieldsGroup {
+        padding: 10px 20px;
+        &.SortableItem { border: 1px solid transparent;
+          -webkit-transition: border-color .5s ease;
+         -moz-transition: border-color .5s ease;
+           -o-transition: border-color .5s ease;
+          -ms-transition: border-color .5s ease;
+              transition: border-color .5s ease;  
+          .form-group {
+            pointer-events: none;
+            label, select, input, a {
+              cursor: move;
+            }
+            input[type='date'] {
+              height: 42px;
+            }
+            .react-star-rating {
+              display: block;
+            }
+            .checkbox-label, .radio-label {
+              font-weight: normal;
+              display: block;
+            }
+            .label-required {
+              margin-left: 5px;
+            }
+          }
+          &.is-dragging {
+            position: absolute;
+            z-index: 1688;
+            border: 2px #ccc dashed;
+            background: #fff;
+            cursor: move;
+            padding: 10px 20px;
+          }
+        }
+        &.is-placeholder {
+          display: block;
+          z-index: auto;
+          opacity: .4;
+          border: 2px #ccc dashed;
+        }
+        .toolbar-header {
+          opacity: 0;
+          z-index: 100;
+          position: relative;
+          .label {
+            position: absolute;
+            left: 20px;
+          }
+          .toolbar-header-buttons {
+            position: absolute;
+            right: 0px;
+          }
+        }
+        &:hover {
+          
+          border-color:#7248b9;
           select, input {
             cursor: move;
             pointer-events: none;

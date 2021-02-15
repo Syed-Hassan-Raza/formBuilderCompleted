@@ -3,7 +3,7 @@ import React from "react";
 import store from "./stores/store";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-
+import {getFieldNames} from "./constants"
 export default class CondtionalFlowList extends React.Component {
   constructor(props) {
     
@@ -49,22 +49,8 @@ export default class CondtionalFlowList extends React.Component {
     };
 
     this.fieldNames = [];
-    this.getFieldNames(store.state.data, this.fieldNames);
+    getFieldNames(store.state.data, this.fieldNames);
   }
-
-  getFieldNames = (data, addToList) => {
-    data.Fields.forEach((item) => {
-      if (item.Name) addToList.push(item.Name);
-    });
-
-    if (data.FieldGroups && data.FieldGroups.length > 0) {
-      data.FieldGroups.forEach((item) => {
-        if (item.Name) addToList.push(item.Name);
-
-        this.getFieldNames(item, addToList);
-      });
-    }
-  };
 
   save = () => {
     if (!this.state.editState.value) {
@@ -194,6 +180,8 @@ export default class CondtionalFlowList extends React.Component {
   };
 
   remove = (value) => {
+    if (!confirm('Are you sure you want to delete this?')) {return}
+    
     let index = this.state.data.findIndex((i) => i.value == value);
     this.state.data.splice(index, 1);
     this.setState(
@@ -384,7 +372,11 @@ export default class CondtionalFlowList extends React.Component {
                               </select>
                   )}
 
-                  {(this.props.conditionalFlowMode && this.state.element.element!=="Checkboxes" && this.state.element.element!=="RadioButtons") && (
+                  {(this.props.conditionalFlowMode && 
+                  this.state.element.element!=="Checkboxes" && 
+                  this.state.element.element!=="RadioButtons") &&
+                  
+                  (
                     
                     <input
                       type="text"

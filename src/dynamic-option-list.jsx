@@ -18,7 +18,7 @@ export default class DynamicOptionList extends React.Component {
     const this_element = this.state.element;
     let _typeDetail = JSON.parse(this.state.element.TypeDetail);
     let val = e.target.value;
-    _typeDetail[option_index] =val;
+    _typeDetail[option_index] = val;
 
     this_element.TypeDetail = JSON.stringify(_typeDetail);
     this.setState({
@@ -27,8 +27,7 @@ export default class DynamicOptionList extends React.Component {
     });
   }
 
-  updateOption(e) {
-  }
+  updateOption(e) {}
   editValue(option_index, e) {
     const this_element = this.state.element;
     const val =
@@ -55,7 +54,6 @@ export default class DynamicOptionList extends React.Component {
   }
 
   found(obj, val) {
-    debugger
     let found = false;
     const propertyNames = Object.keys(obj);
 
@@ -68,22 +66,40 @@ export default class DynamicOptionList extends React.Component {
     return found;
   }
 
-  addOption() {
+  addOption(option) {
     const this_element = this.state.element;
     const _typeDetail = JSON.parse(this.state.element.TypeDetail);
 
     let rendomValue = Math.random().toString(36).substring(7);
-    _typeDetail[rendomValue] = "";
-    this_element.TypeDetail = JSON.stringify(_typeDetail);
+    let props = {};
+
+    Object.keys(_typeDetail).map(function (key) {
+      if (_typeDetail[key] === option) {
+        props[key] = _typeDetail[key];
+        props[rendomValue] = "";
+      } else {
+        props[key] = _typeDetail[key];
+      }
+    });
+    this_element.TypeDetail = JSON.stringify(props);
     this.props.updateElement.call(this.props.preview, this_element);
     //console.log(this_element);
   }
-
-  removeOption(proprty,index) {
-    if(index===0){return}
+  getObjectSize(obj) {
+    let i = 0;
+    if (obj)
+      Object.keys(obj).map((option, index) => {
+        i++;
+      });
+    return i;
+  }
+  removeOption(proprty, index) {
     const this_element = this.state.element;
     const _typeDetail = JSON.parse(this.state.element.TypeDetail);
-    //this_element.TypeDetail.splice(index, 1);
+    if (index === 0 && this.getObjectSize(_typeDetail) === 1) {
+      return;
+    }
+
     delete _typeDetail[proprty];
     this_element.TypeDetail = JSON.stringify(_typeDetail);
     this.props.updateElement.call(this.props.preview, this_element);
@@ -100,7 +116,8 @@ export default class DynamicOptionList extends React.Component {
           <li>
             <div className="row">
               <div className="col-sm-6">
-                <b>Options </b> <font className="text-muted">(Values should be unique)</font> 
+                <b>Options </b>{" "}
+                <font className="text-muted">(Values should be unique)</font>
               </div>
               {this.props.canHaveOptionValue && (
                 <div className="col-sm-2">
@@ -135,42 +152,17 @@ export default class DynamicOptionList extends React.Component {
                     />
                   </div>
 
-                  {/* {this.props.canHaveOptionValue && (
-                    <div className="col-sm-2">
-                      <input
-                        className="form-control"
-                        type="text"
-                        name={`value_${index}`}
-                        value={val}
-                        onChange={this.editValue.bind(this, index)}
-                      />
-                    </div>
-                  )}
-                  {this.props.canHaveOptionValue &&
-                    this.props.canHaveOptionCorrect && (
-                      <div className="col-sm-1">
-                        <input
-                          className="form-control"
-                          type="checkbox"
-                          value="1"
-                          onChange={this.editOptionCorrect.bind(this, index)}
-                          checked={option.hasOwnProperty("correct")}
-                        />
-                      </div>
-                    )} */}
-
                   <div className="col-sm-3">
                     <div className="dynamic-options-actions-buttons">
                       <button
-                        onClick={this.addOption.bind(this)}
-                        
+                        onClick={this.addOption.bind(this, obj[option])}
                         className="btn btn-success"
                       >
                         <i className="fas fa-plus-circle"></i>
                       </button>
                       {obj && (
                         <button
-                          onClick={this.removeOption.bind(this, option,index)}
+                          onClick={this.removeOption.bind(this, option, index)}
                           className="btn btn-danger"
                         >
                           <i className="fas fa-minus-circle"></i>

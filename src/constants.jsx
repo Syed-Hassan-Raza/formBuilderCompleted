@@ -1,4 +1,13 @@
-export { mdDictonery, fieldNames,editorFormats,dateFormats,timeFormats,findElementName };
+import { draftjsToMd } from "draftjs-md-converter";
+
+import {
+  convertToRaw,
+} from "draft-js";
+
+
+import draftToHtml from "draftjs-to-html";
+
+export { mdDictonery, fieldNames,editorFormats,dateFormats,timeFormats,findElementName,hasWhiteSpace,convertToCode,createTypeDetails,getFieldNames,encryptToBase64,decryptFromBase64 };
 
 const mdDictonery = {
   BOLD: "**",
@@ -65,7 +74,6 @@ const dateFormats = [
 "yyyy-mm-dd",
 "yyyy-MM-dd",
 "dd-MMM-yy",
-"YYYY-MM-DD",
 
 "M/d/yyyy",
 "M/d/yy",
@@ -125,4 +133,58 @@ const removeItem=(data, element)=> {
   });
   if (removed) return true;
   else return false;
+}
+///draftjs to code
+const convertToCode=(editorContent, TypeDetail)=> {
+  let isHtml =
+    TypeDetail === "html" || TypeDetail === "html64" ? true : false;
+  if (isHtml) {
+    if(TypeDetail==="html64")
+    return encryptToBase64(draftToHtml(convertToRaw(editorContent.getCurrentContent())));
+    else
+    return draftToHtml(convertToRaw(editorContent.getCurrentContent()));
+  } else if (!isHtml) {
+    if(TypeDetail==="md64")
+    return encryptToBase64(draftjsToMd(convertToRaw(editorContent.getCurrentContent()), mdDictonery));
+    else
+    return draftjsToMd(convertToRaw(editorContent.getCurrentContent()), mdDictonery);
+  }
+  return null;
+}
+
+const hasWhiteSpace=(str)=> {
+  return /\s/g.test(str);
+}
+
+const createTypeDetails=(element)=> {
+  if (element.Type === 15) {
+    element.TypeDetail = JSON.stringify({ data: element.TypeDetail });
+  } else if (element.Type === 12) {
+    element.TypeDetail = JSON.stringify(element.TypeDetail);
+  }
+}
+
+const getFieldNames = (data, addToList) => {
+  data.Fields.forEach((item) => {
+    if (item.Name) addToList.push(item.Name);
+  });
+
+  if (data.FieldGroups && data.FieldGroups.length > 0) {
+    data.FieldGroups.forEach((item) => {
+      if (item.Name) addToList.push(item.Name);
+
+      getFieldNames(item, addToList);
+    });
+  }
+};
+
+const encryptToBase64=(data)=>{
+  // Encode the String
+  let encodedString = btoa(unescape(encodeURIComponent(data)));
+  return encodedString;
+}
+const decryptFromBase64=(data)=>{  
+  // Decode the String
+  let decodedString= atob(data);
+  return decodedString;
 }

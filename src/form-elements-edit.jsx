@@ -1,15 +1,16 @@
 import React from "react";
 import { mdToDraftjs, draftjsToMd } from "draftjs-md-converter";
 import TextAreaAutosize from "react-textarea-autosize";
+
 import {
   ContentState,
   EditorState,
   convertFromHTML,
   convertToRaw,
   convertFromRaw,
+  Modifier,
 } from "draft-js";
 import draftToHtml from "draftjs-to-html";
-import { Editor } from "react-draft-wysiwyg";
 
 import DynamicOptionList from "./dynamic-option-list";
 import AutoCompleteOptionList from "./autocomplete-option-list";
@@ -24,8 +25,14 @@ import {
   editorFormats,
   dateFormats,
   timeFormats,
-  findElementName
+  findElementName,
+  hasWhiteSpace,
+  convertToCode,
 } from "./constants";
+import htmlToDraft from "html-to-draftjs";
+import Editor from "./CommonMethods/Editor"
+
+
 
 const toolbar = {
   options: ["inline", "list", "link", "textAlign", "fontSize", "history"],
@@ -35,6 +42,8 @@ const toolbar = {
     options: ["bold", "italic", "underline", "superscript", "subscript"],
   },
 };
+
+import $ from "jquery";
 
 export default class FormElementsEdit extends React.Component {
   constructor(props) {
@@ -48,13 +57,24 @@ export default class FormElementsEdit extends React.Component {
       isReadOnly: false,
     };
   }
-  componentDidMount() {
-    this.setState({
-      editorState:
-        this.loadEditState() ||
-        EditorState.createWithContent(ContentState.createFromText("")),
-    });
-  }
+
+  componentDidMount(){
+  $("a[href='#tabs-1']").click(function () {
+    $("#tabs-2").hide();
+    $("a[href='#tabs-2']").removeClass("active");
+    $("a[href='#tabs-1']").addClass("active");
+    $("#tabs-1").show().fadeIn();
+    return false;
+  });
+  $("a[href='#tabs-2']").click(function () {
+
+    $("#tabs-1").hide();
+    $("a[href='#tabs-1']").removeClass("active");
+    $("a[href='#tabs-2']").addClass("active");
+    $("#tabs-2").show().fadeIn();
+    return false;
+  });
+}
 
   editElementName(e) {
     const this_element = this.state.element;
@@ -76,13 +96,13 @@ export default class FormElementsEdit extends React.Component {
     let data = this.props.preview.state.data;
     let found = findElementName(data, this_element);
     if (found) {
-      alert("This name is already exists.")
-      this_element.Name="";
-      this.setState({
-        element: this_element,
-        dirty: true,
-      });
+      alert("This name is already exists.");
+      // this_element.Name = "";
     } else {
+      if (hasWhiteSpace(this_element.Name)) {
+        this_element.Name = this_element.Name.replace(/\s/g, "_");
+      }
+
       if (this.state.dirty) {
         this.props.updateElement.call(this.props.preview, this_element);
         this.setState({ dirty: false });
@@ -97,7 +117,7 @@ export default class FormElementsEdit extends React.Component {
       this.state.editorState ||
       EditorState.createWithContent(ContentState.createFromText(""));
 
-    let code = this.convertToCode(content, val);
+    let code = convertToCode(content, val);
     this_element["DefaultValue"] = code;
 
     this.setState({
@@ -129,30 +149,23 @@ export default class FormElementsEdit extends React.Component {
       }
     );
   }
-  convertToCode(editorContent, TypeDetail) {
-    let isHtml =
-      TypeDetail === "html" || TypeDetail === "html64" ? true : false;
-    if (isHtml) {
-      return draftToHtml(convertToRaw(editorContent.getCurrentContent()));
-    } else if (!isHtml) {
-      return draftjsToMd(
-        convertToRaw(editorContent.getCurrentContent()),
-        mdDictonery
-      );
-    }
-    return null;
-  }
-  onEditorStateChange(index, property, editorContent) {
-    let code = this.convertToCode(editorContent, this.props.element.TypeDetail);
-    // const html = draftToHtml(convertToRaw(editorContent.getCurrentContent())).replace(/<p>/g, '<div>').replace(/<\/p>/g, '</div>');
-    const this_element = this.state.element;
-    this_element[property] = code;
 
-    this.setState({
-      element: this_element,
-      dirty: true,
-      editorState: editorContent,
-    });
+  editElementForCheckBox(elemProperty, targProperty, e) {
+    
+    const this_element = this.state.element;
+    this_element[elemProperty] = JSON.stringify(e.target[targProperty]);
+
+    this.setState(
+      {
+        element: this_element,
+        dirty: true,
+      },
+      () => {
+        if (targProperty === "checked") {
+          this.updateElement();
+        }
+      }
+    );
   }
 
   updateElement() {
@@ -164,37 +177,13 @@ export default class FormElementsEdit extends React.Component {
     }
   }
 
-  convertFromHTML(content) {
-    const newContent = convertFromHTML(content);
-    if (!newContent.contentBlocks || !newContent.contentBlocks.length) {
-      // to prevent crash when no contents in editor
-      return EditorState.createEmpty();
-    }
-    const contentState = ContentState.createFromBlockArray(newContent);
-    return EditorState.createWithContent(contentState);
-  }
-  loadEditState() {
-    if (
-      this.state.element.TypeDetail === "html" ||
-      this.state.element.TypeDetail === "html64"
-    ) {
-      if (this.state.element.DefaultValue)
-        return this.convertFromHTML(this.state.element.DefaultValue);
-    } else if (
-      this.state.element.TypeDetail === "md" ||
-      this.state.element.TypeDetail === "md64"
-    ) {
-      if (this.state.element.DefaultValue) {
-        const markdownString = this.state.element.DefaultValue;
-        const rawData = mdToDraftjs(markdownString);
-        const contentState = convertFromRaw(rawData);
-        const newEditorState = EditorState.createWithContent(contentState);
-        return newEditorState;
-      }
-    }
-    return null;
-  }
 
+
+  toggleColor = (color) => {
+    const newEditorState = styles.color.toggle(this.state.editorState, color);
+
+    return this.updateEditorState(newEditorState);
+  };
 
   handleButtonChange(para, event) {
     // var val = event.currentTarget.querySelector("input").value;
@@ -205,6 +194,52 @@ export default class FormElementsEdit extends React.Component {
   handleRadioDefaultValue() {
     this.setState({ element: this.props.element });
   }
+  defaultValueSection(controlType) {
+    return (
+      <div className="form-group">
+        <div className="row">
+          <div className="col-sm-12 tooltip">
+            <label className="control-label" htmlFor="elementWidth">
+              Default Value
+            </label>
+            {controlType === "TextArea" && (
+              <textarea
+                rows="3"
+                className="form-control"
+                value={this.state.element.DefaultValue || ""}
+                onBlur={this.updateElement.bind(this)}
+                onChange={this.editElementProp.bind(
+                  this,
+                  "DefaultValue",
+                  "value"
+                )}
+              />
+            )}
+
+            {controlType !== "TextArea" && (
+              <input
+                type={controlType}
+                className="form-control"
+                value={this.state.element.DefaultValue || ""}
+                onBlur={this.updateElement.bind(this)}
+                onChange={this.editElementProp.bind(
+                  this,
+                  "DefaultValue",
+                  "value"
+                )}
+              />
+            )}
+
+            <span className="tooltiptext tooltiptext-bottom">
+              The default value of the control, if user is not put any value
+              this value will be used
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
 
   render() {
     if (this.state.dirty) {
@@ -213,10 +248,13 @@ export default class FormElementsEdit extends React.Component {
     const this_Mandatory = this.props.element.hasOwnProperty("Mandatory")
       ? this.props.element.Mandatory
       : false;
-     let this_DefaultValue;
-     if(this.props.element.element==="Checkboxes")
-     this_DefaultValue =JSON.parse(this.props.element.DefaultValue ? this.props.element.DefaultValue.toString().toLowerCase() : 'false');
-
+    let this_DefaultValue;
+    if (this.props.element.element === "Checkboxes")
+      this_DefaultValue = JSON.parse(
+        this.props.element.DefaultValue
+          ? this.props.element.DefaultValue.toString().toLowerCase()
+          : "false"
+      );
 
     const this_read_only = this.props.element.hasOwnProperty("ReadOnly")
       ? this.props.element.ReadOnly
@@ -302,10 +340,7 @@ export default class FormElementsEdit extends React.Component {
     //    }
     // }
 
-    let editorState;
-    if (this.state.element.element === "StaticText") {
-      editorState = this.loadEditState();
-    }
+
     let baseClassForEditor = "btn btn-primary";
     if (this.state.isEditor) {
       baseClassForEditor += " active";
@@ -323,596 +358,600 @@ export default class FormElementsEdit extends React.Component {
     return (
       <div>
         <div className="clearfix">
-          <i
-            className="float-right fas fa-times dismiss-edit"
-            onClick={this.props.manualEditModeOff}
-          ></i>
-        </div>
-        {this.props.element.Name !== "StateFlow" && (
-          <div className="form-group">
+          <div className="container">
             <div className="row">
-              <div className="col-md-12 tooltip">
-                <label className="control-label" htmlFor="elementWidth">
-                  Field Name{" "}
-                  {this.props.element.element !== "FieldGroups" && (
-                    <span className="badge badge-danger">Required</span>
-                  )}
-                </label>
-                <input
-                  list="fileSelect"
-                  id="fieldNames"
-                  value={this.props.element.Name}
-                  className="form-control"
-                  onBlur={this.updateElementName.bind(this)}
-                  onChange={this.editElementName.bind(this)}
-                />
-                <span className="tooltiptext tooltiptext-bottom">
-                  Control name, you can put your custom name or select from the
-                  list. used in form submission
-                </span>
+              {this.props.element.Name !== "StateFlow" && (
+                <div className="col-10">
+                  <ul className="nav nav-tabs" role="tablist">
+                    <li className="nav-item">
+                      <a
+                        className="nav-link active"
+                        data-toggle="tab"
+                        href="#tabs-1"
+                        role="tab"
+                      >
+                        Properties
+                      </a>
+                    </li>
+                    { this.props.element.element !== "FieldGroups" &&(
+                    <li className="nav-item">
+                    <a
+                      className="nav-link"
+                      href="#tabs-2"
+                      role="tab"
+                    >
+                      Conditional Flow
+                    </a>
+                  </li>
+                    )
+                    }
 
-                <datalist id="fileSelect">
-                  {Object.keys(fieldNames).map((k, i) => {
-                    return <option value={fieldNames[k].name} key={i}></option>;
-                  })}
-                </datalist>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {this.props.element.hasOwnProperty("file_path") && (
-          <div className="form-group">
-            <label className="control-label" htmlFor="fileSelect">
-              Choose file
-            </label>
-            <select
-              id="fileSelect"
-              className="form-control"
-              defaultValue={this.props.element.file_path}
-              onBlur={this.updateElement.bind(this)}
-              onChange={this.editElementProp.bind(this, "file_path", "value")}
-            >
-              {this_files.map((file) => {
-                const this_key = `file_${file.id}`;
-                return (
-                  <option value={file.id} key={this_key}>
-                    {file.file_name}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-        )}
-        {this.props.element.hasOwnProperty("href") && (
-          <div className="form-group">
-            <TextAreaAutosize
-              type="text"
-              className="form-control"
-              defaultValue={this.props.element.href}
-              onBlur={this.updateElement.bind(this)}
-              onChange={this.editElementProp.bind(this, "href", "value")}
-            />
-          </div>
-        )}
-        {this.props.element.hasOwnProperty("src") && (
-          <div>
-            <div className="form-group">
-              <label className="control-label" htmlFor="srcInput">
-                Link to
-              </label>
-              <input
-                id="srcInput"
-                type="text"
-                className="form-control"
-                defaultValue={this.props.element.src}
-                onBlur={this.updateElement.bind(this)}
-                onChange={this.editElementProp.bind(this, "src", "value")}
-              />
-            </div>
-            <div className="form-group">
-              <div className="custom-control custom-checkbox">
-                <input
-                  id="do-center"
-                  className="custom-control-input"
-                  type="checkbox"
-                  checked={this_checked_center}
-                  value={true}
-                  onChange={this.editElementProp.bind(
-                    this,
-                    "center",
-                    "checked"
-                  )}
-                />
-                <label className="custom-control-label" htmlFor="do-center">
-                  Center?
-                </label>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-sm-3">
-                <label className="control-label" htmlFor="elementWidth">
-                  Width
-                </label>
-                <input
-                  id="elementWidth"
-                  type="text"
-                  className="form-control"
-                  defaultValue={this.props.element.width}
-                  onBlur={this.updateElement.bind(this)}
-                  onChange={this.editElementProp.bind(this, "width", "value")}
-                />
-              </div>
-              <div className="col-sm-3">
-                <label className="control-label" htmlFor="elementHeight">
-                  Height
-                </label>
-                <input
-                  id="elementHeight"
-                  type="text"
-                  className="form-control"
-                  defaultValue={this.props.element.height}
-                  onBlur={this.updateElement.bind(this)}
-                  onChange={this.editElementProp.bind(this, "height", "value")}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-        {this.props.element.hasOwnProperty("Label") && (
-          <div className="form-group">
-            <div className="row">
-              <div className="col-md-12 tooltip">
-                <label className="control-label" htmlFor="elementWidth">
-                  Display Label
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  defaultValue={this.props.element.Label}
-                  onBlur={this.updateElement.bind(this)}
-                  onChange={this.editElementProp.bind(this, "Label", "value")}
-                />
-                <span className="tooltiptext tooltiptext-bottom">
-                  A static label text which displays along with your field
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {(this.props.element.Type === 4 || this.props.element.Type === 7) && (
-          <div className="form-group">
-            <div className="row">
-              <div className="col-sm-6">
-                <label className="control-label" htmlFor="Format">
-                  Format
-                </label>
-
-                <input
-                  list="formatsList"
-                  id="Format"
-                  className="form-control"
-                  onBlur={this.updateElement.bind(this)}
-                  defaultValue={this.state.element.TypeDetail || undefined}
-                  onChange={this.editElementProp.bind(
-                    this,
-                    "TypeDetail",
-                    "value"
-                  )}
-                />
-                <datalist id="formatsList">
-                  <option></option>
-                  {dateTimeFormats.map((k, i) => {
-                    return (
-                      <option value={k} key={i}>
-                        {k}
-                      </option>
-                    );
-                  })}
-                </datalist>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {this.props.element.element === "Checkboxes" && (
-          <div className="form-group">
-            <div className="custom-control custom-checkbox">
-              <input
-                id="is-defaultvalue"
-                className="custom-control-input"
-                type="checkbox"
-                checked={this_DefaultValue || false}
-                onChange={this.editElementProp.bind(
-                  this,
-                  "DefaultValue",
-                  "checked"
-                )}
-              />
-              <label className="custom-control-label" htmlFor="is-defaultvalue">
-                Default Value
-              </label>
-            </div>
-          </div>
-        )}
-
-        {this.props.element.Type === 30 && (
-          <div className="form-group">
-            <div className="row">
-              <div className="col-sm-6">
-                <label className="control-label" htmlFor="defaultValue">
-                  Format
-                </label>
-                <select
-                  id="defaultValue"
-                  className="form-control"
-                  onBlur={this.updateElement.bind(this)}
-                  defaultValue={this.props.element.TypeDetail}
-                  onChange={this.editElementForFormat.bind(
-                    this,
-                    "TypeDetail",
-                    "value"
-                  )}
-                >
-                  {editorFormats.map((k, i) => {
-                    return (
-                      <option value={k} key={i}>
-                        {k}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-
-              <div className="col-sm-5">
-                <div
-                  className="btn-group btn-group-toggle"
-                  data-toggle="buttons"
-                  style={{ marginTop: 28 }}
-                >
-                  <label className={baseClassForEditor}>
-                    <input
-                      type="checkbox"
-                      name="options"
-                      checked={this.state.isEditor}
-                      value={false}
-                      onChange={this.handleButtonChange.bind(this, "editor")}
-                    />{" "}
-                    Editor
-                  </label>
-                  <label className={baseClassForCode}>
-                    <input
-                      type="checkbox"
-                      name="options"
-                      checked={!this.state.isEditor}
-                      value={false}
-                      onChange={this.handleButtonChange.bind(this, "code")}
-                    />{" "}
-                    Code
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        {this.props.element.Type === 5 && (
-          <div className="form-group">
-            <div className="row">
-              <div className="col-sm-12 tooltip">
-                <label className="control-label" htmlFor="defaultValue">
-                  Pick List <span className="badge badge-danger">Required</span>
-                </label>
-                <select
-                  id="defaultValue"
-                  value={this.props.element.TypeDetail}
-                  className="form-control"
-                  onBlur={this.updateElement.bind(this)}
-                  onChange={this.editElementProp.bind(
-                    this,
-                    "TypeDetail",
-                    "value"
-                  )}
-                >
-                  {store.state.pickLists &&
-                    Object.keys(store.state.pickLists).map((obj, i) => {
-                      return (
-                        <option value={store.state.pickLists[obj].Key} key={i}>
-                          {store.state.pickLists[obj].Value}
-                        </option>
-                      );
-                    })}
-                </select>
-                <span className="tooltiptext tooltiptext-bottom">
-                  An auto-populated list from the server. select list values
-                  will be filled according to the selected Pick List.
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {this.props.element.element === "RadioButtons" && (
-          <div className="form-group">
-            <div className="row">
-              <div className="col-sm-6">
-                <label className="control-label" htmlFor="defaultValue">
-                  Default Value
-                </label>
-                <select
-                  value={this.state.element.DefaultValue}
-                  id="defaultValue"
-                  className="form-control"
-                  onClick={this.handleRadioDefaultValue.bind(this)}
-                  onBlur={this.updateElement.bind(this)}
-                  onChange={this.editElementProp.bind(
-                    this,
-                    "DefaultValue",
-                    "value"
-                  )}
-                >
-                  <option></option>
-                  {Object.keys(RedioTypeDetails).map((k, i) => {
-                    if (RedioTypeDetails[k])
-                      return (
-                        <option value={RedioTypeDetails[k]} key={i}>
-                          {RedioTypeDetails[k]}
-                        </option>
-                      );
-                  })}
-                </select>
-              </div>
-            </div>
-          </div>
-        )}
-        {
-          <div>
-            {this.props.element.element !== "Action" &&
-              this.props.element.element !== "FieldGroups" &&
-              this.props.element.element !== "RadioButtons" &&
-              this.props.element.element !== "Checkboxes" &&
-              this.props.element.element !== "Signature" &&
-              this.props.element.element !== "StaticText" &&
-              this.props.element.Name !== "StateFlow" && (
-                <div className="form-group">
-                  <div className="row">
-                    <div className="col-sm-12 tooltip">
-                      <label className="control-label" htmlFor="elementWidth">
-                        Default Value
-                      </label>
-                      <textarea
-                        rows="3"
-                        className="form-control"
-                        value={this.state.element.DefaultValue || ""}
-                        onBlur={this.updateElement.bind(this)}
-                        onChange={this.editElementProp.bind(
-                          this,
-                          "DefaultValue",
-                          "value"
-                        )}
-                      />
-                      <span className="tooltiptext tooltiptext-bottom">
-                        The default value of the control, if user is not put any
-                        value this value will be used
-                      </span>
-                    </div>
-                  </div>
+                  </ul>
                 </div>
               )}
+              <div className={this.props.element.Name==="StateFlow"?"col-12":"col-2"}>
+                <i
+                  className="float-right fas fa-times dismiss-edit"
+                  onClick={this.props.manualEditModeOff}
+                ></i>
+              </div>
+            </div>
+          </div>
+        </div>
 
-            {this.props.element.element === "StaticText" && (
-              <div className="form-group">
-                <div className="row">
-                  <div className="col-sm-12 tooltip">
-                    <label>Default Value</label>
-                    {this.state.isEditor && (
-                      <Editor
-                        defaultEditorState={editorState}
-                        onBlur={this.updateElement.bind(this)}
-                        onEditorStateChange={this.onEditorStateChange.bind(
+        <div className="tab-content">
+          <div className="tab-pane active" id="tabs-1" role="tabpanel">
+            <div className="row">
+              <div className="col-sm-12">
+                {this.props.element.Name !== "StateFlow" && (
+                  <div className="form-group">
+                    <div className="row">
+                      <div className="col-md-12 tooltip">               
+                        <label className="control-label" htmlFor="elementWidth">
+                          Field Name{" "}
+                          {this.props.element.element !== "FieldGroups" && (
+                            <span className="badge badge-danger">Required</span>
+                          )}
+                        </label>
+                                             
+                        <div className="select-editable">
+                     
+                        <select className="form-control" onChange={this.editElementName.bind(this)}>
+                          {Object.keys(fieldNames).map((k, i) => {
+                            return (
+                              <option
+                                value={fieldNames[k].name}
+                                key={i}
+                              >{fieldNames[k].name}</option>
+                            );
+                          })}
+                        </select>
+                        <input
+                          id="fieldNames"
+                          value={this.props.element.Name}
+                          className="form-control"
+                          autoComplete="off"
+                          onBlur={this.updateElementName.bind(this)}
+                          onChange={this.editElementName.bind(this)}
+                        />
+                        
+                        </div>
+
+                        <span className="tooltiptext tooltiptext-bottom" style={{marginTop:"25px"}}>
+                          Control name, you can put your custom name or select
+                          from the list. used in form submission
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {this.props.element.hasOwnProperty("Label") && (
+                  <div className="form-group">
+                    <div className="row">
+                      <div className="col-md-12 tooltip">
+                        <label className="control-label" htmlFor="elementWidth">
+                          Display Label
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          defaultValue={this.props.element.Label}
+                          onBlur={this.updateElement.bind(this)}
+                          onChange={this.editElementProp.bind(
+                            this,
+                            "Label",
+                            "value"
+                          )}
+                        />
+                        <span className="tooltiptext tooltiptext-bottom">
+                          A static label text which displays along with your
+                          field
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {(this.props.element.Type === 4 ||
+                  this.props.element.Type === 7) && (
+                  <div className="form-group">
+                    <div className="row">
+                      <div className="col-sm-6">
+                        <label className="control-label" htmlFor="Format">
+                          Format
+                        </label>
+
+                        <div className="select-editable">
+                     
+                        <select className="form-control"  onChange={this.editElementProp.bind(
+                            this,
+                            "TypeDetail",
+                            "value"
+                          )}>
+                            <option></option>
+                          {dateTimeFormats.map((k, i) => {
+                            return (
+                              <option
+                              value={k} key={i}
+                              >{k}</option>
+                            );
+                          })}
+                        </select>
+                        <input
+                          id="Format"
+                          className="form-control"
+                          onBlur={this.updateElement.bind(this)}
+                          value={
+                            this.state.element.TypeDetail || ""
+                          }
+                          onChange={this.editElementProp.bind(
+                            this,
+                            "TypeDetail",
+                            "value"
+                          )}
+                        />
+                        
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {this.props.element.element === "Checkboxes" && (
+                  <div className="form-group">
+                    <div className="custom-control custom-checkbox">
+                      <input
+                        id="is-defaultvalue"
+                        className="custom-control-input"
+                        type="checkbox"
+                        checked={this_DefaultValue || false}
+                        onChange={this.editElementForCheckBox.bind(
                           this,
-                          0,
-                          "DefaultValue"
+                          "DefaultValue",
+                          "checked"
                         )}
                       />
-                    )}
-                    {!this.state.isEditor && (
-                      <div>
-                        <label className="control-label" htmlFor="elementWidth">
-                          {this.state.element.TypeDetail} Output
+                      <label
+                        className="custom-control-label"
+                        htmlFor="is-defaultvalue"
+                      >
+                        Default Value
+                      </label>
+                    </div>
+                  </div>
+                )}
+
+                {this.props.element.Type === 5 && (
+                  <div className="form-group">
+                    <div className="row">
+                      <div className="col-sm-12 tooltip">
+                        <label className="control-label" htmlFor="defaultValue">
+                          Pick List{" "}
+                          <span className="badge badge-danger">Required</span>
                         </label>
-                        <textarea
-                          rows="5"
+                        <select
+                          id="defaultValue"
+                          value={this.props.element.TypeDetail}
                           className="form-control"
+                          onBlur={this.updateElement.bind(this)}
+                          onChange={this.editElementProp.bind(
+                            this,
+                            "TypeDetail",
+                            "value"
+                          )}
+                        >
+                          {store.state.pickLists &&
+                            Object.keys(store.state.pickLists).map((obj, i) => {
+                              return (
+                                <option
+                                  value={store.state.pickLists[obj].Key}
+                                  key={i}
+                                >
+                                  {store.state.pickLists[obj].Value}
+                                </option>
+                              );
+                            })}
+                        </select>
+                        <span className="tooltiptext tooltiptext-bottom">
+                          An auto-populated list from the server. select list
+                          values will be filled according to the selected Pick
+                          List.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {this.props.element.element === "RadioButtons" && (
+                  <div className="form-group">
+                    <div className="row">
+                      <div className="col-sm-6">
+                        <label className="control-label" htmlFor="defaultValue">
+                          Default Value
+                        </label>
+                        <select
                           value={this.state.element.DefaultValue}
+                          id="defaultValue"
+                          className="form-control"
+                          onClick={this.handleRadioDefaultValue.bind(this)}
                           onBlur={this.updateElement.bind(this)}
                           onChange={this.editElementProp.bind(
                             this,
                             "DefaultValue",
                             "value"
                           )}
-                        />
-                        <span className="tooltiptext tooltiptext-bottom">
-                          Generated code in {this.state.element.TypeDetail}{" "}
-                          format
-                        </span>
+                        >
+                          <option></option>
+                          {Object.keys(RedioTypeDetails).map((k, i) => {
+                            if (RedioTypeDetails[k])
+                              return (
+                                <option value={RedioTypeDetails[k]} key={i}>
+                                  {RedioTypeDetails[k]}
+                                </option>
+                              );
+                          })}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {
+                  <div>
+                    {(this.props.element.element === "TextArea" || 
+                    this.props.element.element ==="Autocomplete" ||
+                    this.props.element.element ==="Assignee" ||
+                    this.props.element.element ==="Barcode" 
+                    )
+                       && (this.defaultValueSection("TextArea"))}
+
+                    {(this.props.element.element === "TextInput" ||
+                      this.props.element.element === "DatePicker" ||
+                      this.props.element.element === "TimePicker" ||
+                      this.props.element.element === "Dropdown") &&
+                      this.defaultValueSection("text")}
+
+                    {(this.props.element.element === "NumberInput" ||
+                      this.props.element.element === "DecimalInput" ||
+                      this.props.element.element === "Calculated" ||
+                      this.props.element.element === "Counter") &&
+                      this.defaultValueSection("number")}
+
+                    {this.props.element.element === "StaticText" && (
+                      <>
+                        <div className="form-group">
+                          <div className="row">
+                            <div className="col-sm-6">
+                              <label
+                                className="control-label"
+                                htmlFor="defaultValue"
+                              >
+                                Format
+                              </label>
+                              <select
+                                id="defaultValue"
+                                className="form-control"
+                                onBlur={this.updateElement.bind(this)}
+                                defaultValue={this.props.element.TypeDetail}
+                                onChange={this.editElementForFormat.bind(
+                                  this,
+                                  "TypeDetail",
+                                  "value"
+                                )}
+                              >
+                                {editorFormats.map((k, i) => {
+                                  return (
+                                    <option value={k} key={i}>
+                                      {k}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                            </div>
+
+                            <div className="col-sm-5">
+                              <div
+                                className="btn-group btn-group-toggle"
+                                data-toggle="buttons"
+                                style={{ marginTop: 28 }}
+                              >
+                                <label className={baseClassForEditor}>
+                                  <input
+                                    type="checkbox"
+                                    name="options1"
+                                    defaultChecked={this.state.isEditor || this.props.isEditor}
+                                    defaultValue={false}
+                                    onClick={this.handleButtonChange.bind(
+                                      this,
+                                      "editor"
+                                    )}
+                                  />{" "}
+                                  Editor
+                                </label>
+                                <label className={baseClassForCode}>
+                                  <input
+                                    type="checkbox"
+                                    name="options2"
+                                    defaultChecked={!this.state.isEditor || this.props.isEditor}
+                                    defaultValue={false}
+                                    onClick={this.handleButtonChange.bind(
+                                      this,
+                                      "code"
+                                    )}
+                                  />{" "}
+                                  Code
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <div className="row">
+                            <div className="col-sm-12 tooltip">
+                              <label>Default Value</label>
+                              {this.state.isEditor && (
+                                <Editor style={{ height: "auto",minHeight:"200px",cursor:"text",border:"1px solid #e9ecee" }}
+                                element={this.state.element}
+                                isReadOnly={false}
+                                updateElement={this.props.updateElement}
+                                preview={this.props.preview}
+                                state={this.state}
+                                 // handlePastedText={this.handlePastedText}
+                                
+                                />
+                              )}
+                              {!this.state.isEditor && (
+                                <div>
+                                  <label
+                                    className="control-label"
+                                    htmlFor="elementWidth"
+                                  >
+                                    {this.state.element.TypeDetail} Output
+                                  </label>
+                                  <textarea
+                                    rows="5"
+                                    className="form-control"
+                                    value={this.state.element.DefaultValue}
+                                    onBlur={this.updateElement.bind(this)}
+                                    onChange={this.editElementProp.bind(
+                                      this,
+                                      "DefaultValue",
+                                      "value"
+                                    )}
+                                  />
+                                  <span className="tooltiptext tooltiptext-bottom">
+                                    Generated code in{" "}
+                                    {this.state.element.TypeDetail} format
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {this.props.element.Name !== "StateFlow" && (
+                      <div className="form-group">
+                        <div className="row">
+                          <div className="col-sm-4 tooltip">
+                            <label className="control-label">Max Width</label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              defaultValue={this.props.element.MaxWidth}
+                              onBlur={this.updateElement.bind(this)}
+                              onChange={this.editElementProp.bind(
+                                this,
+                                "MaxWidth",
+                                "value"
+                              )}
+                            />
+                            <span className="tooltiptext tooltiptext-bottom">
+                              Maximum width of the control
+                            </span>
+                          </div>
+                          <div className="col-sm-4 tooltip">
+                            <label className="control-label">Min Width</label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              defaultValue={this.props.element.MinWidth}
+                              onBlur={this.updateElement.bind(this)}
+                              onChange={this.editElementProp.bind(
+                                this,
+                                "MinWidth",
+                                "value"
+                              )}
+                            />
+                            <span className="tooltiptext tooltiptext-bottom">
+                              Minimum width of the control
+                            </span>
+                          </div>
+                          <div className="col-sm-4 tooltip">
+                            <label className="control-label">Width Ratio</label>
+                            <input
+                              type="number"
+                              max={1}
+                              min={0}
+                              className="form-control"
+                              defaultValue={
+                                this.props.element.ControlWidthRatio
+                              }
+                              onBlur={this.updateElement.bind(this)}
+                              onChange={this.editElementProp.bind(
+                                this,
+                                "ControlWidthRatio",
+                                "value"
+                              )}
+                            />
+                            <span className="tooltiptext tooltiptext-bottom">
+                              The ratio of the horizontal width of the control.
+                              1 for full width or 0.5 for half, etc.
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
-                </div>
-              </div>
-            )}
+                }
+                <br />
 
-            {this.props.element.Name !== "StateFlow" && (
-              <div className="form-group">
-                <div className="row">
-                  <div className="col-sm-4 tooltip">
-                    <label className="control-label">Max Width</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      defaultValue={this.props.element.MaxWidth}
-                      onBlur={this.updateElement.bind(this)}
-                      onChange={this.editElementProp.bind(
-                        this,
-                        "MaxWidth",
-                        "value"
-                      )}
-                    />
-                    <span className="tooltiptext tooltiptext-bottom">
-                      Maximum width of the control
-                    </span>
-                  </div>
-                  <div className="col-sm-4 tooltip">
-                    <label className="control-label">Min Width</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      defaultValue={this.props.element.MinWidth}
-                      onBlur={this.updateElement.bind(this)}
-                      onChange={this.editElementProp.bind(
-                        this,
-                        "MinWidth",
-                        "value"
-                      )}
-                    />
-                    <span className="tooltiptext tooltiptext-bottom">
-                      Minimum width of the control
-                    </span>
-                  </div>
-                  <div className="col-sm-4 tooltip">
-                    <label className="control-label">Width Ratio</label>
-                    <input
-                      type="number"
-                      max={1}
-                      min={0}
-                      className="form-control"
-                      defaultValue={this.props.element.ControlWidthRatio}
-                      onBlur={this.updateElement.bind(this)}
-                      onChange={this.editElementProp.bind(
-                        this,
-                        "ControlWidthRatio",
-                        "value"
-                      )}
-                    />
-                    <span className="tooltiptext tooltiptext-bottom">
-                      The ratio of the horizontal width of the control. 1 for
-                      full width or 0.5 for half, etc.
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        }
-        <br />
+                {this.props.element.hasOwnProperty("Label") && (
+                  <div className="form-group">
+                    {this.state.element.element !== "StaticText" && (
+                      <div className="custom-control custom-checkbox">
+                        <input
+                          id="is-required"
+                          className="custom-control-input"
+                          type="checkbox"
+                          checked={this_Mandatory}
+                          disabled={this_read_only}
+                          onChange={this.editElementProp.bind(
+                            this,
+                            "Mandatory",
+                            "checked"
+                          )}
+                        />
+                        <label
+                          className="custom-control-label"
+                          htmlFor="is-required"
+                        >
+                          Mandatory
+                        </label>
+                      </div>
+                    )}
+                    <div className="custom-control custom-checkbox">
+                      <input
+                        id="is-Visible"
+                        className="custom-control-input"
+                        type="checkbox"
+                        checked={this_Visible}
+                        value={true}
+                        onChange={this.editElementProp.bind(
+                          this,
+                          "Visible",
+                          "checked"
+                        )}
+                      />
+                      <label
+                        className="custom-control-label"
+                        htmlFor="is-Visible"
+                      >
+                        Visible
+                      </label>
+                    </div>
 
-        {this.props.element.hasOwnProperty("Label") && (
-          <div className="form-group">
-            {this.state.element.element !== "StaticText" && (
-              <div className="custom-control custom-checkbox">
-                <input
-                  id="is-required"
-                  className="custom-control-input"
-                  type="checkbox"
-                  checked={this_Mandatory}
-                  disabled={this_read_only}
-                  onChange={this.editElementProp.bind(
-                    this,
-                    "Mandatory",
-                    "checked"
-                  )}
-                />
-                <label className="custom-control-label" htmlFor="is-required">
-                  Mandatory
-                </label>
-              </div>
-            )}
-            <div className="custom-control custom-checkbox">
-              <input
-                id="is-Visible"
-                className="custom-control-input"
-                type="checkbox"
-                checked={this_Visible}
-                value={true}
-                onChange={this.editElementProp.bind(this, "Visible", "checked")}
-              />
-              <label className="custom-control-label" htmlFor="is-Visible">
-                Visible
-              </label>
-            </div>
-
-            <div className="custom-control custom-checkbox">
-              <input
-                id="is-ReadOnly"
-                className="custom-control-input"
-                type="checkbox"
-                checked={this_read_only}
-                disabled={this_Mandatory}
-                onChange={this.editElementProp.bind(
-                  this,
-                  "ReadOnly",
-                  "checked"
+                    <div className="custom-control custom-checkbox">
+                      <input
+                        id="is-ReadOnly"
+                        className="custom-control-input"
+                        type="checkbox"
+                        checked={this_read_only}
+                        disabled={this_Mandatory}
+                        onChange={this.editElementProp.bind(
+                          this,
+                          "ReadOnly",
+                          "checked"
+                        )}
+                      />
+                      <label
+                        className="custom-control-label"
+                        htmlFor="is-ReadOnly"
+                      >
+                        Read Only
+                      </label>
+                    </div>
+                  </div>
                 )}
-              />
-              <label className="custom-control-label" htmlFor="is-ReadOnly">
-                Read Only
-              </label>
+
+                {this.props.element.showDescription && (
+                  <div className="form-group">
+                    <label
+                      className="control-label"
+                      htmlFor="questionDescription"
+                    >
+                      Description
+                    </label>
+                    <TextAreaAutosize
+                      type="text"
+                      className="form-control"
+                      id="questionDescription"
+                      defaultValue={this.props.element.description}
+                      onBlur={this.updateElement.bind(this)}
+                      onChange={this.editElementProp.bind(
+                        this,
+                        "description",
+                        "value"
+                      )}
+                    />
+                  </div>
+                )}
+
+                {this.props.element.Type === 12 && (
+                  <DynamicOptionList
+                    handleRadioDefaultValue={this.handleRadioDefaultValue.bind(
+                      this
+                    )}
+                    canHaveOptionCorrect={canHaveOptionCorrect}
+                    canHaveOptionValue={canHaveOptionValue}
+                    updateElement={this.props.updateElement}
+                    preview={this.props.preview}
+                    element={this.props.element}
+                    key={this.props.element.TypeDetail.length}
+                  />
+                )}
+                {this.props.element.Type === 15 && (
+                  <AutoCompleteOptionList
+                    showCorrectColumn={this.props.showCorrectColumn}
+                    canHaveOptionCorrect={canHaveOptionCorrect}
+                    canHaveOptionValue={canHaveOptionValue}
+                    data={this.props.preview.state.data}
+                    updateElement={this.props.updateElement}
+                    preview={this.props.preview}
+                    element={this.props.element}
+                    key={this.props.element.TypeDetail.length}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        )}
 
-        {this.props.element.showDescription && (
-          <div className="form-group">
-            <label className="control-label" htmlFor="questionDescription">
-              Description
-            </label>
-            <TextAreaAutosize
-              type="text"
-              className="form-control"
-              id="questionDescription"
-              defaultValue={this.props.element.description}
-              onBlur={this.updateElement.bind(this)}
-              onChange={this.editElementProp.bind(this, "description", "value")}
-            />
+          <div className="tab-pane" id="tabs-2" role="tabpanel">
+            {this.props.element.hasOwnProperty("ConditionalFlow") &&
+              this.props.element.Name !== "StateFlow" && (
+                <>
+                  <CondtionalFlowList
+                    conditionalFlowMode={true}
+                    parent={this}
+                    conditionalFlow={this.props.element.ConditionalFlow}
+                    onConditionalFlowChange={this.editElementProp}
+                  ></CondtionalFlowList>
+                </>
+              )}
           </div>
-        )}
+        </div>
 
-        {this.props.element.Type === 12 && (
-          <DynamicOptionList
-            handleRadioDefaultValue={this.handleRadioDefaultValue.bind(this)}
-            canHaveOptionCorrect={canHaveOptionCorrect}
-            canHaveOptionValue={canHaveOptionValue}
-            updateElement={this.props.updateElement}
-            preview={this.props.preview}
-            element={this.props.element}
-            key={this.props.element.TypeDetail.length}
-          />
-        )}
-        {this.props.element.Type === 15 && (
-          <AutoCompleteOptionList
-            showCorrectColumn={this.props.showCorrectColumn}
-            canHaveOptionCorrect={canHaveOptionCorrect}
-            canHaveOptionValue={canHaveOptionValue}
-            data={this.props.preview.state.data}
-            updateElement={this.props.updateElement}
-            preview={this.props.preview}
-            element={this.props.element}
-            key={this.props.element.TypeDetail.length}
-          />
-        )}
-        {this.props.element.hasOwnProperty("ConditionalFlow") &&
-          this.props.element.Name !== "StateFlow" && (
-            <>
-              <hr />
-              <CondtionalFlowList
-                conditionalFlowMode={true}
-                parent={this}
-                conditionalFlow={this.props.element.ConditionalFlow}
-                onConditionalFlowChange={this.editElementProp}
-              ></CondtionalFlowList>
-            </>
-          )}
         {this.props.element.Name === "StateFlow" && (
           <>
             <CondtionalFlowList

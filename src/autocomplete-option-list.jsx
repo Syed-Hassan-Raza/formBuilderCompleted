@@ -16,9 +16,10 @@ export default class AutoCompleteOptionList extends React.Component {
   }
 
   editOption(option_index, e) {
+    let val=e.target.value;
+    
     const this_element = this.state.element;
     let _typeDetail = JSON.parse(this.state.element.TypeDetail);
-    let val = e.target.value;
 
     _typeDetail.data[option_index] = val;
 
@@ -31,14 +32,14 @@ export default class AutoCompleteOptionList extends React.Component {
 
 
   updateOption(e) {
-      const this_element = this.state.element;
+      // const this_element = this.state.element;
 
-      //this_element.TypeDetail = JSON.stringify(obj);
+      // //this_element.TypeDetail = JSON.stringify(obj);
 
-      if (this.state.dirty) {
-        this.props.updateElement.call(this.props.preview, this_element);
-        this.setState({ dirty: false });
-      }
+      // if (this.state.dirty) {
+      //   this.props.updateElement.call(this.props.preview, this_element);
+      //   this.setState({ dirty: false });
+      // }
     
   }
   found(obj, val) {
@@ -53,15 +54,35 @@ export default class AutoCompleteOptionList extends React.Component {
     }
     return found;
   }
-  addOption() {
-    const this_element = this.state.element;
-    const _typeDetail = JSON.parse(this.state.element.TypeDetail);
+  addOption(option) {
+    // const this_element = this.state.element;
+    // const _typeDetail = JSON.parse(this.state.element.TypeDetail);
+
+    // let rendomValue = Math.random().toString(36).substring(7);
+    // _typeDetail.data.push('');
+    // this_element.TypeDetail = JSON.stringify(_typeDetail);
+    // this.props.updateElement.call(this.props.preview, this_element);
+    
+
+
+     const this_element = this.state.element;
+     const _typeDetail = JSON.parse(this.state.element.TypeDetail);
 
     let rendomValue = Math.random().toString(36).substring(7);
-    _typeDetail.data.push('');
-    this_element.TypeDetail = JSON.stringify(_typeDetail);
+    let props = {data:[]};
+
+    Object.keys(_typeDetail.data).map(function (key,i) {
+      debugger
+      if (_typeDetail.data[i] === option) {
+        props.data.push(_typeDetail.data[i]);
+        props.data.push("");
+      } else {
+        props.data.push(_typeDetail.data[i]);
+      }
+    });
+
+    this_element.TypeDetail = JSON.stringify(props);
     this.props.updateElement.call(this.props.preview, this_element);
-    //console.log(this_element);
   }
 
   removeOption(index) {
@@ -148,7 +169,7 @@ export default class AutoCompleteOptionList extends React.Component {
                   <div className="col-sm-3">
                     <div className="dynamic-options-actions-buttons">
                       <button
-                        onClick={this.addOption.bind(this)}
+                        onClick={this.addOption.bind(this, obj.data[option])}
                         className="btn btn-success"
                       >
                         <i className="fas fa-plus-circle"></i>

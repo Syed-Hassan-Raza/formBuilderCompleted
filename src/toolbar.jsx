@@ -8,9 +8,11 @@ import ID from "./UUID";
 import store from "./stores/store";
 import { add } from "date-fns";
 import { element } from "prop-types";
+import {getFieldNames} from "./constants"
 
 export default class Toolbar extends React.Component {
   isMounted = false;
+  count=0;
 
   constructor(props) {
     super(props);
@@ -20,7 +22,6 @@ export default class Toolbar extends React.Component {
       items,
       sortBy: false,
     };
-
     store.subscribe((state) => {
       if (this.isMounted) this.setState({ store: state });
     });
@@ -39,28 +40,7 @@ export default class Toolbar extends React.Component {
   static _defaultItemOptions(element) {
     let Checkboxes;
     let values;
-    switch (element) {
-      // case 'Dropdown':
-      //   return [
-      //     { value: 'place_holder_option_1', text: 'Place holder option 1', key: `dropdown_option_${ID.uuid()}` },
-      //     { value: 'place_holder_option_2', text: 'Place holder option 2', key: `dropdown_option_${ID.uuid()}` },
-      //     { value: 'place_holder_option_3', text: 'Place holder option 3', key: `dropdown_option_${ID.uuid()}` },
-      //   ];
-
-      //     case 'Autocomplete':
-      //       return [
-      //         { value: 'place_holder_option_1', text: 'Place holder option 1', key: `dropdown_option_${ID.uuid()}` },
-      //         { value: 'place_holder_option_2', text: 'Place holder option 2', key: `dropdown_option_${ID.uuid()}` },
-      //         { value: 'place_holder_option_3', text: 'Place holder option 3', key: `dropdown_option_${ID.uuid()}` },
-      //       ];
-      // case 'Tags':
-      //   return [
-      //     { value: 'place_holder_tag_1', text: 'Place holder tag 1', key: `tags_option_${ID.uuid()}` },
-      //     { value: 'place_holder_tag_2', text: 'Place holder tag 2', key: `tags_option_${ID.uuid()}` },
-      //     { value: 'place_holder_tag_3', text: 'Place holder tag 3', key: `tags_option_${ID.uuid()}` },
-      //   ];
-      // case 'Checkboxes':
-      //   return  Checkboxes = { prop_place_holder_option_1: ''}
+    switch (element) {    
       case "RadioButtons":
         return (values = {
           prop_place_holder_option_1: "Place_holder_option_1",
@@ -142,7 +122,16 @@ export default class Toolbar extends React.Component {
         tip:
           "A multiline text box. if you want to write a paragraph you can use it",
       },
-
+      {
+        key: "StaticText",
+        name: "Static text",
+        label: "Label",
+        icon: "fas fa-paragraph",
+        field_name: "static_text_",
+        Type: 30,
+        TypeDetail:"html",
+        tip: "Non-input static information presented to the user",
+      },
       {
         key: "Dropdown",
         canHaveAnswer: true,
@@ -256,16 +245,6 @@ export default class Toolbar extends React.Component {
         tip: "The field that defines an action",
       },
       {
-        key: "StaticText",
-        name: "Static text",
-        label: "Label",
-        icon: "fas fa-font",
-        field_name: "static_text_",
-        Type: 30,
-        TypeDetail:"html",
-        tip: "Non-input static information presented to the user",
-      },
-      {
         key: "Calculated",
         name: "Calculated",
         label: "Label",
@@ -286,7 +265,6 @@ export default class Toolbar extends React.Component {
       },
     ];
   }
-
   create(item) {
     const elementOptions = {
       id: ID.uuid(),
@@ -297,7 +275,12 @@ export default class Toolbar extends React.Component {
       //Fields: item.Fields,
       //FieldGroups: item.FieldGroups
     };
-     elementOptions.Name = item.key + "_";
+
+    this.fieldNames = [];
+    getFieldNames(store.state.data, this.fieldNames);
+     let count=this.fieldNames.length+1;
+     elementOptions.Name = item.key + "_"+count;
+
     if (item.key !== "FieldGroups") {
       (elementOptions.TypeDetail = ""),
         // elementOptions.DefaultValue='',
@@ -305,7 +288,7 @@ export default class Toolbar extends React.Component {
         (elementOptions.MinWidth = null),
         (elementOptions.ReadOnly = false),
         (elementOptions.Mandatory = false),
-        (elementOptions.Visible = true),
+        
         (elementOptions.ControlWidthRatio = null),
         (elementOptions.States = {}),
         (elementOptions.ExternalAutoFill = []),
@@ -319,13 +302,12 @@ export default class Toolbar extends React.Component {
     if (item.Type === 7 || item.Type === 4) {
       elementOptions.DefaultValue = "NOW";
     }
-
+    elementOptions.Visible = true
     //if (item.Name) { elementOptions.Name = item.Name + ID.uuid();}
 
     if (item.label) {
       elementOptions.Label = item.label;
     }
-
     if (item.TypeDetail) {
       if (item.TypeDetail.length > 0) {
         elementOptions.TypeDetail = item.TypeDetail;
