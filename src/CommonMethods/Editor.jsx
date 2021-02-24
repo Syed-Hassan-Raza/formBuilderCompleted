@@ -125,6 +125,7 @@ export default class MyEditor extends React.Component {
             editorStyle={this.state.style}
             editorState={editorState}
             toolbarHidden={true}
+            readOnly={true}
           />
         )}
         {!isReadOnly && (

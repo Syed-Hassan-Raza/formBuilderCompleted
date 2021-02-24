@@ -957,7 +957,8 @@
   float: right;
 }
 .rdw-editor-main {
-  height: 250px;
+  min-height: 100px;
+  max-height: 200px;
   width: 100%;
   overflow: auto;
   box-sizing: content-box;

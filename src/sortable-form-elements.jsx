@@ -4,7 +4,7 @@ import BaseFormElements from './form-elements';
 
 const {
   Header, Paragraph, Label, LineBreak, TextInput, NumberInput, TextArea, Dropdown, Checkboxes,
-  DatePicker, RadioButtons, Image, Rating, Tags, Signature, HyperLink, Download, Camera, Range,Barcode,
+  DatePicker, RadioButtons, Image,PlainText, Signature, Range,Barcode,
   DecimalInput,StaticText,
   Calculated,Counter,Assignee,Autocomplete,FieldGroups,TimePicker,Action
 } = BaseFormElements;
@@ -23,12 +23,7 @@ FormElements.Signature = SortableElement(Signature);
 FormElements.Checkboxes = SortableElement(Checkboxes);
 FormElements.DatePicker = SortableElement(DatePicker);
 FormElements.RadioButtons = SortableElement(RadioButtons);
-FormElements.Image = SortableElement(Image);
-FormElements.Rating = SortableElement(Rating);
-FormElements.Tags = SortableElement(Tags);
-FormElements.HyperLink = SortableElement(HyperLink);
-FormElements.Download = SortableElement(Download);
-FormElements.Camera = SortableElement(Camera);
+
 FormElements.Range = SortableElement(Range);
 FormElements.PlaceHolder = SortableElement(PlaceHolder);
 FormElements.Barcode = SortableElement(Barcode);
@@ -41,6 +36,7 @@ FormElements.Autocomplete = SortableElement(Autocomplete);
 FormElements.FieldGroups = SortableElement(FieldGroups);
 FormElements.TimePicker = SortableElement(TimePicker);
 FormElements.Action = SortableElement(Action);
+FormElements.PlainText=SortableElement(PlainText);
 
 
 export default FormElements;

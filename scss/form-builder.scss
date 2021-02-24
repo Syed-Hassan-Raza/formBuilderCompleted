@@ -220,33 +220,8 @@
            -o-transition: border-color .5s ease;
           -ms-transition: border-color .5s ease;
               transition: border-color .5s ease;  
-          .form-group {
-            pointer-events: none;
-            label, select, input, a {
-              cursor: move;
-            }
-            input[type='date'] {
-              height: 42px;
-            }
-            .react-star-rating {
-              display: block;
-            }
-            .checkbox-label, .radio-label {
-              font-weight: normal;
-              display: block;
-            }
-            .label-required {
-              margin-left: 5px;
-            }
-          }
-          &.is-dragging {
-            position: absolute;
-            z-index: 1688;
-            border: 2px #ccc dashed;
-            background: #fff;
-            cursor: move;
-            padding: 10px 20px;
-          }
+         
+        
         }
         &.is-placeholder {
           display: block;

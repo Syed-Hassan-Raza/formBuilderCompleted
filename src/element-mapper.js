@@ -42,6 +42,8 @@ export default function getElementName(type) {
             return "options matrix";
         case 30:
             return "StaticText";
+        case 35:
+            return "PlainText";
         case 100:
             return "immediate causes matrix";
         case 101:

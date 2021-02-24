@@ -453,6 +453,7 @@ export default class FormElementsEdit extends React.Component {
                         <label className="control-label" htmlFor="elementWidth">
                           Display Label
                         </label>
+                        {this.props.element.element!=="PlainText" && (
                         <input
                           type="text"
                           className="form-control"
@@ -463,7 +464,21 @@ export default class FormElementsEdit extends React.Component {
                             "Label",
                             "value"
                           )}
-                        />
+                        /> )}
+
+                         {this.props.element.element==="PlainText" && (
+                        <textarea
+                          type="text"
+                          className="form-control"
+                          defaultValue={this.props.element.Label}
+                          onBlur={this.updateElement.bind(this)}
+                          onChange={this.editElementProp.bind(
+                            this,
+                            "Label",
+                            "value"
+                          )}
+                        /> )}
+
                         <span className="tooltiptext tooltiptext-bottom">
                           A static label text which displays along with your
                           field
@@ -710,7 +725,7 @@ export default class FormElementsEdit extends React.Component {
                             <div className="col-sm-12 tooltip">
                               <label>Default Value</label>
                               {this.state.isEditor && (
-                                <Editor style={{ height: "auto",minHeight:"200px",cursor:"text",border:"1px solid #e9ecee" }}
+                                <Editor style={{cursor:"text",border:"1px solid #e9ecee" }}
                                 element={this.state.element}
                                 isReadOnly={false}
                                 updateElement={this.props.updateElement}
