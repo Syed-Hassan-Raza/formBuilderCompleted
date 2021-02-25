@@ -4,7 +4,7 @@ import BaseFormElements from './form-elements';
 
 const {
   Header, Paragraph, Label, LineBreak, TextInput, NumberInput, TextArea, Dropdown, Checkboxes,
-  DatePicker, RadioButtons, Image,PlainText, Signature, Range,Barcode,
+  DatePicker, RadioButtons, Signature, Range,Barcode,
   DecimalInput,StaticText,
   Calculated,Counter,Assignee,Autocomplete,FieldGroups,TimePicker,Action
 } = BaseFormElements;
@@ -36,7 +36,6 @@ FormElements.Autocomplete = SortableElement(Autocomplete);
 FormElements.FieldGroups = SortableElement(FieldGroups);
 FormElements.TimePicker = SortableElement(TimePicker);
 FormElements.Action = SortableElement(Action);
-FormElements.PlainText=SortableElement(PlainText);
 
 
 export default FormElements;

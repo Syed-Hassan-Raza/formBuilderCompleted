@@ -129,17 +129,8 @@ export default class Toolbar extends React.Component {
         icon: "fas fa-paragraph",
         field_name: "static_text_",
         Type: 30,
-        TypeDetail:"html",
+        TypeDetail:null,
         tip: "Non-input static information presented to the user",
-      },
-      {
-        key: "PlainText",
-        name: "Plain text",
-        label: "Label",
-        icon: "fas fa-file-alt",
-        field_name: "static_text_",
-        Type: 35,
-        tip: "Non-input A plain text information presented to the user",
       },
       {
         key: "Dropdown",
@@ -326,6 +317,7 @@ export default class Toolbar extends React.Component {
         elementOptions.TypeDetail = typeDetail;
       }
     }
+    else{elementOptions.TypeDetail = null}
     return elementOptions;
   }
 

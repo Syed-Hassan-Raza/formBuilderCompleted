@@ -69,7 +69,7 @@ const fieldNames = [
   { name: "sm_populate_assignee", typeDetail: 13 },
   { name: "sm_populate_attendee", typeDetail: "" },
 ];
-const editorFormats = ["html", "html64", "md", "md64"];
+const editorFormats = [null,"html", "html64", "md", "md64"];
 const dateFormats = [
 "yyyy-mm-dd",
 "yyyy-MM-dd",

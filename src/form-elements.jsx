@@ -8,16 +8,7 @@ import StarRating from "./star-rating";
 import HeaderBar from "./header-bar";
 import FieldsGroup from "./FieldsGroupBox";
 import Editor from "./CommonMethods/Editor";
-import {
-  ContentState,
-  EditorState,
-  convertFromHTML,
-  convertToRaw,
-  convertFromRaw,
-} from "draft-js";
-import htmlToDraft from "html-to-draftjs";
 
-import { mdToDraftjs, draftjsToMd } from "draftjs-md-converter";
 
 const FormElements = {};
 const myxss = new xss.FilterXSS({
@@ -237,34 +228,6 @@ class Label extends React.Component {
             __html: myxss.process(this.props.data.Label),
           }}
         />
-      </div>
-    );
-  }
-}
-class PlainText extends React.Component {
-  render() {
-    const props = {};
-    props.width = this.props.data.ControlWidthRatio || 1;
-    let classNames = "static";
-    if (this.props.data.bold) {
-      classNames += " bold";
-    }
-    if (this.props.data.italic) {
-      classNames += " italic";
-    }
-
-    let baseClasses = "SortableItem rfb-item";
-    if (this.props.data.pageBreakBefore) {
-      baseClasses += " alwaysbreak";
-    }
-
-    return (
-      <div id={this.props.data.id} className={baseClasses}>
-        <ComponentHeader {...this.props} />
-        <span className="label-Mandatory badge badge-info">
-          {this.props.data.element}
-        </span>
-        <p className={classNames}>{this.props.data.Label}</p>
       </div>
     );
   }
@@ -567,7 +530,12 @@ class StaticText extends React.Component {
     props.type = "text";
     props.className = "form-control";
     props.name = this.props.data.field_name;
-
+    let node = this.inputField.current;
+    if (node) {
+      node.value = this.props.data.DefaultValue
+        ? this.props.data.DefaultValue
+        : null;
+    }
     let classNames = "static";
     if (this.props.data.bold) {
       classNames += " bold";
@@ -588,6 +556,7 @@ class StaticText extends React.Component {
           <span className="label-Mandatory badge badge-info">
             {this.props.data.element}
           </span>
+          {this.props.data.TypeDetail && (
           <Editor
             style={{
               border: "1px solid #e9ecee",
@@ -597,6 +566,16 @@ class StaticText extends React.Component {
             isReadOnly={true}
             element={this.props.data}
           />
+          )}
+          {!this.props.data.TypeDetail && (
+             <textarea
+             {...props}
+             ref={this.inputField}
+             defaultValue={this.props.data.DefaultValue}
+             disabled
+             style={{ cursor: "move", backgroundColor: "white" }}
+           />
+          )}
         </div>
       </div>
     );
@@ -733,7 +712,6 @@ class DatePicker extends React.Component {
     props.type = "text";
     props.className = "form-control";
     props.name = this.props.data.field_name;
-    debugger;
     let node = this.inputField.current;
     if (node) {
       node.value = this.props.data.TypeDetail
@@ -1245,7 +1223,6 @@ FormElements.StaticText = StaticText;
 FormElements.Action = Action;
 FormElements.Calculated = Calculated;
 FormElements.Counter = Counter;
-FormElements.PlainText = PlainText;
 
 FormElements.Autocomplete = Autocomplete;
 FormElements.FieldGroups = FieldGroups;
