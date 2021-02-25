@@ -1223,7 +1223,6 @@ FormElements.StaticText = StaticText;
 FormElements.Action = Action;
 FormElements.Calculated = Calculated;
 FormElements.Counter = Counter;
-
 FormElements.Autocomplete = Autocomplete;
 FormElements.FieldGroups = FieldGroups;
 FormElements.TimePicker = TimePicker;
