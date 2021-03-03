@@ -55,16 +55,7 @@ export default class AutoCompleteOptionList extends React.Component {
     return found;
   }
   addOption(option) {
-    // const this_element = this.state.element;
-    // const _typeDetail = JSON.parse(this.state.element.TypeDetail);
-
-    // let rendomValue = Math.random().toString(36).substring(7);
-    // _typeDetail.data.push('');
-    // this_element.TypeDetail = JSON.stringify(_typeDetail);
-    // this.props.updateElement.call(this.props.preview, this_element);
-    
-
-
+  
      const this_element = this.state.element;
      const _typeDetail = JSON.parse(this.state.element.TypeDetail);
 
